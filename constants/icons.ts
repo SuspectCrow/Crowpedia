@@ -1,69 +1,65 @@
-import google from "@/assets/icons/google.png";
+import arrow_forward from "@/assets/icons/arrow-forward.png";
+import arrow_left from "@/assets/icons/arrow-left.png";
+import attach_file from "@/assets/icons/attach-file.png";
+import bookmarks from "@/assets/icons/bookmarks.png";
+import check from "@/assets/icons/check.png";
+import checklist from "@/assets/icons/checklist.png";
+import colors from "@/assets/icons/colors.png";
+import delete_file from "@/assets/icons/delete-file.png";
+import dictionary from "@/assets/icons/dictionary.png";
+import docs from "@/assets/icons/docs.png";
+import draft from "@/assets/icons/draft.png";
+import edit_note from "@/assets/icons/edit-note.png";
+import favorite from "@/assets/icons/favorite.png";
+import file_copy from "@/assets/icons/file-copy.png";
+import file_export from "@/assets/icons/file-export.png";
+import folder from "@/assets/icons/folder.png";
 import home from "@/assets/icons/home.png";
-import search from "@/assets/icons/search.png";
-import person from "@/assets/icons/person.png";
-import bell from "@/assets/icons/bell.png";
-import filter from "@/assets/icons/filter.png";
-import star from "@/assets/icons/star.png";
-import heart from "@/assets/icons/heart.png";
-import backArrow from "@/assets/icons/back-arrow.png";
-import calendar from "@/assets/icons/calendar.png";
 import info from "@/assets/icons/info.png";
-import language from "@/assets/icons/language.png";
-import logout from "@/assets/icons/logout.png";
-import people from "@/assets/icons/people.png";
-import shield from "@/assets/icons/shield.png";
-import wallet from "@/assets/icons/wallet.png";
-import rightArrow from "@/assets/icons/right-arrow.png";
-import send from "@/assets/icons/send.png";
-import bed from "@/assets/icons/bed.png";
-import bath from "@/assets/icons/bath.png";
-import area from "@/assets/icons/area.png";
-import chat from "@/assets/icons/chat.png";
-import phone from "@/assets/icons/phone.png";
-import carPark from "@/assets/icons/car-park.png";
-import cutlery from "@/assets/icons/cutlery.png";
-import dog from "@/assets/icons/dog.png";
-import dumbell from "@/assets/icons/dumbell.png";
-import laundry from "@/assets/icons/laundry.png";
-import run from "@/assets/icons/run.png";
-import swim from "@/assets/icons/swim.png";
-import wifi from "@/assets/icons/wifi.png";
-import location from "@/assets/icons/location.png";
-import edit from "@/assets/icons/edit.png";
+import link from "@/assets/icons/link.png";
+import list from "@/assets/icons/list.png";
+import markdown from "@/assets/icons/markdown.png";
+import markdown_copy from "@/assets/icons/markdown-copy.png";
+import note_add from "@/assets/icons/note-add.png";
+import search from "@/assets/icons/search.png";
+import settings from "@/assets/icons/settings.png";
+import star from "@/assets/icons/star.png";
+import sync from "@/assets/icons/sync.png";
+import sync_desktop from "@/assets/icons/sync-desktop.png";
+import sync_disabled from "@/assets/icons/sync-disabled.png";
+import upload_file from "@/assets/icons/upload-file.png";
 
 export default {
-  google,
-  home,
-  search,
-  person,
-  bell,
-  filter,
-  star,
-  heart,
-  backArrow,
-  calendar,
-  info,
-  language,
-  logout,
-  people,
-  shield,
-  wallet,
-  rightArrow,
-  send,
-  bed,
-  bath,
-  area,
-  chat,
-  phone,
-  carPark,
-  cutlery,
-  dog,
-  dumbell,
-  laundry,
-  run,
-  swim,
-  wifi,
-  location,
-  edit,
+    arrow_forward,
+    arrow_left,
+    attach_file,
+    bookmarks,
+    check,
+    checklist,
+    colors,
+    delete_file,
+    dictionary,
+    docs,
+    draft,
+    edit_note,
+    favorite,
+    file_copy,
+    file_export,
+    folder,
+    home,
+    info,
+    link,
+    list,
+    markdown,
+    markdown_copy,
+    note_add,
+    search,
+    settings,
+    star,
+    sync,
+    sync_desktop,
+    sync_disabled,
+    upload_file
+
+
 };
