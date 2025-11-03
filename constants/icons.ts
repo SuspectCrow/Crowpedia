@@ -2,6 +2,7 @@ import arrow_forward from "@/assets/icons/arrow-forward.png";
 import arrow_left from "@/assets/icons/arrow-left.png";
 import attach_file from "@/assets/icons/attach-file.png";
 import bookmarks from "@/assets/icons/bookmarks.png";
+import calendar_month from "@/assets/icons/calendar-month.png";
 import check from "@/assets/icons/check.png";
 import checklist from "@/assets/icons/checklist.png";
 import colors from "@/assets/icons/colors.png";
@@ -34,6 +35,7 @@ export default {
     arrow_left,
     attach_file,
     bookmarks,
+    calendar_month,
     check,
     checklist,
     colors,

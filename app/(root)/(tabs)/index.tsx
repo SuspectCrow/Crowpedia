@@ -9,21 +9,21 @@ import {useState} from "react";
 
 export default function Index() {
   const cards = [
-      { title: 'Yeni Proje Fikirleri ve Geliştirme', LargeCard: true, BG: images.cardbg2, isFolderCard: true },
-      { title: 'Mobil Uygulama Arayüz Tasarımı', LargeCard: false, BG: "bg-yellow-500", isFolderCard: true },
-      { title: 'Günlük Görev Takibi ve Planlama', LargeCard: false, BG: "bg-indigo-700", isFolderCard: true },
-      { title: 'Veri Analizi Raporları İncelemesi', LargeCard: true, BG: images.cardbg3, isFolderCard: true },
-      { title: 'Web Sitesi Performans Optimizasyonu', LargeCard: false, BG: "bg-pink-600", isFolderCard: true },
-      { title: 'Müşteri Geri Bildirimlerinin Değerlendirilmesi', LargeCard: false, BG: "bg-lime-500", isFolderCard: true },
-      { title: 'Eğitim Materyalleri Hazırlığı', LargeCard: true, BG: images.cardbg4, isFolderCard: true },
-      { title: 'Pazarlama Stratejisi Belirleme', LargeCard: false, BG: "bg-blue-800", isFolderCard: true },
-      { title: 'Yeni Özellikler İçin Kod İncelemesi', LargeCard: false, BG: "bg-teal-500", isFolderCard: true },
-      { title: 'Ekip Toplantısı Notları', LargeCard: true, BG: images.cardbg1, isFolderCard: true },
-      { title: 'Sunum İçin Görsel Materyaller', LargeCard: false, BG: "bg-orange-600", isFolderCard: true },
-      { title: 'Kullanıcı Deneyimi Testleri', LargeCard: false, BG: "bg-emerald-700", isFolderCard: false },
-      { title: 'Bütçe Planlama ve Kontrol', LargeCard: true, BG: images.cardbg2, isFolderCard: false },
-      { title: 'Güvenlik Güncellemeleri Kontrolü', LargeCard: false, BG: "bg-red-700", isFolderCard: false },
-      { title: 'Altyapı İyileştirmeleri Çalışması', LargeCard: false, BG: "bg-gray-700", isFolderCard: false }
+      { title: 'Yeni Proje Fikirleri ve Geliştirme', isLarge: true, background: images.cardbg2, cardType: "Folder" },
+      { title: 'Mobil Uygulama Arayüz Tasarımı', isLarge: false, background: "bg-yellow-500", cardType: "Folder" },
+      { title: 'Günlük Görev Takibi ve Planlama', isLarge: false, background: "bg-indigo-700", cardType: "Folder" },
+      { title: 'Veri Analizi Raporları İncelemesi', isLarge: true, background: images.cardbg3, cardType: "Folder" },
+      { title: 'Web Sitesi Performans Optimizasyonu', isLarge: false, background: "bg-pink-600", cardType: "Folder" },
+      { title: 'Müşteri Geri Bildirimlerinin Değerlendirilmesi', isLarge: false, background: "bg-lime-500", cardType: "Folder" },
+      { title: 'Eğitim Materyalleri Hazırlığı', isLarge: true, background: images.cardbg4, cardType: "Folder" },
+      { title: 'Pazarlama Stratejisi Belirleme', isLarge: false, background: "bg-blue-800", cardType: "Folder" },
+      { title: 'Yeni Özellikler İçin Kod İncelemesi', isLarge: false, background: "bg-teal-500", cardType: "Folder" },
+      { title: 'Ekip Toplantısı Notları', isLarge: true, background: images.cardbg1, cardType: "Folder" },
+      { title: 'Sunum İçin Görsel Materyaller', isLarge: false, background: "bg-orange-600", cardType: "Folder" },
+      { title: 'Kullanıcı Deneyimi Testleri', isLarge: false, background: "bg-emerald-700", cardType: "Note" },
+      { title: 'Bütçe Planlama ve Kontrol', isLarge: true, background: images.cardbg2, cardType: "Note" },
+      { title: 'Güvenlik Güncellemeleri Kontrolü', isLarge: false, background: "bg-red-700", cardType: "Note" },
+      { title: 'Altyapı İyileştirmeleri Çalışması', isLarge: false, background: "bg-gray-700", cardType: "Link" }
   ];
 
   const path = [
@@ -85,10 +85,10 @@ export default function Index() {
             masonry
             numColumns={2}
             renderItem={({ item }) => (
-                item.LargeCard ?
-                    <LargeCard title={ item.title } isFolderCard={item.isFolderCard} background={item.BG} />
+                item.isLarge ?
+                    <LargeCard title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
                     :
-                    <SmallCard title={ item.title } isFolderCard={item.isFolderCard} background={ item.BG } />
+                    <SmallCard title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
             )}
             contentContainerClassName="pt-2 pb-32"
             showsVerticalScrollIndicator={false}
