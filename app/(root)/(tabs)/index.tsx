@@ -1,10 +1,11 @@
-import { Text, View, Image, TouchableOpacity, StyleSheet, FlatList, ScrollView } from "react-native";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { FlashList } from "@shopify/flash-list";
 
 import { LargeCard, SmallCard } from "@/components/C_Card";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {useState} from "react";
 
 export default function Index() {
   const cards = [
@@ -32,9 +33,12 @@ export default function Index() {
       "Game Development"
   ]
 
+    const [visible, setVisible] = useState(false);
+
+
   return (
     <SafeAreaView className="p-1 h-full" style={{ backgroundColor: '#292524' }} >
-        <TouchableOpacity className="p-4 mt-4 rounded-xl border-solid border-4 border-stone-700/50">
+        <TouchableOpacity className="p-4 mt-4 rounded-xl border-solid border-4 border-stone-700/50"  onPress={() => setVisible(v => !v)}>
             <View className="flex-row items-center justify-end me-6 overflow-hidden">
                 {path.map((item, index) => (
                     <View key={index} className="flex-row items-center">
@@ -49,6 +53,32 @@ export default function Index() {
                 ))}
             </View>
         </TouchableOpacity>
+
+        {
+            visible && (
+                <View className="p-4 rounded-xl border-solid border-4 bg-stone-900 border-stone-700/50">
+                    <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50">
+                        <View className="flex-row items-center justify-center">
+                            <Image source={icons.arrow_left} className="size-6 mx-2" />
+                            <Text className="font-dmsans-bold text-lg text-white">Back</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <View className="flex-col items-start justify-start gap-2 mt-4">
+                        {path.map((item, index) => (
+                            <TouchableOpacity key={index} className="flex-row items-center  w-full" disabled={ index == path.length - 1 }>
+                                { index == path.length - 1 && (
+                                    <Image source={icons.arrow_forward} className="size-6" style={[{ tintColor: '#fff' }]} />
+                                )}
+                                <Image source={icons.folder} className="size-7 mx-2" style={[{ tintColor: `${index == path.length -1 ? '#fff' : '#78716c'}` }]} />
+                                <Text className={`${ index == path.length - 1 ? 'text-stone-300 font-dmsans-bold' : 'text-stone-600 font-dmsans-medium' } text-xl`}>
+                                    { item }
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+            )
+        }
 
         <FlashList
             data={cards}
