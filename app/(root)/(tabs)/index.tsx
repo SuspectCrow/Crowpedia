@@ -1,4 +1,4 @@
-import {Text, View, Image, TouchableOpacity, StyleSheet, Animated} from "react-native";
+import {Text, View, Image, TouchableOpacity, StyleSheet, Animated, Linking, Alert} from "react-native";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { FlashList } from "@shopify/flash-list";
@@ -7,6 +7,11 @@ import { LargeCard, SmallCard } from "@/components/C_Card";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {useState} from "react";
 import ScrollView = Animated.ScrollView;
+import { useEffect } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+
+import { useAppwrite } from "@/lib/useAppwrite";
+import { getLatestCards, getCards } from "@/lib/appwrite";
 
 export default function Index() {
   const cards = [
@@ -37,6 +42,47 @@ export default function Index() {
     const [navbarVisibility, setNavbarVisibility] = useState(false);
     const [foldersVisibility, setFolderVisibility] = useState(false);
 
+    const params = useLocalSearchParams<{ query?: string; filter?: string }>();
+
+    const { data: latestProperties, loading: latestPropertiesLoading } =
+        useAppwrite({
+            fn: getLatestCards,
+        });
+
+    const {
+        data: cardsData,
+        refetch,
+        loading,
+    } = useAppwrite({
+        fn: getCards,
+        params: {
+            filter: params.filter!,
+            query: params.query!,
+            limit: 6,
+        },
+        skip: true,
+    });
+
+    useEffect(() => {
+        refetch({
+            filter: params.filter!,
+            query: params.query!,
+            limit: 6,
+        });
+    }, [params.filter, params.query]);
+
+    const handleCardPress = (id: string) => router.push(`/card/${id}`);
+
+    const handlePress = async (type: string) => {
+        switch (type) {
+            case "Link":
+                try {
+                    await Linking.openURL("https://www.youtube.com/watch?v=KOSvDlFyg20");
+                } catch (error) {
+                    Alert.alert(`URL açılamadı: ${"https://www.youtube.com/watch?v=KOSvDlFyg20"}`);
+                }
+        }
+    }
 
   return (
     <SafeAreaView className="p-1 h-full" style={{ backgroundColor: '#292524' }} >
@@ -84,15 +130,16 @@ export default function Index() {
 
          <ScrollView className="mt-4">
              <FlashList
-                 data={!foldersVisibility ? cards.filter(card => card.cardType == "Folder").sort((a, b) => a.order - b.order) : []}
+                 data={!foldersVisibility ? (cardsData || []).filter(card => card.type == "Folder").sort((a, b) => a.order - b.order) : []}
                  masonry
                  numColumns={2}
                  renderItem={({ item, index }) => (
                      item.isLarge ?
-                         <LargeCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <LargeCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.type} onPress={() => handleCardPress(item.$id)}/>
                          :
-                         <SmallCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <SmallCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.type} onPress={() => handleCardPress(item.$id)}/>
                  )}
+                 keyExtractor={(item) => item.$id}
                  showsVerticalScrollIndicator={false}
                  ListHeaderComponent={
                      <TouchableOpacity className="flex-row items-center justify-center gap-2 w-fit my-4" onPress={() => setFolderVisibility(v => !v)}>
@@ -114,15 +161,16 @@ export default function Index() {
              />
 
              <FlashList
-                 data={cards.sort((a, b) => a.order - b.order).filter(card => card.cardType != "Folder")}
+                 data={(cardsData || []).sort((a, b) => a.order - b.order).filter(card => card.type != "Folder")}
                  masonry
                  numColumns={2}
                  renderItem={({ item, index }) => (
                      item.isLarge ?
-                         <LargeCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <LargeCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.type} onPress={() => handleCardPress(item.$id)}/>
                          :
-                         <SmallCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <SmallCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.type} onPress={() => handlePress(item.type)}/>
                  )}
+                 keyExtractor={(item) => item.$id}
                  showsVerticalScrollIndicator={false}
                  ListHeaderComponent={
                      <View>

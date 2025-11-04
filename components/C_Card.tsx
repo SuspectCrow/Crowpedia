@@ -38,18 +38,34 @@ export const getCardStyle = (type: string | undefined): CardStyle => {
 
 const borderRadius = "rounded-lg";
 
+function isNetworkUrl(urlString : string) {
+    if (!urlString) return false;
+
+    try {
+        const url = new URL(urlString);
+
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
+function isColorString(str: string) {
+    return str.includes("#") || str.includes("rgb") || str.includes("rgba");
+}
+
 export const LargeCard = ({ title, cardType, isFavorite, isLarge, background, index, order, onPress }: ICard) => {
     const CardStyle = getCardStyle(cardType);
 
     return (
-        <TouchableOpacity className={`gap-3 m-1 relative h-72 ${borderRadius} border-solid border-stone-700/50 border-4`}>
-            <Image source={background} className={`size-full ${borderRadius}`} />
+        <TouchableOpacity className={`gap-3 m-1 relative h-72 ${borderRadius} border-solid border-stone-700/50 border-4`} onPress={onPress}>
+            <Image source={ isNetworkUrl(background) ? { uri: background } : background } className={`size-full ${borderRadius}`} />
             <Image source={images.largecardgradient} className={`absolute bottom-0 left-0 size-full ${borderRadius}`} style={{ zIndex: 1 }} />
             <View className="absolute bottom-3 left-3 flex flex-row justify-start items-end gap-2 max-w-[75%]" style={{ zIndex: 2 }}>
                 <Image source={ getCardIcon(cardType) } className={ `${ CardStyle.iconClass }` } style={[{ tintColor: '#ffffff80' }, CardStyle.iconStyle]} />
                 <Text className={`${ getCardStyle(cardType).textClass } text-stone-100/80 max-w-[80%]`}>{ title }</Text>
             </View>
-            <Text className="absolute top-2 right-2 bg-white p-2 rounded-full text-center text-md font-dmsans-bold">{ index + " | " + order}</Text>
+            {/*<Text className="absolute top-2 right-2 bg-white p-2 rounded-full text-center text-md font-dmsans-bold">{ index + " | " + order}</Text>*/}
         </TouchableOpacity>
     )
 };
@@ -58,10 +74,10 @@ export const SmallCard = ({ title, cardType, isFavorite, isLarge, background, in
     const CardStyle = getCardStyle(cardType);
 
     return (
-        <TouchableOpacity className={`flex-row m-1 justify-start items-start gap-2 p-3 ${borderRadius} border-solid border-4 border-stone-700/50 ${ background }`}>
+        <TouchableOpacity className={`flex-row m-1 justify-start items-start gap-2 p-3 ${borderRadius} border-solid border-4 border-stone-700/50 ${ isColorString(background) ? '' : background }`} style={ [ isColorString(background) ? { backgroundColor: background as string } : {} ]  } onPress={onPress}>
             <Image source={ getCardIcon(cardType) } className={ `${ CardStyle.iconClass }` } style={[{ tintColor: '#ffffff80' }, CardStyle.iconStyle]} />
             <Text className={`${ getCardStyle(cardType).textClass } text-stone-100/80 max-w-[80%]`}>{ title }</Text>
-            <Text className="absolute top-2 right-2 bg-white p-2 rounded-full text-center text-md font-dmsans-bold">{ index + " | " + order}</Text>
+            {/*<Text className="absolute top-2 right-2 bg-white p-2 rounded-full text-center text-md font-dmsans-bold">{ index + " | " + order}</Text>*/}
         </TouchableOpacity>
     )
 };
