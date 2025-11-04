@@ -1,6 +1,8 @@
 export interface ICard {
     id?: bigint;
     onPress?: () => void;
+    index?: number;
+    order?: any;
     title: any;
     cardType?: string;
     isFavorite?: boolean;

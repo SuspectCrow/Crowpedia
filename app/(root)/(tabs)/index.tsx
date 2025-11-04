@@ -7,25 +7,24 @@ import { LargeCard, SmallCard } from "@/components/C_Card";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {useState} from "react";
 import ScrollView = Animated.ScrollView;
-import {rgbaColor} from "react-native-reanimated/src/Colors";
 
 export default function Index() {
   const cards = [
-      { title: 'Yeni Proje Fikirleri ve Geliştirme', isLarge: true, background: images.cardbg2, cardType: "Folder" },
-      { title: 'Mobil Uygulama Arayüz Tasarımı', isLarge: false, background: "bg-yellow-500", cardType: "Folder" },
-      { title: 'Günlük Görev Takibi ve Planlama', isLarge: false, background: "bg-indigo-700", cardType: "Folder" },
-      { title: 'Veri Analizi Raporları İncelemesi', isLarge: true, background: images.cardbg3, cardType: "Folder" },
-      { title: 'Web Sitesi Performans Optimizasyonu', isLarge: false, background: "bg-pink-600", cardType: "Folder" },
-      { title: 'Müşteri Geri Bildirimlerinin Değerlendirilmesi', isLarge: false, background: "bg-lime-500", cardType: "Note" },
-      { title: 'Eğitim Materyalleri Hazırlığı', isLarge: true, background: images.cardbg4, cardType: "Note" },
-      { title: 'Pazarlama Stratejisi Belirleme', isLarge: false, background: "bg-blue-800", cardType: "Note" },
-      { title: 'Yeni Özellikler İçin Kod İncelemesi', isLarge: false, background: "bg-teal-500", cardType: "Note" },
-      { title: 'Ekip Toplantısı Notları', isLarge: true, background: images.cardbg1, cardType: "Note" },
-      { title: 'Sunum İçin Görsel Materyaller', isLarge: false, background: "bg-orange-600", cardType: "Note" },
-      { title: 'Kullanıcı Deneyimi Testleri', isLarge: false, background: "bg-emerald-700", cardType: "Note" },
-      { title: 'Bütçe Planlama ve Kontrol', isLarge: true, background: images.cardbg2, cardType: "Note" },
-      { title: 'Güvenlik Güncellemeleri Kontrolü', isLarge: false, background: "bg-red-700", cardType: "Note" },
-      { title: 'Altyapı İyileştirmeleri Çalışması', isLarge: false, background: "bg-gray-700", cardType: "Link" }
+      { title: 'Yeni Proje Fikirleri ve Geliştirme', isLarge: true, background: images.cardbg2, cardType: "Folder", order: 0 },
+      { title: 'Mobil Uygulama Arayüz Tasarımı', isLarge: false, background: "bg-yellow-500", cardType: "Folder", order: 1 },
+      { title: 'Günlük Görev Takibi ve Planlama', isLarge: false, background: "bg-indigo-700", cardType: "Folder", order: 2 },
+      { title: 'Veri Analizi Raporları İncelemesi', isLarge: true, background: images.cardbg3, cardType: "Folder", order: 3 },
+      { title: 'Web Sitesi Performans Optimizasyonu', isLarge: false, background: "bg-pink-600", cardType: "Folder", order: 4 },
+      { title: 'Müşteri Geri Bildirimlerinin Değerlendirilmesi', isLarge: false, background: "bg-lime-500", cardType: "Note", order: 5 },
+      { title: 'Eğitim Materyalleri Hazırlığı', isLarge: true, background: images.cardbg4, cardType: "Note", order: 6 },
+      { title: 'Pazarlama Stratejisi Belirleme', isLarge: false, background: "bg-blue-800", cardType: "Note", order: 7 },
+      { title: 'Yeni Özellikler İçin Kod İncelemesi', isLarge: false, background: "bg-teal-500", cardType: "Note", order: 8 },
+      { title: 'Ekip Toplantısı Notları', isLarge: true, background: images.cardbg1, cardType: "Note", order: 9 },
+      { title: 'Sunum İçin Görsel Materyaller', isLarge: false, background: "bg-orange-600", cardType: "Note", order: 10 },
+      { title: 'Kullanıcı Deneyimi Testleri', isLarge: false, background: "bg-emerald-700", cardType: "Note", order: 11 },
+      { title: 'Bütçe Planlama ve Kontrol', isLarge: true, background: images.cardbg2, cardType: "Note", order: 12 },
+      { title: 'Güvenlik Güncellemeleri Kontrolü', isLarge: false, background: "bg-red-700", cardType: "Note", order: 13 },
+      { title: 'Altyapı İyileştirmeleri Çalışması', isLarge: false, background: "bg-gray-700", cardType: "Link", order: 14 }
   ];
 
   const path = [
@@ -41,7 +40,7 @@ export default function Index() {
 
   return (
     <SafeAreaView className="p-1 h-full" style={{ backgroundColor: '#292524' }} >
-        <TouchableOpacity className="p-4 mt-4 rounded-xl border-solid border-4 border-stone-700/50"  onPress={() => setNavbarVisibility(v => !v)}>
+        <TouchableOpacity className="p-4 mx-2 mt-4 rounded-xl border-solid border-4 border-stone-700/50"  onPress={() => setNavbarVisibility(v => !v)}>
             <View className="flex-row items-center justify-end me-6 overflow-hidden">
                 {path.map((item, index) => (
                     <View key={index} className="flex-row items-center">
@@ -83,16 +82,16 @@ export default function Index() {
             )
         }
 
-         <ScrollView >
+         <ScrollView className="mt-4">
              <FlashList
-                 data={!foldersVisibility ? cards.filter(card => card.cardType == "Folder") : []}
+                 data={!foldersVisibility ? cards.filter(card => card.cardType == "Folder").sort((a, b) => a.order - b.order) : []}
                  masonry
                  numColumns={2}
-                 renderItem={({ item }) => (
+                 renderItem={({ item, index }) => (
                      item.isLarge ?
-                         <LargeCard title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <LargeCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
                          :
-                         <SmallCard title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <SmallCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
                  )}
                  showsVerticalScrollIndicator={false}
                  ListHeaderComponent={
@@ -102,7 +101,7 @@ export default function Index() {
                      </TouchableOpacity>
                  }
                  style={[{
-                     backgroundColor: '#292524',
+                     backgroundColor: '#1c1917',
                      borderRadius: 12,
                      marginHorizontal: 6,
                      // marginVertical: 12,
@@ -115,14 +114,14 @@ export default function Index() {
              />
 
              <FlashList
-                 data={cards.filter(card => card.cardType != "Folder")}
+                 data={cards.sort((a, b) => a.order - b.order).filter(card => card.cardType != "Folder")}
                  masonry
                  numColumns={2}
-                 renderItem={({ item }) => (
+                 renderItem={({ item, index }) => (
                      item.isLarge ?
-                         <LargeCard title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <LargeCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
                          :
-                         <SmallCard title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
+                         <SmallCard index={index} order={item.order} title={item.title} isLarge={item.isLarge} background={item.background} cardType={item.cardType} />
                  )}
                  showsVerticalScrollIndicator={false}
                  ListHeaderComponent={
