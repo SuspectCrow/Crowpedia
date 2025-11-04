@@ -5,18 +5,22 @@ import bookmarks from "@/assets/icons/bookmarks.png";
 import calendar_month from "@/assets/icons/calendar-month.png";
 import check from "@/assets/icons/check.png";
 import checklist from "@/assets/icons/checklist.png";
+import collapse_all from "@/assets/icons/collapse-all.png";
 import colors from "@/assets/icons/colors.png";
 import delete_file from "@/assets/icons/delete-file.png";
 import dictionary from "@/assets/icons/dictionary.png";
 import docs from "@/assets/icons/docs.png";
 import draft from "@/assets/icons/draft.png";
 import edit_note from "@/assets/icons/edit-note.png";
+import expand_all from "@/assets/icons/expand-all.png";
 import favorite from "@/assets/icons/favorite.png";
 import file_copy from "@/assets/icons/file-copy.png";
 import file_export from "@/assets/icons/file-export.png";
 import folder from "@/assets/icons/folder.png";
 import home from "@/assets/icons/home.png";
 import info from "@/assets/icons/info.png";
+import arrow_down from "@/assets/icons/keyboard_arrow_down.png";
+import arrow_up from "@/assets/icons/keyboard_arrow_up.png";
 import link from "@/assets/icons/link.png";
 import list from "@/assets/icons/list.png";
 import markdown from "@/assets/icons/markdown.png";
@@ -38,18 +42,22 @@ export default {
     calendar_month,
     check,
     checklist,
+    collapse_all,
     colors,
     delete_file,
     dictionary,
     docs,
     draft,
     edit_note,
+    expand_all,
     favorite,
     file_copy,
     file_export,
     folder,
     home,
     info,
+    arrow_down,
+    arrow_up,
     link,
     list,
     markdown,
