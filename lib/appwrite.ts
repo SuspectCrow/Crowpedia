@@ -23,22 +23,6 @@ client
 
 export const databases = new Databases(client);
 
-
-export async function getLatestCards() {
-    try {
-        const result = await databases.listDocuments(
-            config.databaseId!,
-            config.CardsTableId!,
-            [Query.orderAsc("$createdAt"), Query.limit(5)]
-        );
-
-        return result.documents;
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
-}
-
 export async function getCards({
         filter,
         query,
@@ -77,18 +61,111 @@ export async function getCards({
     }
 }
 
-export async function getCardById(cardId: string) {
+export async function getCardById(id: string) {
     try {
         const result = await databases.getDocument(
             config.databaseId!,
             config.CardsTableId!,
-            cardId
+            id
         );
 
         return result;
 
     } catch (error) {
-        console.error("Kart ID ile getirilirken hata oluştu:", error);
+        console.error("getCardById Failed:", error);
+        return null;
+    }
+}
+
+
+export async function getNotes({
+       filter,
+       query,
+       limit,
+   }: {
+    filter: string;
+    query: string;
+    limit?: number;
+}) {
+    try {
+        const buildQuery = [Query.orderDesc("$createdAt")];
+
+        if (filter && filter !== "All")
+            buildQuery.push(Query.equal("content", filter));
+
+        if (query)
+            buildQuery.push(
+                Query.or([
+                    Query.search("content", query)
+                ])
+            );
+
+        if (limit) buildQuery.push(Query.limit(limit));
+
+        const result = await databases.listDocuments(
+            config.databaseId!,
+            config.NotesTableId!,
+            buildQuery
+        );
+
+        return result.documents;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export async function getNoteById(id: string) {
+    try {
+        const result = await databases.getDocument(
+            config.databaseId!,
+            config.NotesTableId!,
+            id
+        );
+
+        return result;
+
+    } catch (error) {
+        console.error("getNoteById Failed:", error);
+        return null;
+    }
+}
+
+export async function getFolders({
+       limit,
+   }: {
+    limit?: number;
+}) {
+    try {
+        const buildQuery = [Query.orderDesc("$createdAt")];
+
+        if (limit) buildQuery.push(Query.limit(limit));
+
+        const result = await databases.listDocuments(
+            config.databaseId!,
+            config.FoldersTableId!,
+            buildQuery
+        );
+
+        return result.documents;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export async function getFolderById(id: string) {
+    try {
+        const result = await databases.getDocument(
+            config.databaseId!,
+            config.FoldersTableId!,
+            id
+        );
+
+        return result;
+
+    } catch (error) {
+        console.error("getNoteById Failed:", error);
         return null;
     }
 }

@@ -1,9 +1,10 @@
 import {View, Text} from 'react-native'
 import React from 'react'
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const Search = () => {
     return (
-        <View
+        <SafeAreaView
             style={{
                 flex: 1,
                 justifyContent: "center",
@@ -11,7 +12,7 @@ const Search = () => {
                 backgroundColor: '#292524',
             }}>
             <Text className=" font-dmsans-black text-4xl text-red-600">Search</Text>
-        </View>
+        </SafeAreaView>
     )
 }
 export default Search

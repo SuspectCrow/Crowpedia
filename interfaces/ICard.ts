@@ -1,22 +1,21 @@
 export interface ICard {
-    id?: bigint;
-    onPress?: () => void;
+    $id: string;
     index?: number;
-    order?: any;
+    order: any;
     title: any;
-    cardType?: string;
+    type?: string;
     isFavorite?: boolean;
     isLarge?: boolean;
-    background?: any;
+    background: any;
 }
 
 export interface IFolder extends ICard {
-    id?: bigint;
+    $id: string;
     parentFolder?: bigint;
 }
 
 export interface INote extends ICard {
-    id?: bigint;
+    $id: string;
     content: string;
     parentFolder: bigint;
 }
