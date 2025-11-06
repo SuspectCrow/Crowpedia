@@ -1,5 +1,4 @@
-import {Text, View, Image, TouchableOpacity, StyleSheet, Animated, Linking, Alert} from "react-native";
-import images from "@/constants/images";
+import {Text, View, Image, TouchableOpacity, Animated, Linking, Alert} from "react-native";
 import icons from "@/constants/icons";
 import { FlashList } from "@shopify/flash-list";
 
@@ -11,49 +10,11 @@ import { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { useAppwrite } from "@/lib/useAppwrite";
-import { getCards, getCardById, getFolders } from "@/lib/appwrite";
+import { getCards, getCardById } from "@/lib/appwrite";
 import C_NavBar from "@/components/C_NavBar";
 import {ICard} from "@/interfaces/ICard";
-import {json} from "node:stream/consumers";
 
 export default function Index() {
-  const path = [
-      "Home",
-      "Work",
-      "Projects",
-      "Game Development"
-  ]
-    const [foldersVisibility, setFolderVisibility] = useState(false);
-    const [activeFolder, setActiveFolder] = useState<string | null>(null);
-
-    const params = useLocalSearchParams<{ query?: string; filter?: string }>();
-
-    // const { data: latestProperties, loading: latestPropertiesLoading } =
-    //     useAppwrite({
-    //         fn: getLatestCards,
-    //     });
-
-    const {
-        data: cardsData,
-        refetch,
-        loading,
-    } = useAppwrite({
-        fn: getCards,
-        params: {
-            filter: params.filter!,
-            query: params.query!,
-            limit: 6,
-        },
-        skip: true,
-    });
-
-    useEffect(() => {
-        refetch({
-            filter: params.filter!,
-            query: params.query!,
-            limit: 6,
-        });
-    }, [params.filter, params.query]);
 
     const handlePress = async (id: string) => {
 
@@ -64,13 +25,18 @@ export default function Index() {
         switch (Card.type) {
             case "Link":
                 try {
-                    await Linking.openURL("https://www.youtube.com/watch?v=KOSvDlFyg20");
+                    await Linking.openURL(Card.content);
                 } catch (error) {
-                    Alert.alert(`URL açılamadı: ${"https://www.youtube.com/watch?v=KOSvDlFyg20"}`);
+                    Alert.alert(`URL açılamadı: ${Card.content}`);
                 }
                 break;
             case "Note":
                 router.push(`/card/${id}`);
+                break;
+
+            case "Folder":
+                setActiveFolder(Card.$id as string);
+                console.log(activeFolder);
                 break;
 
             default:
@@ -79,26 +45,51 @@ export default function Index() {
         }
     }
 
-    // console.log(JSON.stringify(cardsData), null, 2);
+    const handleNavBarPressBack = async () => {
+        setActiveFolder(null);
+    }
 
-    const cardList = Array.isArray(cardsData) ? (cardsData as unknown as ICard[]) : [];
-    const folderCards = !foldersVisibility ? cardList.filter(card => card.type === "Folder").sort((a, b) => a.order - b.order) : [];
-    const noteCards = cardList.filter(card => card.type !== "Folder").sort((a, b) => a.order - b.order);
+  const path = [
+      "Home",
+      "Work",
+      "Projects",
+      "Game Development"
+  ]
+
+    const [foldersVisibility, setFolderVisibility] = useState(false);
+    const [activeFolder, setActiveFolder] = useState<string | null>(null);
+
+    const params = useLocalSearchParams<{ query?: string; filter?: string }>();
+
+    const { data: dataCards, refetch: refetchCards, loading: loadingCards} =
+    useAppwrite({
+        fn: getCards,
+        params: {filter: params.filter!, query: params.query!, limit: 6,},
+        skip: true,
+    });
+
+    useEffect(() => {
+        refetchCards({filter: params.filter!, query: params.query!, limit: 32,});
+    }, [params.filter, params.query]);
+
+    const cardList = Array.isArray(dataCards) ? (dataCards as unknown as ICard[]).filter(card => activeFolder && activeFolder != "" ? card.parentFolder == activeFolder : true) : [];
+    const folderList = foldersVisibility ? cardList.filter(card => card.type === "Folder") : [];
+    const noteList = cardList.filter(card => card.type !== "Folder");
 
   return (
     <SafeAreaView className="p-1 h-full" style={{ backgroundColor: '#292524' }} >
-        <C_NavBar activePaths={path} />
+        <C_NavBar activePaths={path} OnPressBack={handleNavBarPressBack} />
 
          <ScrollView className="mt-4">
              <FlashList
-                 data={folderCards}
+                 data={folderList}
                  masonry
                  numColumns={2}
                  renderItem={({ item, index }) => (
                      item.isLarge ?
-                         <LargeCard item={item} onPress={() => handlePress(item.$id)}/>
+                         <LargeCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                          :
-                         <SmallCard item={item} onPress={() => handlePress(item.$id)}/>
+                         <SmallCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                  )}
                  keyExtractor={(item) => item.$id}
                  showsVerticalScrollIndicator={false}
@@ -122,14 +113,14 @@ export default function Index() {
              />
 
              <FlashList
-                 data={noteCards}
+                 data={noteList}
                  masonry
                  numColumns={2}
                  renderItem={({ item , index }) => (
                      item.isLarge ?
-                         <LargeCard item={item} onPress={() => handlePress(item.$id)}/>
+                         <LargeCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                          :
-                         <SmallCard item={item} onPress={() => handlePress(item.$id)}/>
+                         <SmallCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                  )}
                  keyExtractor={(item) => item.$id}
                  showsVerticalScrollIndicator={false}

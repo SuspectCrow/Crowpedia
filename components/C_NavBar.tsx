@@ -1,14 +1,13 @@
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 import React, {useState} from 'react'
-import {FlashList} from "@shopify/flash-list";
-import {LargeCard, SmallCard} from "@/components/C_Card";
 import icons from "@/constants/icons";
 
 interface Props {
     activePaths: string[];
+    OnPressBack?: () => void;
 }
 
-const CNavBar = ({ activePaths } : Props) => {
+const CNavBar = ({ activePaths, OnPressBack } : Props) => {
     const [navbarVisibility, setNavbarVisibility] = useState(false);
 
     return (
@@ -32,7 +31,7 @@ const CNavBar = ({ activePaths } : Props) => {
             {
                 navbarVisibility && (
                     <View className="p-4 rounded-xl border-solid border-4 bg-stone-900 border-stone-700/50">
-                        <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50">
+                        <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50" onPress={OnPressBack}>
                             <View className="flex-row items-center justify-center">
                                 <Image source={icons.arrow_left} className="size-6 mx-2" />
                                 <Text className="font-dmsans-bold text-lg text-white">Back</Text>
