@@ -1,12 +1,19 @@
+import add from "@/assets/icons/add.png";
+import add_alert from "@/assets/icons/add_alert.png";
+import add_link from "@/assets/icons/add_link.png";
+import add_task from "@/assets/icons/add_task.png";
+import add_alarm from "@/assets/icons/alarm_add.png";
 import arrow_forward from "@/assets/icons/arrow-forward.png";
 import arrow_left from "@/assets/icons/arrow-left.png";
 import attach_file from "@/assets/icons/attach-file.png";
 import bookmarks from "@/assets/icons/bookmarks.png";
 import calendar_month from "@/assets/icons/calendar-month.png";
+import calendar_add_on from "@/assets/icons/calendar_add_on.png";
 import check from "@/assets/icons/check.png";
 import checklist from "@/assets/icons/checklist.png";
 import collapse_all from "@/assets/icons/collapse-all.png";
 import colors from "@/assets/icons/colors.png";
+import create_new_folder from "@/assets/icons/create_new_folder.png";
 import delete_file from "@/assets/icons/delete-file.png";
 import dictionary from "@/assets/icons/dictionary.png";
 import docs from "@/assets/icons/docs.png";
@@ -35,15 +42,22 @@ import sync_disabled from "@/assets/icons/sync-disabled.png";
 import upload_file from "@/assets/icons/upload-file.png";
 
 export default {
+    add,
+    add_alert,
+    add_link,
+    add_task,
+    add_alarm,
     arrow_forward,
     arrow_left,
     attach_file,
     bookmarks,
     calendar_month,
+    calendar_add_on,
     check,
     checklist,
     collapse_all,
     colors,
+    create_new_folder,
     delete_file,
     dictionary,
     docs,

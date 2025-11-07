@@ -13,8 +13,11 @@ import { useAppwrite } from "@/lib/useAppwrite";
 import { getCards, getCardById } from "@/lib/appwrite";
 import C_NavBar from "@/components/C_NavBar";
 import {ICard} from "@/interfaces/ICard";
+import CIconButton from "@/components/C_Button";
 
 export default function Index() {
+
+    const [quickButtonMenuVisibility, setQuickMenuButton] = useState(false);
 
     const handlePress = async (id: string) => {
 
@@ -77,8 +80,24 @@ export default function Index() {
     const noteList = cardList.filter(card => card.type !== "Folder");
 
   return (
-    <SafeAreaView className="p-1 h-full" style={{ backgroundColor: '#292524' }} >
+    <SafeAreaView className="p-1 h-full relative" style={{ backgroundColor: '#292524' }} >
         <C_NavBar activePaths={path} OnPressBack={handleNavBarPressBack} />
+
+
+        <View className="absolute bottom-12 right-4 z-20 flex items-end justify-end gap-2 blur-lg">
+            {
+                quickButtonMenuVisibility && (
+                    <View className="flex-col items-center justify-end gap-3 bg-stone-800 p-2 rounded-lg border-solid border-stone-700/50 border-4">
+                        <CIconButton icon={icons.create_new_folder} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Folder'}`); } } />
+                        <CIconButton icon={icons.add_task} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Task'}`); } } />
+                        <CIconButton icon={icons.add_alert} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Reminder'}`); }} />
+                        <CIconButton icon={icons.calendar_add_on} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Date'}`); }} />
+                        <CIconButton icon={icons.note_add} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Note'}`); }} />
+                    </View>
+                )
+            }
+            <CIconButton icon={icons.add} onPress={() => { setQuickMenuButton(!quickButtonMenuVisibility) }} />
+        </View>
 
          <ScrollView className="mt-4">
              <FlashList
