@@ -40,6 +40,8 @@ import sync from "@/assets/icons/sync.png";
 import sync_desktop from "@/assets/icons/sync-desktop.png";
 import sync_disabled from "@/assets/icons/sync-disabled.png";
 import upload_file from "@/assets/icons/upload-file.png";
+import task from "@/assets/icons/task.png";
+import reminder from "@/assets/icons/reminder.png";
 
 export default {
     add,
@@ -83,7 +85,7 @@ export default {
     sync,
     sync_desktop,
     sync_disabled,
-    upload_file
-
-
+    upload_file,
+    task,
+    reminder
 };

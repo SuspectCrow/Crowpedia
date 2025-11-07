@@ -1,6 +1,7 @@
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 import React, {useState} from 'react'
 import icons from "@/constants/icons";
+import colors from "tailwindcss/colors";
 
 interface Props {
     activePaths: string[];
@@ -21,7 +22,7 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
                             </Text>
 
                             {index < activePaths.length - 1 && (
-                                <Image source={icons.arrow_forward} className="size-6 mx-2" style={[{ tintColor: '#78716c' }]} />
+                                <Image source={icons.arrow_forward} className="size-6 mx-2" style={[{ tintColor: `${ colors.stone['500'] }` }]} />
                             )}
                         </View>
                     ))}
@@ -43,7 +44,7 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
                                     { index == activePaths.length - 1 && (
                                         <Image source={icons.arrow_forward} className="size-6" style={[{ tintColor: '#fff' }]} />
                                     )}
-                                    <Image source={icons.folder} className="size-7 mx-2" style={[{ tintColor: `${index == activePaths.length -1 ? '#fff' : '#78716c'}` }]} />
+                                    <Image source={icons.folder} className="size-7 mx-2" style={[{ tintColor: `${index == activePaths.length -1 ? '#fff' : `${ colors.stone['500'] }`}` }]} />
                                     <Text className={`${ index == activePaths.length - 1 ? 'text-stone-300 font-dmsans-bold' : 'text-stone-600 font-dmsans-medium' } text-xl`}>
                                         { item }
                                     </Text>

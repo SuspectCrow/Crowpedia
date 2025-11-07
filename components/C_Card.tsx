@@ -4,6 +4,7 @@ import {ICard} from "@/interfaces/ICard";
 import {getCardIcon} from "@/constants/card_info";
 import Index from "@/app/(root)/(tabs)";
 import {GestureResponderEvent} from "react-native/Libraries/Types/CoreEventTypes";
+import colors from "tailwindcss/colors";
 
 export type CardStyle = {
     iconClass?: string;
@@ -28,7 +29,7 @@ const CardStyleMap: Record<string, CardStyle> = {
         iconClass: "w-8 h-8",
         textClass: "font-dmsans-medium text-base !text-cyan-500 underline",
         iconStyle: {
-            tintColor: "#06b6d4",
+            tintColor: `${ colors.sky['500'] }`,
         }
     }
 }

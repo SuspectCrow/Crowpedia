@@ -8,6 +8,8 @@ export const cardtypes = [
     "Note",
     "Link",
     "Date",
+    "Task",
+    "Reminder"
 ] as const;
 
 export const getCardIcon = (type: string | undefined) => {
@@ -16,10 +18,14 @@ export const getCardIcon = (type: string | undefined) => {
             return icons.folder;
         case "Note":
             return icons.docs;
+        case "Task":
+            return icons.task;
         case "Link":
             return icons.link;
         case "Date":
             return icons.calendar_month;
+        case "Reminder":
+            return icons.reminder;
         default:
             return icons.docs;
     }
