@@ -42,6 +42,7 @@ import sync_disabled from "@/assets/icons/sync-disabled.png";
 import upload_file from "@/assets/icons/upload-file.png";
 import task from "@/assets/icons/task.png";
 import reminder from "@/assets/icons/reminder.png";
+import location from "@/assets/icons/location.png";
 
 export default {
     add,
@@ -87,5 +88,6 @@ export default {
     sync_disabled,
     upload_file,
     task,
-    reminder
+    reminder,
+    location
 };

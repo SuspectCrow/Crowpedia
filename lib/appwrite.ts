@@ -73,3 +73,18 @@ export async function getCardById(id: string) {
         return null;
     }
 }
+
+export async function updateCard(id: string, data: { title?: string, content?: string }) {
+    try {
+        const result = await databases.updateDocument(
+            config.databaseId!,
+            config.CardsTableId!,
+            id,
+            data
+        );
+        return result;
+    } catch (error) {
+        console.error("updateCard Failed:", error);
+        return null;
+    }
+}

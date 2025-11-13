@@ -8,8 +8,15 @@ import resolveConfig from "tailwindcss/resolveConfig";
 
 import colors from "tailwindcss/colors";
 
+interface NewCardProps {
+    title: string;
+}
+
+
+
 const CreateCard = () => {
     const { type } = useLocalSearchParams<{ type?: string }>()
+
     return (
         <SafeAreaView className="p-1 h-full relative" style={{ backgroundColor: '#292524' }}>
             <View className="flex-row w-full items-center gap-2 px-4">
@@ -25,17 +32,17 @@ const CreateCard = () => {
                 </View>
             </View>
 
-            <ScrollView className="mt-12">
+            <View className="h-full mt-8">
                 <View className="mx-4">
                     <Text className="text-stone-400 font-dmsans-bold text-xl">Title</Text>
                     <TextInput className="text-stone-400 font-dmsans-bold text-xl w-fit p-3 mt-4 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900/50" />
                 </View>
-                <View className="mx-4 mt-4">
-                    <Text className="text-stone-400 font-dmsans-bold text-xl">Title</Text>
-                    <TextInput className="text-stone-400 font-dmsans-bold text-xl w-fit p-3 mt-4 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900/50" multiline />
-                </View>
 
-            </ScrollView>
+                <View className="mx-4 h-full">
+                    <Text className="text-stone-400 font-dmsans-bold text-xl">Title</Text>
+                    <TextInput className="text-stone-400 font-dmsans-bold text-xl w-fit h-2/12 p-3 mt-4 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900/50" />
+                </View>
+            </View>
 
         </SafeAreaView>
     )

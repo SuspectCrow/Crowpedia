@@ -34,7 +34,7 @@ export default function Index() {
                 }
                 break;
             case "Note":
-                router.push(`/card/${id}`);
+                router.push(`/card/detail/${id}`);
                 break;
 
             case "Folder":
@@ -43,7 +43,7 @@ export default function Index() {
                 break;
 
             default:
-                router.push(`/card/${id}`);
+                router.push(`/card/detail/${id}`);
                 break;
         }
     }
@@ -59,7 +59,7 @@ export default function Index() {
       "Game Development"
   ]
 
-    const [foldersVisibility, setFolderVisibility] = useState(false);
+    const [foldersVisibility, setFolderVisibility] = useState(true);
     const [activeFolder, setActiveFolder] = useState<string | null>(null);
 
     const params = useLocalSearchParams<{ query?: string; filter?: string }>();
@@ -88,11 +88,11 @@ export default function Index() {
             {
                 quickButtonMenuVisibility && (
                     <View className="flex-col items-center justify-end gap-3 bg-stone-800 p-2 rounded-lg border-solid border-stone-700/50 border-4">
-                        <CIconButton icon={icons.create_new_folder} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Folder'}`); } } />
-                        <CIconButton icon={icons.add_task} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Task'}`); } } />
-                        <CIconButton icon={icons.add_alert} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Reminder'}`); }} />
-                        <CIconButton icon={icons.calendar_add_on} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Date'}`); }} />
-                        <CIconButton icon={icons.note_add} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/create/card/${'Note'}`); }} />
+                        <CIconButton icon={icons.create_new_folder} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Folder'}`); } } />
+                        <CIconButton icon={icons.add_task} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Task'}`); } } />
+                        <CIconButton icon={icons.add_alert} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Reminder'}`); }} />
+                        <CIconButton icon={icons.calendar_add_on} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Date'}`); }} />
+                        <CIconButton icon={icons.note_add} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Note'}`); }} />
                     </View>
                 )
             }
