@@ -43,8 +43,42 @@ import upload_file from "@/assets/icons/upload-file.png";
 import task from "@/assets/icons/task.png";
 import reminder from "@/assets/icons/reminder.png";
 import location from "@/assets/icons/location.png";
+import undo from "@/assets/icons/undo.png";
+import strikethrough_s from "@/assets/icons/strikethrough_s.png";
+import redo from "@/assets/icons/redo.png";
+import format_underlined from "@/assets/icons/format_underlined.png";
+import format_quote from "@/assets/icons/format_quote.png";
+import format_list_numbered from "@/assets/icons/format_list_numbered.png";
+import format_italic from "@/assets/icons/format_italic.png";
+import format_h6 from "@/assets/icons/format_h6.png";
+import format_h5 from "@/assets/icons/format_h5.png";
+import format_h4 from "@/assets/icons/format_h4.png";
+import format_h3 from "@/assets/icons/format_h3.png";
+import format_h2 from "@/assets/icons/format_h2.png";
+import format_h1 from "@/assets/icons/format_h1.png";
+import format_color_text from "@/assets/icons/format_color_text.png";
+import format_color_fill from "@/assets/icons/format_color_fill.png";
+import format_bold from "@/assets/icons/format_bold.png";
+import code from "@/assets/icons/code.png";
 
 export default {
+    code,
+    undo,
+    strikethrough_s,
+    redo,
+    format_underlined,
+    format_quote,
+    format_list_numbered,
+    format_italic,
+    format_h6,
+    format_h5,
+    format_h4,
+    format_h3,
+    format_h2,
+    format_h1,
+    format_color_text,
+    format_color_fill,
+    format_bold,
     add,
     add_alert,
     add_link,

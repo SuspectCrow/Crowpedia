@@ -74,7 +74,7 @@ export async function getCardById(id: string) {
     }
 }
 
-export async function updateCard(id: string, data: { title?: string, content?: string }) {
+export async function updateCard(id: string, data: { content?: string }) {
     try {
         const result = await databases.updateDocument(
             config.databaseId!,
