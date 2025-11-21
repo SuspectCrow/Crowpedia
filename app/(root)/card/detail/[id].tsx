@@ -41,8 +41,8 @@ const daysUntil = (target: Date, from: Date = new Date()): number => {
     return Math.max(0, diff);
 };
 
-const EventDetail = ({ card, parsed }: { card: ICard, parsed: any }) => {
-    const raw = parsed?.timestamp ?? card.content ?? '';
+const EventDetail = ({ card, parsedCardContent }: { card: ICard, parsedCardContent: any }) => {
+    const raw = parsedCardContent?.timestamp ?? card.content ?? '';
     const d = toDate(raw);
     if (d) {
         const formattedDate = formatTRWeekDate(d);
@@ -53,14 +53,14 @@ const EventDetail = ({ card, parsed }: { card: ICard, parsed: any }) => {
                     <Text className="font-dmsans-bold text-4xl text-stone-300 text-center">{ card.title }</Text>
                 </View>
                 <View className="flex-row items-center justify-start gap-2">
-                    <Text className="font-dmsans-light text-xl text-stone-500">{ parsed?.location ?? '' }</Text>
+                    <Text className="font-dmsans-light text-xl text-stone-500">{ parsedCardContent?.location ?? '' }</Text>
                 </View>
                 <View className="flex-row items-center justify-start gap-4">
                     <Text className="font-dmsans-medium text-md text-stone-500">{formattedDate}</Text>
                     <Text className="font-dmsans-bold text-md text-stone-500">{formattedTime}</Text>
                 </View>
                 <View>
-                    <Text className="font-dmsans-regular text-xl text-stone-200 text-center">{ parsed?.description ?? '' }</Text>
+                    <Text className="font-dmsans-regular text-xl text-stone-200 text-center">{ parsedCardContent?.description ?? '' }</Text>
                 </View>
             </View>
         )
@@ -68,9 +68,9 @@ const EventDetail = ({ card, parsed }: { card: ICard, parsed: any }) => {
     return <Text className="font-dmsans-black text-4xl text-red-600">{String(raw)}</Text>
 };
 
-const ObjectiveDetail = ({ card, parsed }: { card: ICard, parsed: any }) => {
-    const stRaw = parsed?.startdate ?? null;
-    const etRaw = parsed?.enddate ?? null;
+const ObjectiveDetail = ({ card, parsedCardContent }: { card: ICard, parsedCardContent: any }) => {
+    const stRaw = parsedCardContent?.startdate ?? null;
+    const etRaw = parsedCardContent?.enddate ?? null;
     const sd = toDate(stRaw);
     const ed = toDate(etRaw);
 
@@ -99,7 +99,7 @@ const ObjectiveDetail = ({ card, parsed }: { card: ICard, parsed: any }) => {
                     </Text>
                 </View>
                 <View>
-                    <Text className="font-dmsans-regular text-xl text-stone-200 text-center">{ parsed?.description ?? '' }</Text>
+                    <Text className="font-dmsans-regular text-xl text-stone-200 text-center">{ parsedCardContent?.description ?? '' }</Text>
                 </View>
             </View>
         )
@@ -291,6 +291,14 @@ const NoteComponent = ({ card }: { card: ICard }) => {
     return <NoteViewer card={card} onEdit={() => setIsEditing(true)} />;
 };
 
+const TaskListDetail = ({ card, parsedCardContent }: { card: ICard, parsedCardContent: any }) => {
+    return (
+      <View>
+          { card.content }
+      </View>
+    );
+};
+
 const CardDetailContent = ({ card }: { card: ICard | null }) => {
     if (!card) {
         return (
@@ -300,20 +308,23 @@ const CardDetailContent = ({ card }: { card: ICard | null }) => {
         )
     }
 
-    let parsed: any;
+    let parsedCardContent: any;
     try {
-        parsed = JSON.parse(card.content ?? '{}')
+        parsedCardContent = JSON.parse(card.content ?? '{}')
     } catch {
-        parsed = {};
+        parsedCardContent = {};
     }
 
     switch (card.type) {
         case "Event":
-            return <EventDetail card={card} parsed={parsed} />;
+            return <EventDetail card={card} parsedCardContent={parsedCardContent} />;
         case "Objective":
-            return <ObjectiveDetail card={card} parsed={parsed} />;
+            return <ObjectiveDetail card={card} parsedCardContent={parsedCardContent} />;
         case "Note":
             return <NoteComponent card={card} />;
+        case "TaskList":
+            return <TaskListDetail card={card} parsedCardContent={parsedCardContent} />;
+
         default:
             return (
                 <Text className="font-dmsans-black text-4xl text-red-600">

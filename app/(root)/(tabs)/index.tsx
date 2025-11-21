@@ -1,22 +1,22 @@
-import {Text, View, Image, TouchableOpacity, Animated, Linking, Alert} from "react-native";
+import {Text, View, Image, TouchableOpacity, Animated, Linking, Alert, RefreshControl} from "react-native";
 import icons from "@/constants/icons";
 import { FlashList } from "@shopify/flash-list";
 
 import { LargeCard, SmallCard } from "@/components/C_Card";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import ScrollView = Animated.ScrollView;
 import { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { useAppwrite } from "@/lib/useAppwrite";
-import { getCards, getCardById } from "@/lib/appwrite";
+import {getCards, getCardById, updateCard} from "@/lib/appwrite";
 import C_NavBar from "@/components/C_NavBar";
 import {ICard} from "@/interfaces/ICard";
 import CIconButton from "@/components/C_Button";
+import htmlToMd from "html-to-md";
 
 export default function Index() {
-
     const [quickButtonMenuVisibility, setQuickMenuButton] = useState(false);
 
     const handlePress = async (id: string) => {
@@ -40,6 +40,16 @@ export default function Index() {
             case "Folder":
                 setActiveFolder(Card.$id as string);
                 console.log(activeFolder);
+                break;
+
+            case "SimpleTask":
+                try {
+                    await updateCard(Card.$id, { content: String(!(Card.content === "true")) });
+                    Card.content = String(!(Card.content === "true"));
+                    onRefresh();
+                } catch (error) {
+                    console.error("Kaydetme hatası:", error);
+                }
                 break;
 
             default:
@@ -79,6 +89,22 @@ export default function Index() {
     const folderList = foldersVisibility ? cardList.filter(card => card.type === "Folder") : [];
     const noteList = cardList.filter(card => card.type !== "Folder");
 
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await refetchCards({
+                filter: params.filter!,
+                query: params.query!,
+                limit: 32,
+            });
+        } catch (error) {
+            console.error("Yenileme sırasında hata oluştu:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetchCards, params]);
+
   return (
     <SafeAreaView className="p-1 h-full relative" style={{ backgroundColor: '#292524' }} >
         <C_NavBar activePaths={path} OnPressBack={handleNavBarPressBack} />
@@ -99,16 +125,23 @@ export default function Index() {
             <CIconButton icon={icons.add} onPress={() => { setQuickMenuButton(!quickButtonMenuVisibility) }} />
         </View>
 
-         <ScrollView className="mt-4">
+         <ScrollView className="mt-4" refreshControl={
+             <RefreshControl
+                 refreshing={refreshing}
+                 onRefresh={onRefresh}
+                 colors={['#000000', '#2c2c2c']}
+                 tintColor="#ffffff"
+             />
+         }>
              <FlashList
                  data={folderList}
                  masonry
                  numColumns={2}
                  renderItem={({ item, index }) => (
                      item.isLarge ?
-                         <LargeCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                         <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                          :
-                         <SmallCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                         <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                  )}
                  keyExtractor={(item) => item.$id}
                  showsVerticalScrollIndicator={false}
@@ -137,15 +170,15 @@ export default function Index() {
                  numColumns={2}
                  renderItem={({ item , index }) => (
                      item.isLarge ?
-                         <LargeCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                         <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                          :
-                         <SmallCard item={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                         <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
                  )}
                  keyExtractor={(item) => item.$id}
                  showsVerticalScrollIndicator={false}
                  ListHeaderComponent={
                      <View>
-                         <Text className="text-2xl font-dmsans-bold text-stone-400 my-2 text-center">Notes</Text>
+                         <Text className="text-2xl font-dmsans-bold text-stone-400 my-2 text-center">Cards</Text>
                      </View>
                  }
                  style={[{
