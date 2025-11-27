@@ -60,8 +60,14 @@ import format_color_text from "@/assets/icons/format_color_text.png";
 import format_color_fill from "@/assets/icons/format_color_fill.png";
 import format_bold from "@/assets/icons/format_bold.png";
 import code from "@/assets/icons/code.png";
+import check_box from "@/assets/icons/check_box.png";
+import check_box_blank from "@/assets/icons/check_box_outline_blank.png";
+import select_check_box from "@/assets/icons/select_check_box.png";
 
 export default {
+    check_box,
+    check_box_blank,
+    select_check_box,
     code,
     undo,
     strikethrough_s,

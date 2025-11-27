@@ -294,7 +294,9 @@ const NoteComponent = ({ card }: { card: ICard }) => {
 const TaskListDetail = ({ card, parsedCardContent }: { card: ICard, parsedCardContent: any }) => {
     return (
       <View>
-          { card.content }
+          <Text>
+            { card.content }
+          </Text>
       </View>
     );
 };

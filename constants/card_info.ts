@@ -23,7 +23,7 @@ export const getCardIcon = (type: string | undefined) => {
         case "Link":
             return icons.link;
         case "SimpleTask":
-            return icons.task;
+            return icons.select_check_box;
         case "TaskList":
             return icons.checklist;
         case "Objective":

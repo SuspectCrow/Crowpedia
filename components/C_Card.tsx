@@ -5,6 +5,8 @@ import {getCardIcon} from "@/constants/card_info";
 import Index from "@/app/(root)/(tabs)";
 import {GestureResponderEvent} from "react-native/Libraries/Types/CoreEventTypes";
 import colors from "tailwindcss/colors";
+import {switchCase} from "@babel/types";
+import icons from "@/constants/icons";
 
 export type CardStyle = {
     iconClass?: string;
@@ -57,6 +59,25 @@ interface ICardProps {
     card: ICard;
 }
 
+const renderCardContent = (card: ICard, CardStyle: any) => {
+    switch (card.type) {
+        case "SimpleTask":
+            return (
+                <View className="flex flex-row justify-start items-start gap-2">
+                    <Image source={ card.content === "true" ? icons.check_box : icons.check_box_blank } className={ `${ CardStyle.iconClass } ${ card.content === "true" ? "opacity-80" : "" }` } style={[{ tintColor: colors.stone["100"] }, CardStyle.iconStyle]} />
+                    <Text className={`${ getCardStyle(card.type).textClass } max-w-[80%] ${ card.content === "true" ? "line-through text-stone-100/50" : "text-stone-100/80" }`}>{ card.title }</Text>
+                </View>
+            )
+        default:
+            return (
+                <View className="flex flex-row justify-start items-end gap-2">
+                    <Image source={ getCardIcon(card.type) } className={ `${ CardStyle.iconClass }` } style={[{ tintColor: colors.stone["100"] }, CardStyle.iconStyle]} />
+                    <Text className={`${ getCardStyle(card.type).textClass } text-stone-100/80 max-w-[80%]`}>{ card.title }</Text>
+                </View>
+            )
+    }
+}
+
 function isColorString(str: string) {
     return str.includes("#") || str.includes("rgb") || str.includes("rgba");
 }
@@ -68,11 +89,9 @@ export const LargeCard = ({card, onPress} : ICardProps) => {
         <TouchableOpacity className={`gap-3 m-1 relative h-72 ${borderRadius} border-solid border-stone-700/50 border-4`} onPress={onPress} style={ [ isColorString(card.background) ? { backgroundColor: card.background as string } : {} ]  }>
             <Image source={ isNetworkUrl(card.background) ? { uri: card.background } : card.background } className={`size-full ${borderRadius}`} />
             <Image source={images.largecardgradient} className={`absolute bottom-0 left-0 size-full ${borderRadius}`} style={{ zIndex: 1 }} />
-            <View className="absolute bottom-3 left-3 flex flex-row justify-start items-end gap-2 max-w-[75%]" style={{ zIndex: 2 }}>
-                <Image source={ getCardIcon(card.type) } className={ `${ CardStyle.iconClass }` } style={[{ tintColor: `${card.content === "true" ? colors.green['500'] : "#ffffff80"}` }, CardStyle.iconStyle]} />
-                <Text className={`${ getCardStyle(card.type).textClass } text-stone-100/80 max-w-[80%]`}>{ card.title }</Text>
+            <View className="absolute bottom-3 left-3 max-w-[75%]" style={{ zIndex: 2 }}>
+                { renderCardContent(card, CardStyle) }
             </View>
-            {/*<Text className="absolute top-2 right-2 bg-white p-2 rounded-full text-center text-md font-dmsans-bold">{ index + " | " + order}</Text>*/}
         </TouchableOpacity>
     )
 };
@@ -82,9 +101,7 @@ export const SmallCard = ({card, onPress} : ICardProps) => {
 
     return (
         <TouchableOpacity className={`flex-row m-1 justify-start items-start gap-2 p-3 ${borderRadius} border-solid border-4 border-stone-700/50`} style={ [ isColorString(card.background) ? { backgroundColor: card.background as string } : {} ]  } onPress={onPress}>
-            <Image source={ getCardIcon(card.type) } className={ `${ CardStyle.iconClass }` } style={[{ tintColor: `${card.content === "true" ? colors.green['500'] : "#ffffff80"}` }, CardStyle.iconStyle]} />
-            <Text className={`${ getCardStyle(card.type).textClass } text-stone-100/80 max-w-[80%]`} style={[{ color: `${card.content === "true" ? colors.green['500'] : "#ffffff80"}` }]}>{ card.title }</Text>
-            {/*<Text className="absolute top-2 right-2 bg-white p-2 rounded-full text-center text-md font-dmsans-bold">{ index + " | " + order}</Text>*/}
+            { renderCardContent(card, CardStyle) }
         </TouchableOpacity>
     )
 };
