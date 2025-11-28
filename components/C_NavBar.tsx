@@ -10,15 +10,23 @@ interface Props {
 
 const CNavBar = ({ activePaths, OnPressBack } : Props) => {
     const [navbarVisibility, setNavbarVisibility] = useState(false);
+    var pathLenght = 0;
+
+    for (let i = 0; i < activePaths.length; i++) {
+        pathLenght += activePaths[i].length;
+    }
 
     return (
         <View>
             <TouchableOpacity className="p-4 mx-2 mt-4 rounded-xl border-solid border-4 border-stone-700/50"  onPress={() => setNavbarVisibility(v => !v)}>
-                <View className="flex-row items-center justify-end me-6 overflow-hidden">
+                <View className={`flex-row items-center ${pathLenght <= 12 ? "justify-center" : "justify-end"} me-6 overflow-hidden`}>
                     {activePaths.map((item, index) => (
                         <View key={index} className="flex-row items-center">
-                            <Text className={`${ index == activePaths.length - 1 ? 'text-stone-400' : 'text-stone-600' } font-dmsans-bold text-lg`}>
-                                { item }
+                            {index === 0 && (
+                                <Image source={icons.home} className={`size-6 me-1 mb-auto`} style={[{ tintColor: `${index == activePaths.length - 1 ? colors.stone['400'] : colors.stone['600']}` }]}/>
+                            )}
+                            <Text className={`${ index == activePaths.length - 1 ? 'text-stone-400' : 'text-stone-600' } ${ index === 0 ? 'font-dmsans-black text-xl' : 'font-dmsans-semibold text-lg' }`}>
+                                { item == "HOME" ? "Home" : item }
                             </Text>
 
                             {index < activePaths.length - 1 && (
