@@ -1,5 +1,15 @@
-import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from 'react-native'
-import React, {useEffect, useRef, useState} from 'react'
+import {
+    Alert,
+    FlatList,
+    Image,
+    KeyboardAvoidingView, Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {router, useLocalSearchParams} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {getCardById, updateCard} from "@/lib/appwrite";
@@ -291,17 +301,161 @@ const NoteComponent = ({ card }: { card: ICard }) => {
     return <NoteViewer card={card} onEdit={() => setIsEditing(true)} />;
 };
 
-const TaskListDetail = ({ card, parsedCardContent }: { card: ICard, parsedCardContent: any }) => {
+const TaskListDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void }) => {
+    var taskList = JSON.parse(card.content);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [isAdding, setIsAdding] = useState(false);
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [editingTitle, setEditingTitle] = useState('');
+
+    const handlePress = async (index: number) => {
+        try {
+            taskList[index].Value = !taskList[index].Value;
+            await updateCard(card.$id, { content: JSON.stringify(taskList, null, 2) });
+            card.content = JSON.stringify(taskList, null, 2);
+            onRefresh();
+        } catch (error) {
+            console.error("Kaydetme hatası:", error);
+        }
+    };
+
+    const handleAddTask = async () => {
+        if (!newTaskTitle.trim()) {
+            Alert.alert("Uyarı", "Lütfen bir görev başlığı girin.");
+            return;
+        }
+
+        setIsAdding(true);
+        try {
+            const newTask = {
+                Title: newTaskTitle.trim(),
+                Value: false
+            };
+
+            taskList.push(newTask);
+            await updateCard(card.$id, { content: JSON.stringify(taskList, null, 2) });
+            card.content = JSON.stringify(taskList, null, 2);
+
+            setNewTaskTitle('');
+            onRefresh();
+        } catch (error) {
+            console.error("Ekleme hatası:", error);
+            Alert.alert("Hata", "Görev eklenirken bir sorun oluştu.");
+        } finally {
+            setIsAdding(false);
+        }
+    };
+
+    const handleEditTitle = (index: number) => {
+        setEditingIndex(index);
+        setEditingTitle(taskList[index].Title);
+    };
+
+    const handleSaveTitle = async (index: number) => {
+        if (!editingTitle.trim()) {
+            try {
+                taskList.splice(index, 1);
+                await updateCard(card.$id, { content: JSON.stringify(taskList, null, 2) });
+                card.content = JSON.stringify(taskList, null, 2);
+                setEditingIndex(null);
+                setEditingTitle('');
+                onRefresh();
+            } catch (error) {
+                console.error("Silme hatası:", error);
+                Alert.alert("Hata", "Görev silinirken bir sorun oluştu.");
+            }
+            return;
+        }
+
+        try {
+            taskList[index].Title = editingTitle.trim();
+            await updateCard(card.$id, { content: JSON.stringify(taskList, null, 2) });
+            card.content = JSON.stringify(taskList, null, 2);
+            setEditingIndex(null);
+            setEditingTitle('');
+            onRefresh();
+        } catch (error) {
+            console.error("Güncelleme hatası:", error);
+            Alert.alert("Hata", "Görev güncellenirken bir sorun oluştu.");
+        }
+    };
+
     return (
-      <View>
-          <Text>
-            { card.content }
-          </Text>
-      </View>
+        <View>
+            <FlatList
+                data={taskList}
+                renderItem={({ item , index }) => (
+                    <View className="flex-row items-center gap-2">
+                        <TouchableOpacity onPress={() => { handlePress(index) }}>
+                            <Image source={item.Value ? icons.check_box : icons.check_box_blank} className={`size-6`} style={[{ tintColor: `${item.Value ? colors.stone['500'] : colors.stone['100'] }` }]}/>
+                        </TouchableOpacity>
+                        {editingIndex === index ? (
+                            <TextInput
+                                className="flex-1 bg-stone-800 text-stone-200 px-2 py-1 rounded border-solid border-stone-600 border-2 font-dmsans-regular text-base"
+                                value={editingTitle}
+                                onChangeText={setEditingTitle}
+                                onBlur={() => handleSaveTitle(index)}
+                                onSubmitEditing={() => handleSaveTitle(index)}
+                                autoFocus
+                                placeholderTextColor={colors.stone[500]}
+                                placeholder="Boş bırakıp enter = sil"
+                            />
+                        ) : (
+                            <TouchableOpacity className="flex-1" onPress={() => handleEditTitle(index)}>
+                                <Text className={`text-lg ${ item.Value ? 'text-stone-500 line-through' : 'text-stone-300' }`}>{ item.Title }</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                showsVerticalScrollIndicator={false}
+                style={[{
+                    backgroundColor: '#1c1917',
+                    borderRadius: 12,
+                    marginHorizontal: 6,
+                    marginTop: 24,
+                    paddingHorizontal: 6,
+                    paddingVertical: 6,
+                    borderColor: '#0c0a09',
+                    borderWidth: 4,
+                }]}
+                contentContainerStyle={[{
+                    display: 'flex',
+                    gap: 6,
+                    padding: 12
+                }]}
+            />
+
+            <View className="mx-6 mb-6 mt-4">
+                <View className="flex-row gap-2">
+                    <TextInput
+                        className="flex-1 bg-stone-800 text-stone-200 p-4 rounded-xl border-solid border-stone-700/50 border-4 font-dmsans-regular text-base"
+                        placeholder="Yeni görev ekle..."
+                        placeholderTextColor={colors.stone[500]}
+                        value={newTaskTitle}
+                        onChangeText={setNewTaskTitle}
+                        onSubmitEditing={handleAddTask}
+                        editable={!isAdding}
+                        blurOnSubmit={false}
+                    />
+                    <TouchableOpacity
+                        className="bg-green-700 p-4 rounded-xl border-solid border-green-800/50 border-4 items-center justify-center"
+                        onPress={handleAddTask}
+                        disabled={isAdding}
+                    >
+                        <Image
+                            source={icons.add}
+                            className="size-6"
+                            style={[{ tintColor: '#fff' }]}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
     );
 };
 
-const CardDetailContent = ({ card }: { card: ICard | null }) => {
+const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh: () => void }) => {
     if (!card) {
         return (
             <Text className="font-dmsans-black text-4xl text-red-600">
@@ -325,7 +479,7 @@ const CardDetailContent = ({ card }: { card: ICard | null }) => {
         case "Note":
             return <NoteComponent card={card} />;
         case "TaskList":
-            return <TaskListDetail card={card} parsedCardContent={parsedCardContent} />;
+            return <TaskListDetail card={card} onRefresh={onRefresh} />;
 
         default:
             return (
@@ -354,28 +508,48 @@ const Property = () => {
         return () => { mounted = false }
     }, [id]);
 
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(async () => {
+        if (!id) return;
+
+        setRefreshing(true);
+        try {
+            const res = await getCardById(id as string);
+            setCard(res as unknown as ICard | null);
+        } catch (error) {
+            console.error("Yenileme sırasında hata oluştu:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [id]);
+
     return (
         <SafeAreaView className="py-5 px-4 h-full relative" style={[{ backgroundColor: '#292524' }]}>
-            <View className="flex-row w-full items-center gap-2 pb-4">
-                <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 p-3 mt-4 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900" onPress={() => { router.back(); }}>
-                    <Image source={icons.arrow_left} className="size-8" style={[{ tintColor: `${ colors.stone['400'] }` }]} />
-                    <Text className={"text-stone-400 font-dmsans-bold text-xl"}>Back</Text>
-                </TouchableOpacity>
-                <View className="flex-2 flex-row items-center justify-start gap-2 p-3 mt-4 w-2/3 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-600">
-                    <Image source={getCardIcon(card ? card!.type : "Event")} className="size-8" style={[{ tintColor: `${ colors.stone['800'] }` }]} />
-                    <Text className="text-stone-900 font-dmsans-bold text-lg">
-                        { card ? card.type : "NULL" }
-                    </Text>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={[{ flex: 1 }]}
+            >
+                <View className="flex-row w-full items-center gap-2 pb-4">
+                    <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 p-3 mt-4 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900" onPress={() => { router.back(); }}>
+                        <Image source={icons.arrow_left} className="size-8" style={[{ tintColor: `${ colors.stone['400'] }` }]} />
+                        <Text className={"text-stone-400 font-dmsans-bold text-xl"}>Back</Text>
+                    </TouchableOpacity>
+                    <View className="flex-2 flex-row items-center justify-start gap-2 p-3 mt-4 w-2/3 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-600">
+                        <Image source={getCardIcon(card ? card!.type : "Event")} className="size-8" style={[{ tintColor: `${ colors.stone['800'] }` }]} />
+                        <Text className="text-stone-900 font-dmsans-bold text-lg">
+                            { card ? card.title : "NULL" }
+                        </Text>
+                    </View>
                 </View>
-            </View>
 
-            <View className="flex-1">
-                {loading ? (
-                    <Text className="text-white text-center">Yükleniyor...</Text>
-                ) : (
-                    <CardDetailContent card={card} />
-                )}
-            </View>
+                <View className="flex-1">
+                    {loading ? (
+                        <Text className="text-white text-center">Yükleniyor...</Text>
+                    ) : (
+                        <CardDetailContent card={card} onRefresh={onRefresh}/>
+                    )}
+                </View>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
