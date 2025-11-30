@@ -10,7 +10,7 @@ interface Props {
 
 const CNavBar = ({ activePaths, OnPressBack } : Props) => {
     const [navbarVisibility, setNavbarVisibility] = useState(false);
-    var pathLenght = 0;
+    let pathLenght = 0;
 
     for (let i = 0; i < activePaths.length; i++) {
         pathLenght += activePaths[i].length;
@@ -20,14 +20,17 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
         <View className="flex-row items-center justify-center gap-2 mt-4 px-6" style={[{ width: '80%', marginHorizontal: 'auto' }]}>
             {/*<TouchableOpacity className="p-4 mx-2 mt-4 rounded-xl border-solid border-4 border-stone-700/50"  onPress={() => setNavbarVisibility(v => !v)}>*/}
             {/*</TouchableOpacity>*/}
-
-            <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50" onPress={OnPressBack}>
-                <View className="flex-row items-center justify-center">
-                    <Image source={icons.arrow_left} className="size-6 mx-2" />
-                    <Text className="font-dmsans-bold text-lg text-white">Back</Text>
-                </View>
-            </TouchableOpacity>
-            <View className={`flex-row items-center ${pathLenght <= 12 ? "justify-center" : "justify-end"} overflow-hidden p-4 rounded-xl border-solid border-4 border-stone-700/50`}>
+            {
+                activePaths.length > 1 && (
+                    <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50" onPress={OnPressBack}>
+                        <View className="flex-row items-center justify-center">
+                            <Image source={icons.arrow_left} className="size-6 mx-2" />
+                            <Text className="font-dmsans-bold text-lg text-white">Back</Text>
+                        </View>
+                    </TouchableOpacity>
+                )
+            }
+            <View className={`flex-row items-center w-[100%] ${pathLenght <= 12 ? "justify-center" : "justify-end"} overflow-hidden p-4 rounded-xl border-solid border-4 border-stone-700/50`}>
                 {activePaths.map((item, index) => (
                     <View key={index} className="flex-row items-center">
                         {index === 0 && (
