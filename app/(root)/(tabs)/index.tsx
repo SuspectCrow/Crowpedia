@@ -62,6 +62,29 @@ export default function Index() {
         }
     }
 
+    const handleLongPress = async (id: string) => {
+        const Card = await getCardById(id) as unknown as ICard;
+
+        if (!Card) return undefined;
+
+        switch (Card.type) {
+            case "Link":
+                router.push(`/card/detail/${id}`);
+                break;
+
+            case "Folder":
+                router.push(`/card/detail/${id}`);
+                break;
+
+            case "SimpleTask":
+                router.push(`/card/detail/${id}`);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     const handleNavBarPressBack = async () => {
         if (folderPath.length > 1) {
             const newPath = [...folderPath];
@@ -159,9 +182,9 @@ export default function Index() {
                     numColumns={2}
                     renderItem={({ item, index }) => (
                         item.isLarge ?
-                            <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                            <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
                             :
-                            <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                            <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
                     )}
                     keyExtractor={(item) => item.$id}
                     showsVerticalScrollIndicator={false}
@@ -189,9 +212,9 @@ export default function Index() {
                     numColumns={2}
                     renderItem={({ item , index }) => (
                         item.isLarge ?
-                            <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                            <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
                             :
-                            <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)}/>
+                            <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
                     )}
                     keyExtractor={(item) => item.$id}
                     showsVerticalScrollIndicator={false}

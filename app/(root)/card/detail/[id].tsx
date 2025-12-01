@@ -22,6 +22,7 @@ import TaskListDetail from "@/app/(root)/card/detail/Sections/TaskListDetail";
 import NoteDetail from "@/app/(root)/card/detail/Sections/NoteDetail";
 import ObjectiveDetail from "@/app/(root)/card/detail/Sections/ObjectiveDetail";
 import EventDetail from "@/app/(root)/card/detail/Sections/EventDetail";
+import LinkDetail from "./Sections/LinkDetail";
 
 
 const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh: () => void }) => {
@@ -49,6 +50,8 @@ const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh:
             return <NoteDetail card={card} />;
         case "TaskList":
             return <TaskListDetail card={card} onRefresh={onRefresh} />;
+        case "Link":
+            return <LinkDetail card={card} onRefresh={onRefresh} />;
 
         default:
             return (

@@ -63,8 +63,10 @@ import code from "@/assets/icons/code.png";
 import check_box from "@/assets/icons/check_box.png";
 import check_box_blank from "@/assets/icons/check_box_outline_blank.png";
 import select_check_box from "@/assets/icons/select_check_box.png";
+import save from "@/assets/icons/save.png";
 
 export default {
+    save,
     check_box,
     check_box_blank,
     select_check_box,
