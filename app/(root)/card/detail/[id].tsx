@@ -23,6 +23,7 @@ import NoteDetail from "@/app/(root)/card/detail/Sections/NoteDetail";
 import ObjectiveDetail from "@/app/(root)/card/detail/Sections/ObjectiveDetail";
 import EventDetail from "@/app/(root)/card/detail/Sections/EventDetail";
 import LinkDetail from "./Sections/LinkDetail";
+import SimpleTaskDetail from "@/app/(root)/card/detail/Sections/SimpleTaskDetail";
 
 
 const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh: () => void }) => {
@@ -45,14 +46,15 @@ const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh:
         case "Event":
             return <EventDetail card={card} parsedCardContent={parsedCardContent} />;
         case "Objective":
-            return <ObjectiveDetail card={card} parsedCardContent={parsedCardContent} />;
+            return <ObjectiveDetail card={card} parsedCardContent={parsedCardContent} onRefresh={onRefresh} />;
         case "Note":
             return <NoteDetail card={card} />;
         case "TaskList":
             return <TaskListDetail card={card} onRefresh={onRefresh} />;
         case "Link":
             return <LinkDetail card={card} onRefresh={onRefresh} />;
-
+        case "SimpleTask":
+            return <SimpleTaskDetail card={card} onRefresh={onRefresh} />;
         default:
             return (
                 <Text className="font-dmsans-black text-4xl text-red-600">
