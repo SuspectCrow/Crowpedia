@@ -1,12 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import images from "@/constants/images";
 import {ICard} from "@/interfaces/ICard";
 import {getCardIcon} from "@/constants/card_info";
-import Index from "@/app/(root)/(tabs)";
-import {GestureResponderEvent} from "react-native/Libraries/Types/CoreEventTypes";
 import colors from "tailwindcss/colors";
-import {switchCase} from "@babel/types";
 import icons from "@/constants/icons";
+import useFetch from "@/lib/useFetch";
+import {fetchMovie} from "@/lib/tmdbapi";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export type CardStyle = {
     iconClass?: string;

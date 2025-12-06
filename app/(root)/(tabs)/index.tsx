@@ -67,22 +67,7 @@ export default function Index() {
 
         if (!Card) return undefined;
 
-        switch (Card.type) {
-            case "Link":
-                router.push(`/card/detail/${id}`);
-                break;
-
-            case "Folder":
-                router.push(`/card/detail/${id}`);
-                break;
-
-            case "SimpleTask":
-                router.push(`/card/detail/${id}`);
-                break;
-
-            default:
-                break;
-        }
+        router.push(`/card/detail/${id}`);
     }
 
     const handleNavBarPressBack = async () => {
@@ -93,16 +78,6 @@ export default function Index() {
 
             setFolderPath(newPath);
             setActiveFolder(previousFolder.id);
-        }
-    }
-
-    const handleBreadcrumbPress = (index: number) => {
-        if (index < folderPath.length - 1) {
-            const newPath = folderPath.slice(0, index + 1);
-            const targetFolder = newPath[newPath.length - 1];
-
-            setFolderPath(newPath);
-            setActiveFolder(targetFolder.id);
         }
     }
 
