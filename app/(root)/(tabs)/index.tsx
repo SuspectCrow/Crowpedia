@@ -169,7 +169,7 @@ export default function Index() {
                             <Text className="text-2xl font-dmsans-bold text-stone-400 text-center">Folders</Text>
                         </TouchableOpacity>
                     }
-                    style={[{
+                    style={{
                         backgroundColor: '#1c1917',
                         borderRadius: 12,
                         marginHorizontal: 6,
@@ -178,7 +178,7 @@ export default function Index() {
                         paddingVertical: 6,
                         borderColor: '#0c0a09',
                         borderWidth: 4,
-                    }]}
+                    }}
                 />
 
                 <FlashList
@@ -198,7 +198,7 @@ export default function Index() {
                             <Text className="text-2xl font-dmsans-bold text-stone-400 my-2 text-center">Cards</Text>
                         </View>
                     }
-                    style={[{
+                    style={{
                         backgroundColor: '#1c1917',
                         borderRadius: 12,
                         marginHorizontal: 6,
@@ -208,7 +208,7 @@ export default function Index() {
                         paddingVertical: 6,
                         borderColor: '#0c0a09',
                         borderWidth: 4,
-                    }]}
+                    }}
                 />
             </ScrollView>
 

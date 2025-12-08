@@ -88,8 +88,8 @@ export const LargeCard = ({card, onPress, onLongPress} : ICardProps) => {
 
     return (
         <TouchableOpacity className={`gap-3 m-1 relative h-72 ${borderRadius} border-solid border-stone-700/50 border-4`} style={ [ isColorString(card.background) ? { backgroundColor: card.background as string } : {} ]  } onPress={onPress} onLongPress={onLongPress}>
-            <Image source={ isNetworkUrl(card.background) ? { uri: card.background } : card.background } className={`size-full ${borderRadius}`} />
-            <Image source={images.largecardgradient} className={`absolute bottom-0 left-0 size-full ${borderRadius}`} style={{ zIndex: 1 }} />
+            <Image source={ isNetworkUrl(card.background) ? { uri: card.background } : card.background } className={`size-full`} />
+            <Image source={images.largecardgradient} className={`absolute bottom-0 left-0 size-full`} style={{ zIndex: 1 }} />
             <View className="absolute bottom-3 left-3 max-w-[75%]" style={{ zIndex: 2 }}>
                 { renderCardContent(card, CardStyle) }
             </View>

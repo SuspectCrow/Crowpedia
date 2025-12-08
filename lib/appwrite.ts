@@ -21,10 +21,10 @@ client
 export const databases = new Databases(client);
 
 export async function getCards({
-        filter,
-        query,
-        limit,
-    }: {
+                                   filter,
+                                   query,
+                                   limit,
+                               }: {
     filter: string;
     query: string;
     limit?: number;
@@ -74,7 +74,15 @@ export async function getCardById(id: string) {
     }
 }
 
-export async function updateCard(id: string, data: {  title?: string, content?: string }) {
+export async function updateCard(
+    id: string,
+    data: {
+        title?: string,
+        content?: string,
+        background?: string,
+        isLarge?: boolean
+    }
+) {
     try {
         const result = await databases.updateDocument(
             config.databaseId!,

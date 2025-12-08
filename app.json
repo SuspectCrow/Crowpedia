@@ -56,7 +56,8 @@
             "./assets/fonts/DMSans-Thin.ttf"
           ]
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

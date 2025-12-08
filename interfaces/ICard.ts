@@ -8,5 +8,5 @@ export interface ICard {
     type?: string;
     isFavorite?: boolean;
     isLarge?: boolean;
-    background: any;
+    background?: any;
 }

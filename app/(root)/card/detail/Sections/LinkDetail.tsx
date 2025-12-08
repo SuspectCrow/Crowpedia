@@ -1,15 +1,18 @@
 import {ICard} from "@/interfaces/ICard";
 import {Alert, Image, Linking, Text, TextInput, TouchableOpacity, View} from "react-native";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
+import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
 
 const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void }) => {
 
     const [link, setLink] = useState(card.content);
     const [title, setTitle] = useState(card.title);
     const [isAdding, setIsAdding] = useState(false);
+
+    const backgroundSelectorRef = useRef<BackgroundSelectorRef>(null);
 
     const handleOpenLink = async () => {
         if (!link) return;
@@ -43,7 +46,12 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
             card.content = link;
             card.title = title;
 
+            if (backgroundSelectorRef.current) {
+                await backgroundSelectorRef.current.saveBackground();
+            }
+
             onRefresh();
+            Alert.alert("Başarılı", "Tüm değişiklikler kaydedildi!");
         } catch (error) {
             console.error("Ekleme hatası:", error);
             Alert.alert("Hata", "Görev güncellenirken bir sorun oluştu.");
@@ -91,6 +99,8 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                 </TouchableOpacity>
             </View>
 
+            <BackgroundSelector ref={backgroundSelectorRef} card={card} />
+
             <TouchableOpacity
                 className="bg-green-700 p-4 rounded-xl border-solid border-green-800/50 border-4 items-center justify-center mt-6"
                 onPress={handleAddTask}
@@ -101,7 +111,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                 ) : (
                     <View className="flex-row items-center gap-2">
                         <Image
-                            source={icons.save /* icons dosyanızda save ikonu yoksa check ikonu da kullanabilirsiniz */}
+                            source={icons.save}
                             className="size-6"
                             style={[{ tintColor: '#fff' }]}
                         />
