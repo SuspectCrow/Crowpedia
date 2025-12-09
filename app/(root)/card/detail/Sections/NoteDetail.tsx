@@ -1,7 +1,7 @@
 import {ICard} from "@/interfaces/ICard";
 import React, {useRef, useState} from "react";
 import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
-import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Alert, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import colors from "tailwindcss/colors";
 import htmlToMd from "html-to-md";
 import {updateCard} from "@/lib/appwrite";
@@ -56,7 +56,7 @@ const NoteViewer = ({ card, onEdit }: { card: ICard, onEdit: () => void }) => {
     );
 };
 
-const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel: () => void }) => {
+const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel:  () => void }) => {
     const richText = useRef<RichEditor>(null);
     const initialHtml = converter.makeHtml(card.content ?? '');
     const [editedHtml, setEditedHtml] = useState(initialHtml);
@@ -75,7 +75,8 @@ const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel: () => void }) =
         try {
             await updateCard(card.$id, { content: markdownContent });
             card.content = markdownContent;
-            Alert.alert("Başarılı", "Notunuz güncellendi.");
+            Alert. alert("Başarılı", "Notunuz güncellendi.");
+            onCancel();
         } catch (error) {
             console.error("Kaydetme hatası:", error);
             Alert.alert("Hata", "Not kaydedilirken bir sorun oluştu.");
@@ -118,31 +119,12 @@ const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel: () => void }) =
                 }}
                 selectedIconTint={colors.sky[400]}
                 iconTint={colors.stone[400]}
-                iconMap={{
-                    [ actions.setBold ] : <MaterialIcons name={"format-bold"} size={24} />,
-                    [ actions.setItalic ] : <MaterialIcons name={"format-italic"} size={24} />,
-                    [ actions.setUnderline ] : <MaterialIcons name={"format-underline"} size={24} />,
-                    [ actions.setStrikethrough ] : <MaterialIcons name={"format-strikethrough"} size={24} />,
-                    [ actions.heading1 ] : <MaterialIcons name={"1k"} size={24} />,
-                    [ actions.heading2 ] : <MaterialIcons name={"2k"} size={24} />,
-                    [ actions.heading3 ] : <MaterialIcons name={"3k"} size={24} />,
-                    [ actions.heading4 ] : <MaterialIcons name={"4k"} size={24} />,
-                    [ actions.heading5 ] : <MaterialIcons name={"5k"} size={24} />,
-                    [ actions.heading6 ] : <MaterialIcons name={"6k"} size={24} />,
-                    [ actions.insertBulletsList ] : <MaterialIcons name={"format-list-bulleted"} size={24} />,
-                    [ actions.insertOrderedList ] : <MaterialIcons name={"format-list-numbered"} size={24} />,
-                    [ actions.insertLink ] : <MaterialIcons name={"link"} size={24} />,
-                    [ actions.blockquote ] : <MaterialIcons name={"format-quote"} size={24} />,
-                    [ actions.code ] : <MaterialIcons name={"code"} />,
-                    [ actions.undo ] : <MaterialIcons name={"undo"} size={24} />,
-                    [ actions.redo ] : <MaterialIcons name={"redo"} size={24} />,
-                }}
             />
 
             <ScrollView className="flex-1 mb-4">
                 <RichEditor
                     ref={richText}
-                    initialContentHTML={editedHtml}
+                    initialContentHTML={initialHtml}
                     onChange={setEditedHtml}
                     placeholder="Notunuzu buraya yazın..."
                     containerStyle={{

@@ -3,6 +3,7 @@ import {useEffect, useImperativeHandle, useState, forwardRef} from "react";
 import {Alert, Image, Modal, Text, TouchableOpacity, View} from "react-native";
 import ColorPicker, {HueSlider, OpacitySlider, Panel1, Preview} from "reanimated-color-picker";
 import {updateCard} from "@/lib/appwrite";
+import {MaterialIcons} from "@expo/vector-icons";
 
 interface BackgroundSelectorProps {
     card: ICard;

@@ -51,7 +51,6 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
             }
 
             onRefresh();
-            Alert.alert("Başarılı", "Tüm değişiklikler kaydedildi!");
         } catch (error) {
             console.error("Ekleme hatası:", error);
             Alert.alert("Hata", "Görev güncellenirken bir sorun oluştu.");
@@ -106,7 +105,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                     <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
                 ) : (
                     <View className="flex-row items-center gap-2">
-                        <MaterialIcons name={"content-save"} size={24} style={{ color: 'white' }}/>
+                        <MaterialIcons name={"save"} size={24} style={{ color: 'white' }}/>
                         <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
                     </View>
                 )}
