@@ -1,10 +1,10 @@
 import {ICard} from "@/interfaces/ICard";
 import {Alert, Image, Linking, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {useRef, useState} from "react";
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
 import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
+import {MaterialIcons} from "@expo/vector-icons";
 
 const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void }) => {
 
@@ -91,11 +91,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                     onPress={handleOpenLink}
                     className="p-3 bg-stone-600 rounded-xl border-solid border-4 border-stone-700/50 items-center justify-center"
                 >
-                    <Image
-                        source={icons.link}
-                        className="size-8"
-                        style={{ tintColor: colors.stone['900'] }}
-                    />
+                    <MaterialIcons name={"link"} size={32} style={{ color: colors.stone['900'] }}/>
                 </TouchableOpacity>
             </View>
 
@@ -110,11 +106,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                     <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
                 ) : (
                     <View className="flex-row items-center gap-2">
-                        <Image
-                            source={icons.save}
-                            className="size-6"
-                            style={[{ tintColor: '#fff' }]}
-                        />
+                        <MaterialIcons name={"content-save"} size={24} style={{ color: 'white' }}/>
                         <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
                     </View>
                 )}

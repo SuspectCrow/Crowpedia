@@ -3,10 +3,10 @@ import { Alert, Linking, View, Text, TouchableOpacity, Image, Modal, TextInput, 
 import { FlashList } from "@shopify/flash-list";
 import { MovieCard } from "@/components/C_MovieCard";
 import { useState, useCallback } from "react";
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import { searchMovies } from "@/lib/tmdbapi";
 import { updateCard } from "@/lib/appwrite";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, parsedCardContent: any, onRefresh: () => void }) => {
     const [isEditMode, setIsEditMode] = useState(false);
@@ -172,7 +172,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                                 className="absolute top-3 right-3 bg-red-600 rounded-full p-2 z-10"
                                 onPress={() => handleDeleteMovie(item.externalId)}
                             >
-                                <Image source={icons.star} className="size-5" style={{ tintColor: 'white' }} />
+                                <MaterialIcons name={"star"} size={24} style={{ color: 'white' }}/>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -189,11 +189,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                                 onPress={() => setIsEditMode(!isEditMode)}
                                 className="bg-stone-700 rounded-lg p-2"
                             >
-                                <Image
-                                    source={isEditMode ? icons.check : icons.edit_note}
-                                    className="size-6"
-                                    style={{ tintColor: colors.stone["300"] }}
-                                />
+                                <MaterialIcons name={isEditMode ? "check" : "note-edit"} className="size-6" style={{ color: colors.stone["300"] }}/>
                             </TouchableOpacity>
                         </View>
                         <Text className="text-sm font-dmsans-regular text-stone-500 text-center mt-1">
@@ -213,7 +209,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                 className="absolute bottom-6 right-6 bg-stone-600 rounded-full p-4 shadow-lg"
                 style={{ elevation: 5 }}
             >
-                <Image source={icons.add} className="size-8" style={{ tintColor: 'white' }} />
+                <MaterialIcons name={"add"} size={32} style={{ color: 'white' }}/>
             </TouchableOpacity>
 
             {/* Movie Details Modal */}
@@ -252,7 +248,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                                 )}
                                 {selectedMovie?.metadata?.rating > 0 && (
                                     <View className="flex-row items-center gap-1">
-                                        <Image source={icons.star} className="size-5" style={{ tintColor: colors.yellow["400"] }} />
+                                        <MaterialIcons name={"star"} className="size-5" style={{ color: colors.yellow["400"] }}/>
                                         <Text className="text-white font-dmsans-medium text-base">
                                             {selectedMovie.metadata.rating.toFixed(1)}/10
                                         </Text>
@@ -296,13 +292,13 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                             setSearchQuery("");
                             setSearchResults([]);
                         }}>
-                            <Image source={icons.star} className="size-8" style={{ tintColor: colors.stone["400"] }} />
+                            <MaterialIcons name={"star"} className="size-8" style={{ color: colors.stone["400"] }}/>
                         </TouchableOpacity>
                     </View>
 
                     <View className="p-4">
                         <View className="flex-row items-center bg-stone-800 rounded-lg px-4 py-3 border-2 border-stone-700">
-                            <Image source={icons.search} className="size-6 mr-3" style={{ tintColor: colors.stone["400"] }} />
+                            <MaterialIcons name={"search-web"} className="size-6 mr-3" style={{ color: colors.stone["400"] }}/>
                             <TextInput
                                 className="flex-1 text-white font-dmsans-regular text-base"
                                 placeholder="Film ara..."
@@ -348,7 +344,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                                         )}
                                         {item.vote_average > 0 && (
                                             <View className="flex-row items-center gap-1">
-                                                <Image source={icons.star} className="size-4" style={{ tintColor: colors.yellow["400"] }} />
+                                                <MaterialIcons name={"star"} className="size-4" style={{ color: colors.yellow["400"] }}/>
                                                 <Text className="text-stone-300 font-dmsans-medium text-sm">
                                                     {item.vote_average.toFixed(1)}
                                                 </Text>

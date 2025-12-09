@@ -1,9 +1,9 @@
 import {ICard} from "@/interfaces/ICard";
 import {Alert, Image, Linking, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {useState} from "react";
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
+import {MaterialIcons} from "@expo/vector-icons";
 
 const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void }) => {
 
@@ -49,7 +49,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                 <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Value</Text>
 
                 <TouchableOpacity onPress={() => setContent(!content)}>
-                    <Image source={content ? icons.check_box : icons.check_box_blank} className="size-10" />
+                    <MaterialIcons name={content ? "check" : "check-box-outline-blank"} size={32}/>
                 </TouchableOpacity>
             </View>
 
@@ -63,11 +63,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                     <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
                 ) : (
                     <View className="flex-row items-center gap-2">
-                        <Image
-                            source={icons.save /* icons dosyanızda save ikonu yoksa check ikonu da kullanabilirsiniz */}
-                            className="size-6"
-                            style={[{ tintColor: '#fff' }]}
-                        />
+                        <MaterialIcons name={"content-save"} className="size-6" style={[{ color: '#fff' }]}/>
                         <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
                     </View>
                 )}

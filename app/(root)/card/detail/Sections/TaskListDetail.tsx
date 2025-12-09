@@ -2,8 +2,8 @@ import {View, Text, Image, TouchableOpacity, Alert, FlatList, TextInput} from 'r
 import React, {useState} from 'react'
 import {ICard} from "@/interfaces/ICard";
 import {updateCard} from "@/lib/appwrite";
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const TaskListDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void }) => {
     const [taskList, setTaskList] = useState(() => {
@@ -111,7 +111,7 @@ const TaskListDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => voi
                             const index = taskList.findIndex((task: any) => task.id === item.id);
                             if (index !== -1) handlePress(index);
                         }}>
-                            <Image source={item.Value ? icons.check_box : icons.check_box_blank} className={`size-6`} style={[{ tintColor: `${item.Value ? colors.stone['500'] : colors.stone['100'] }` }]}/>
+                            <MaterialIcons name={item.Value ? "check" : "check-box-outline-blank"} size={24} style={[{ color: `${item.Value ? colors.stone['500'] : colors.stone['100'] }` }]} />
                         </TouchableOpacity>
                         {editingId === item.id ? (
                             <TextInput
@@ -167,11 +167,7 @@ const TaskListDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => voi
                         onPress={handleAddTask}
                         disabled={isAdding}
                     >
-                        <Image
-                            source={icons.add}
-                            className="size-6"
-                            style={[{ tintColor: '#fff' }]}
-                        />
+                        <MaterialIcons name={"add"} size={24} style={[{ color: 'white' }]} />
                     </TouchableOpacity>
                 </View>
             </View>

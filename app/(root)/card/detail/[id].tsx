@@ -14,7 +14,6 @@ import {router, useLocalSearchParams} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {getCardById} from "@/lib/appwrite";
 import {ICard} from "@/interfaces/ICard";
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import {getCardIcon} from "@/constants/card_info";
 
@@ -25,6 +24,7 @@ import EventDetail from "@/app/(root)/card/detail/Sections/EventDetail";
 import LinkDetail from "./Sections/LinkDetail";
 import SimpleTaskDetail from "@/app/(root)/card/detail/Sections/SimpleTaskDetail";
 import CollectionDetail from "@/app/(root)/card/detail/Sections/CollectionDetail";
+import {MaterialIcons} from "@expo/vector-icons";
 
 
 const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh: () => void }) => {
@@ -108,11 +108,11 @@ const Property = () => {
             >
                 <View className="flex-row w-full items-center gap-2 pb-4">
                     <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 p-3 mt-4 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900" onPress={() => { router.back(); }}>
-                        <Image source={icons.arrow_left} className="size-8" style={[{ tintColor: `${ colors.stone['400'] }` }]} />
+                        <MaterialIcons name={"arrow-left"} size={24} style={{ color: colors.stone['400'] }}/>
                         <Text className={"text-stone-400 font-dmsans-bold text-xl"}>Back</Text>
                     </TouchableOpacity>
                     <View className="flex-2 flex-row items-center justify-start gap-2 p-3 mt-4 w-2/3 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-600">
-                        <Image source={getCardIcon(card ? card!.type : "Event")} className="size-8" style={[{ tintColor: `${ colors.stone['800'] }` }]} />
+                        <MaterialIcons name={card ? getCardIcon(card!.type) : "note"} size={24} style={{ color: colors.stone['800'] }}/>
                         <Text className="text-stone-900 font-dmsans-bold text-lg">
                             { card ? card.title : "NULL" }
                         </Text>

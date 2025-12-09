@@ -2,8 +2,6 @@ import {ICard} from "@/interfaces/ICard";
 import {useEffect, useImperativeHandle, useState, forwardRef} from "react";
 import {Alert, Image, Modal, Text, TouchableOpacity, View} from "react-native";
 import ColorPicker, {HueSlider, OpacitySlider, Panel1, Preview} from "reanimated-color-picker";
-import icons from "@/constants/icons";
-import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
 
 interface BackgroundSelectorProps {
@@ -137,11 +135,7 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                                     className="bg-stone-700 p-3 rounded-lg border-2 border-stone-800/50 items-center justify-center"
                                 >
                                     <View className="flex-row items-center gap-1">
-                                        <Image
-                                            source={icons.edit_note}
-                                            className="size-5"
-                                            style={[{ tintColor: '#fff' }]}
-                                        />
+                                        <MaterialIcons name={"format-color-fill"} size={20} color={'#fff'} />
                                         <Text className="text-white font-dmsans-bold text-sm">Change Color</Text>
                                     </View>
                                 </TouchableOpacity>

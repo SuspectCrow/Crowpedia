@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity, Image, Alert} from 'react-native'
 import React, {useState} from 'react'
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
     activePaths: string[];
@@ -24,7 +24,7 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
                 activePaths.length > 1 && (
                     <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50" onPress={OnPressBack}>
                         <View className="flex-row items-center justify-center">
-                            <Image source={icons.arrow_left} className="size-6 mx-2" />
+                            <MaterialIcons name={"arrow-left"} size={24} className="mx-2" style={{ color: 'white' }}/>
                             <Text className="font-dmsans-bold text-lg text-white">Back</Text>
                         </View>
                     </TouchableOpacity>
@@ -34,14 +34,14 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
                 {activePaths.map((item, index) => (
                     <View key={index} className="flex-row items-center">
                         {index === 0 && (
-                            <Image source={icons.home} className={`size-6 me-1 mb-auto`} style={[{ tintColor: `${index == activePaths.length - 1 ? colors.stone['400'] : colors.stone['600']}` }]}/>
+                            <MaterialIcons name={"home"} size={24} className="me-1 mb-auto" style={{ color: `${index == activePaths.length - 1 ? colors.stone['400'] : colors.stone['600']}` }}/>
                         )}
                         <Text className={`${ index == activePaths.length - 1 ? 'text-stone-400' : 'text-stone-600' } ${ index === 0 ? 'font-dmsans-black text-xl' : 'font-dmsans-semibold text-lg' }`}>
                             { item == "HOME" ? "Home" : item }
                         </Text>
 
                         {index < activePaths.length - 1 && (
-                            <Image source={icons.arrow_forward} className="size-6 mx-2" style={[{ tintColor: `${ colors.stone['500'] }` }]} />
+                            <MaterialIcons name={"arrow-left"} size={24} className="mx-2" style={{ color: `${ colors.stone['500'] }` }}/>
                         )}
                     </View>
                 ))}

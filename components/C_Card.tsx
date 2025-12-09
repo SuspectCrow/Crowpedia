@@ -3,10 +3,7 @@ import images from "@/constants/images";
 import {ICard} from "@/interfaces/ICard";
 import {getCardIcon} from "@/constants/card_info";
 import colors from "tailwindcss/colors";
-import icons from "@/constants/icons";
-import useFetch from "@/lib/useFetch";
-import {fetchMovie} from "@/lib/tmdbapi";
-import {SafeAreaView} from "react-native-safe-area-context";
+import {MaterialIcons} from "@expo/vector-icons";
 
 export type CardStyle = {
     iconClass?: string;
@@ -65,14 +62,14 @@ const renderCardContent = (card: ICard, CardStyle: any) => {
         case "SimpleTask":
             return (
                 <View className="flex flex-row justify-start items-start gap-2">
-                    <Image source={ card.content === "true" ? icons.check_box : icons.check_box_blank } className={ `${ CardStyle.iconClass } ${ card.content === "true" ? "opacity-80" : "" }` } style={[{ tintColor: colors.stone["100"] }, CardStyle.iconStyle]} />
+                    <MaterialIcons name={card.content === "true" ? "check" : "check-box-outline-blank"} size={24} className={ `${ CardStyle.iconClass } ${ card.content === "true" ? "opacity-80" : "" }` } style={[{ color: colors.stone["100"] }, CardStyle.iconStyle]}/>
                     <Text className={`${ getCardStyle(card.type).textClass } max-w-[80%] ${ card.content === "true" ? "line-through text-stone-100/50" : "text-stone-100/80" }`}>{ card.title }</Text>
                 </View>
             )
         default:
             return (
                 <View className="flex flex-row justify-start items-end gap-2">
-                    <Image source={ getCardIcon(card.type) } className={ `${ CardStyle.iconClass }` } style={[{ tintColor: colors.stone["100"] }, CardStyle.iconStyle]} />
+                    <MaterialIcons name={getCardIcon(card.type)} size={24} className={ `${ CardStyle.iconClass }` } style={[{ color: colors.stone["100"] }, CardStyle.iconStyle]} />
                     <Text className={`${ getCardStyle(card.type).textClass } text-stone-100/80 max-w-[80%]`}>{ card.title }</Text>
                 </View>
             )

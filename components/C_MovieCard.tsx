@@ -1,9 +1,9 @@
 import {getCardStyle} from "@/components/C_Card";
 import {ICard} from "@/interfaces/ICard";
 import images from "@/constants/images";
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import {Image, Text, TouchableOpacity, View} from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const borderRadius = "rounded-lg";
 
@@ -50,22 +50,14 @@ export const MovieCard = ({ card, onPress, onLongPress, movieItem }: ICardProps)
             />
             <View className="absolute bottom-3 left-3 max-w-[75%]" style={{ zIndex: 2 }}>
                 <View className="flex flex-row justify-start items-end gap-2">
-                    <Image
-                        source={icons.save}
-                        className={`${CardStyle.iconClass}`}
-                        style={[{ tintColor: colors.stone["100"] }, CardStyle.iconStyle]}
-                    />
+                    <MaterialIcons name={"save"} size={24} className={`${CardStyle.iconClass}`} style={[{ color: colors.stone["100"] }, CardStyle.iconStyle]} />
                     <Text className="font-dmsans-medium text-base text-stone-100/80 max-w-[80%]" numberOfLines={2}>
                         {metadata.title || "Unknown"}
                     </Text>
                 </View>
                 {!!movieItem.rating && (
                     <View className="flex flex-row items-center gap-1 mt-1">
-                        <Image
-                            source={icons.star}
-                            className="size-4"
-                            style={{ tintColor: colors.yellow["400"] }}
-                        />
+                        <MaterialIcons name={"star"} className="size-4" style={{ color: colors.yellow["400"] }} />
                         <Text className="font-dmsans-regular text-sm text-stone-100/60">
                             {movieItem.rating}/5
                         </Text>

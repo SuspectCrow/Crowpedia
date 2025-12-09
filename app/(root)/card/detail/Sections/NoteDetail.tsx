@@ -3,10 +3,10 @@ import React, {useRef, useState} from "react";
 import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import colors from "tailwindcss/colors";
-import icons from "@/constants/icons";
 import htmlToMd from "html-to-md";
 import {updateCard} from "@/lib/appwrite";
 import showdown from "showdown";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const converter = new showdown.Converter();
 
@@ -48,7 +48,7 @@ const NoteViewer = ({ card, onEdit }: { card: ICard, onEdit: () => void }) => {
                 onPress={onEdit}
             >
                 <View className="flex-row items-center justify-center gap-2">
-                    <Image source={icons.edit_note} className="size-6" style={[{ tintColor: '#fff' }]} />
+                    <MaterialIcons name={"edit-note"} size={24} style={[{ color: 'white' }]} />
                     <Text className="text-white font-dmsans-bold text-lg text-center">Düzenle</Text>
                 </View>
             </TouchableOpacity>
@@ -119,23 +119,23 @@ const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel: () => void }) =
                 selectedIconTint={colors.sky[400]}
                 iconTint={colors.stone[400]}
                 iconMap={{
-                    [ actions.setBold ] : icons.format_bold,
-                    [ actions.setItalic ] : icons.format_italic,
-                    [ actions.setUnderline ] : icons.format_underlined,
-                    [ actions.setStrikethrough ] : icons.strikethrough_s,
-                    [ actions.heading1 ] : icons.format_h1,
-                    [ actions.heading2 ] : icons.format_h2,
-                    [ actions.heading3 ] : icons.format_h3,
-                    [ actions.heading4 ] : icons.format_h4,
-                    [ actions.heading5 ] : icons.format_h5,
-                    [ actions.heading6 ] : icons.format_h6,
-                    [ actions.insertBulletsList ] : icons.list,
-                    [ actions.insertOrderedList ] : icons.format_list_numbered,
-                    [ actions.insertLink ] : icons.link,
-                    [ actions.blockquote ] : icons.format_quote,
-                    [ actions.code ] : icons.code,
-                    [ actions.undo ] : icons.undo,
-                    [ actions.redo ] : icons.redo,
+                    [ actions.setBold ] : <MaterialIcons name={"format-bold"} size={24} />,
+                    [ actions.setItalic ] : <MaterialIcons name={"format-italic"} size={24} />,
+                    [ actions.setUnderline ] : <MaterialIcons name={"format-underline"} size={24} />,
+                    [ actions.setStrikethrough ] : <MaterialIcons name={"format-strikethrough"} size={24} />,
+                    [ actions.heading1 ] : <MaterialIcons name={"1k"} size={24} />,
+                    [ actions.heading2 ] : <MaterialIcons name={"2k"} size={24} />,
+                    [ actions.heading3 ] : <MaterialIcons name={"3k"} size={24} />,
+                    [ actions.heading4 ] : <MaterialIcons name={"4k"} size={24} />,
+                    [ actions.heading5 ] : <MaterialIcons name={"5k"} size={24} />,
+                    [ actions.heading6 ] : <MaterialIcons name={"6k"} size={24} />,
+                    [ actions.insertBulletsList ] : <MaterialIcons name={"format-list-bulleted"} size={24} />,
+                    [ actions.insertOrderedList ] : <MaterialIcons name={"format-list-numbered"} size={24} />,
+                    [ actions.insertLink ] : <MaterialIcons name={"link"} size={24} />,
+                    [ actions.blockquote ] : <MaterialIcons name={"format-quote"} size={24} />,
+                    [ actions.code ] : <MaterialIcons name={"code"} />,
+                    [ actions.undo ] : <MaterialIcons name={"undo"} size={24} />,
+                    [ actions.redo ] : <MaterialIcons name={"redo"} size={24} />,
                 }}
             />
 

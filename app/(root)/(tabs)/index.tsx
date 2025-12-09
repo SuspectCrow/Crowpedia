@@ -1,11 +1,9 @@
-import {Text, View, Image, TouchableOpacity, Animated, Linking, Alert, RefreshControl} from "react-native";
-import icons from "@/constants/icons";
+import {Text, View, TouchableOpacity, Animated, Linking, Alert, RefreshControl, ScrollView} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { LargeCard, SmallCard } from "@/components/C_Card";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {useCallback, useState} from "react";
-import ScrollView = Animated.ScrollView;
 import { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 
@@ -14,7 +12,7 @@ import {getCards, getCardById, updateCard} from "@/lib/appwrite";
 import C_NavBar from "@/components/C_NavBar";
 import {ICard} from "@/interfaces/ICard";
 import CIconButton from "@/components/C_Button";
-import htmlToMd from "html-to-md";
+import {MaterialIcons} from "@expo/vector-icons";
 
 export default function Index() {
     const [quickButtonMenuVisibility, setQuickMenuButton] = useState(false);
@@ -132,15 +130,15 @@ export default function Index() {
                 {
                     quickButtonMenuVisibility && (
                         <View className="flex-col items-center justify-end gap-3 bg-stone-800 p-2 rounded-lg border-solid border-stone-700/50 border-4">
-                            <CIconButton icon={icons.create_new_folder} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Folder'}`); } } />
-                            <CIconButton icon={icons.add_task} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Task'}`); } } />
-                            <CIconButton icon={icons.add_alert} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Reminder'}`); }} />
-                            <CIconButton icon={icons.calendar_add_on} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Date'}`); }} />
-                            <CIconButton icon={icons.note_add} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Note'}`); }} />
+                            <CIconButton icon={"create-new-folder"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Folder'}`); } } />
+                            <CIconButton icon={"add-task"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Task'}`); } } />
+                            <CIconButton icon={"notification-add"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Reminder'}`); }} />
+                            <CIconButton icon={"event"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Date'}`); }} />
+                            <CIconButton icon={"note-add"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Note'}`); }} />
                         </View>
                     )
                 }
-                <CIconButton icon={icons.add} onPress={() => { setQuickMenuButton(!quickButtonMenuVisibility) }} />
+                <CIconButton icon={"add"} onPress={() => { setQuickMenuButton(!quickButtonMenuVisibility) }} />
             </View>
 
             <ScrollView className="mt-4" refreshControl={
@@ -165,7 +163,7 @@ export default function Index() {
                     showsVerticalScrollIndicator={false}
                     ListHeaderComponent={
                         <TouchableOpacity className="flex-row items-center justify-center gap-2 w-fit my-4" onPress={() => setFolderVisibility(v => !v)}>
-                            <Image source={!foldersVisibility ? icons.arrow_up : icons.arrow_down} className="size-8" style={[{ tintColor: "rgba(255, 255, 255, 0.8)" }]}></Image>
+                            <MaterialIcons name={!foldersVisibility ? "arrow-upward" : "arrow-downward"} size={24} style={{color: "rgba(255, 255, 255, 0.8)"}} />
                             <Text className="text-2xl font-dmsans-bold text-stone-400 text-center">Folders</Text>
                         </TouchableOpacity>
                     }

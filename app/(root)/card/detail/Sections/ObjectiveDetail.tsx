@@ -2,9 +2,9 @@ import {ICard} from "@/interfaces/ICard";
 import {Alert, Image, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {useState} from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import icons from "@/constants/icons";
 import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
+import {MaterialIcons} from "@expo/vector-icons";
 
 const TZ = 'Europe/Istanbul';
 
@@ -183,11 +183,7 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
                                 <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
                             ) : (
                                 <View className="flex-row items-center gap-2">
-                                    <Image
-                                        source={icons.save}
-                                        className="size-6"
-                                        style={[{ tintColor: '#fff' }]}
-                                    />
+                                    <MaterialIcons name={"content-save"} size={24} style={{ color: 'white' }}/>
                                     <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
                                 </View>
                             )}
@@ -226,11 +222,7 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
                     onPress={() => setIsEditing(true)}
                 >
                     <View className="flex-row items-center gap-2">
-                        <Image
-                            source={icons.edit_note}
-                            className="size-6"
-                            style={[{ tintColor: '#fff' }]}
-                        />
+                        <MaterialIcons name={"note-edit"} className="size-6" style={{ color: 'white' }}/>
                         <Text className="text-white font-dmsans-bold text-xl">Düzenle</Text>
                     </View>
                 </TouchableOpacity>
