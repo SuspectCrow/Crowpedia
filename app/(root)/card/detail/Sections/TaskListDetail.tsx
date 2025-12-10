@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity, Alert, FlatList, TextInput} from 'react-native'
+import {View, Text, TouchableOpacity, Alert, FlatList, TextInput} from 'react-native'
 import React, {useState} from 'react'
 import {ICard} from "@/interfaces/ICard";
 import {updateCard} from "@/lib/appwrite";

@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "start_emu": "C:/Users/suspe/AppData/Local/Android/Sdk/emulator/emulator.exe -avd Phone_API_36_1"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

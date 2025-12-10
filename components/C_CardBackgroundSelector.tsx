@@ -1,24 +1,26 @@
 import {ICard} from "@/interfaces/ICard";
 import {useEffect, useImperativeHandle, useState, forwardRef} from "react";
-import {Alert, Image, Modal, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Image, Modal, Text, TextInput, TouchableOpacity, View} from "react-native";
 import ColorPicker, {HueSlider, OpacitySlider, Panel1, Preview} from "reanimated-color-picker";
 import {updateCard} from "@/lib/appwrite";
 import {MaterialIcons} from "@expo/vector-icons";
 
 interface BackgroundSelectorProps {
     card: ICard;
+    onSaveSuccess?: () => void;
 }
 
 export interface BackgroundSelectorRef {
-    saveBackground: () => Promise<void>;
+    save: () => Promise<void>;
 }
 
 export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSelectorProps>(
-    ({ card }, ref) => {
+    ({ card, onSaveSuccess }, ref) => {
         const [isLargeCard, setIsLargeCard] = useState(false);
         const [showModal, setShowModal] = useState(false);
         const [selectedColor, setSelectedColor] = useState('#ff0000');
         const [tempColor, setTempColor] = useState('#ff0000');
+        const [imageUrl, setImageUrl] = useState('');
         const [isSaving, setIsSaving] = useState(false);
 
         useEffect(() => {
@@ -26,24 +28,42 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                 setIsLargeCard(card.isLarge);
             }
             if (card.background) {
-                setSelectedColor(card.background);
-                setTempColor(card.background);
+                if (card.background.startsWith('#')) {
+                    setSelectedColor(card.background);
+                    setTempColor(card.background);
+                    setImageUrl('');
+                } else {
+                    setImageUrl(card.background);
+                    setSelectedColor('#ff0000');
+                }
             }
         }, [card]);
 
+        useEffect(() => {
+            if (isLargeCard && card.background && !card.background.startsWith('#')) {
+                setImageUrl(card.background);
+            } else if (isLargeCard) {
+                setImageUrl('');
+            }
+        }, [isLargeCard]);
+
         useImperativeHandle(ref, () => ({
-            saveBackground: async () => {
+            save: async () => {
                 setIsSaving(true);
                 try {
+                    const backgroundToSave = isLargeCard ? imageUrl : selectedColor;
+
                     await updateCard(card.$id, {
-                        background: selectedColor,
+                        background: backgroundToSave,
                         isLarge: isLargeCard
                     });
 
-                    card.background = selectedColor;
+                    card.background = backgroundToSave;
                     card.isLarge = isLargeCard;
 
-                    console.log('Background kaydedildi:', { background: selectedColor, isLarge: isLargeCard });
+                    console.log('Background kaydedildi:', { background: backgroundToSave, isLarge: isLargeCard });
+
+                    onSaveSuccess?.();
                 } catch (error) {
                     console.error("Background kaydetme hatası:", error);
                     Alert.alert("Hata", "Arka plan ayarları kaydedilirken bir sorun oluştu.");
@@ -57,7 +77,6 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
         const handleConfirm = () => {
             setSelectedColor(tempColor);
             setShowModal(false);
-            card.background = tempColor;
             console.log('Geçici renk seçildi:', tempColor);
         };
 
@@ -87,7 +106,7 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                         >
                             <Text className={`font-dmsans-bold text-base ${
                                 !isLargeCard ? 'text-white' : 'text-stone-400'
-                            }`}>Küçük Kart</Text>
+                            }`}>Small</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -101,7 +120,7 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                         >
                             <Text className={`font-dmsans-bold text-base ${
                                 isLargeCard ? 'text-white' : 'text-stone-400'
-                            }`}>Büyük Kart</Text>
+                            }`}>Large</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -109,10 +128,32 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                 <View>
                     {isLargeCard ? (
                         <View>
-                            <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">URL</Text>
-                            <View className="w-full p-3 rounded-xl border-4 border-stone-700/50 bg-stone-900/50">
-                                <Text className="text-stone-400 font-dmsans-regular text-lg">URL buraya gelecek...</Text>
-                            </View>
+                            <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Background Image URL</Text>
+                            <TextInput
+                                value={imageUrl}
+                                onChangeText={setImageUrl}
+                                placeholder="https://example.com/image.jpg"
+                                placeholderTextColor={'#57534e'}
+                                keyboardType="url"
+                                autoCapitalize="none"
+                                className="w-full text-stone-400 font-dmsans-bold text-xl p-3 rounded-xl border-4 border-stone-700/50 bg-stone-900/50"
+                            />
+
+                            {imageUrl && imageUrl.trim() !== '' && (
+                                <View className="mt-4">
+                                    <Text className="text-stone-400 font-dmsans-bold text-base mb-2 text-center">Preview</Text>
+                                    <View className="rounded-xl border-4 border-stone-700/50 overflow-hidden h-48 mx-auto" style={{ aspectRatio: 9/16 }}>
+                                        <Image
+                                            source={{ uri: imageUrl }}
+                                            className="w-full h-full"
+                                            resizeMode="cover"
+                                            onError={() => {
+                                                console.log('Image yükleme hatası');
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                            )}
                         </View>
                     ) : (
                         <View>
@@ -154,7 +195,6 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                                             Color Picker
                                         </Text>
 
-                                        {/* DEĞİŞİKLİK BURADA YAPILDI */}
                                         <ColorPicker
                                             style={{ width: '100%', marginBottom: 20 }}
                                             value={card.background}

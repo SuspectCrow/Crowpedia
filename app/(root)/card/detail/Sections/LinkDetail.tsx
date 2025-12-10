@@ -1,5 +1,5 @@
 import {ICard} from "@/interfaces/ICard";
-import {Alert, Image, Linking, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Alert, Linking, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {useRef, useState} from "react";
 import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
@@ -35,7 +35,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
         }
     };
 
-    const handleAddTask = async () => {
+    const handleSave = async () => {
         setIsAdding(true);
         try {
             await updateCard(card.$id, {
@@ -46,9 +46,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
             card.content = link;
             card.title = title;
 
-            if (backgroundSelectorRef.current) {
-                await backgroundSelectorRef.current.saveBackground();
-            }
+            await backgroundSelectorRef.current?.save();
 
             onRefresh();
         } catch (error) {
@@ -98,15 +96,15 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
 
             <TouchableOpacity
                 className="bg-green-700 p-4 rounded-xl border-solid border-green-800/50 border-4 items-center justify-center mt-6"
-                onPress={handleAddTask}
+                onPress={handleSave}
                 disabled={isAdding}
             >
                 {isAdding ? (
-                    <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
+                    <Text className="text-white font-dmsans-bold text-xl">Saving...</Text>
                 ) : (
                     <View className="flex-row items-center gap-2">
                         <MaterialIcons name={"save"} size={24} style={{ color: 'white' }}/>
-                        <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
+                        <Text className="text-white font-dmsans-bold text-xl">Save</Text>
                     </View>
                 )}
             </TouchableOpacity>

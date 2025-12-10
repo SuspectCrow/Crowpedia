@@ -159,7 +159,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
             <FlashList
                 data={movieItems}
                 numColumns={2}
-                renderItem={({ item, index }) => (
+                renderItem={({ item, index } : any) => (
                     <View className="relative">
                         <MovieCard
                             card={card}
@@ -189,7 +189,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                                 onPress={() => setIsEditMode(!isEditMode)}
                                 className="bg-stone-700 rounded-lg p-2"
                             >
-                                <MaterialIcons name={isEditMode ? "check" : "note-edit"} className="size-6" style={{ color: colors.stone["300"] }}/>
+                                <MaterialIcons name={isEditMode ? "check" : "edit-note"} className="size-6" style={{ color: colors.stone["300"] }}/>
                             </TouchableOpacity>
                         </View>
                         <Text className="text-sm font-dmsans-regular text-stone-500 text-center mt-1">
@@ -298,7 +298,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
 
                     <View className="p-4">
                         <View className="flex-row items-center bg-stone-800 rounded-lg px-4 py-3 border-2 border-stone-700">
-                            <MaterialIcons name={"search-web"} className="size-6 mr-3" style={{ color: colors.stone["400"] }}/>
+                            <MaterialIcons name={"search"} className="size-6 mr-3" style={{ color: colors.stone["400"] }}/>
                             <TextInput
                                 className="flex-1 text-white font-dmsans-regular text-base"
                                 placeholder="Film ara..."

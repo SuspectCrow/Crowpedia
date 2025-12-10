@@ -5,7 +5,7 @@ import colors from "tailwindcss/colors";
 import { MaterialIcons } from '@expo/vector-icons';
 
 const TabIcon = ({ focused, icon, title }: { focused: boolean; icon: keyof typeof MaterialIcons.glyphMap; title: string }) => (
-    <View className="flex-1 mt-3 flex flex-col items-center">
+    <View className="flex-1 flex flex-col items-center">
         <MaterialIcons name={icon} size={24} color={focused ? colors.stone['300'] : colors.stone['500']}/>
 
         <Text className={`${focused ? 'text-stone-300 font-dmsans-medium' : 'text-stone-500 font-dmsans'} text-xs w-full text-center mt-1`}>
