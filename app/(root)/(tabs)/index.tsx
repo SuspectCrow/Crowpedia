@@ -130,10 +130,7 @@ export default function Index() {
                 {
                     quickButtonMenuVisibility && (
                         <View className="flex-col items-center justify-end gap-3 bg-stone-800 p-2 rounded-lg border-solid border-stone-700/50 border-4">
-                            <CIconButton icon={"create-new-folder"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Folder'}`); } } />
-                            <CIconButton icon={"add-task"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Task'}`); } } />
-                            <CIconButton icon={"notification-add"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Reminder'}`); }} />
-                            <CIconButton icon={"event"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Date'}`); }} />
+                            <CIconButton icon={"checklist"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'TaskList'}`); }} />
                             <CIconButton icon={"note-add"} dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Note'}`); }} />
                         </View>
                     )

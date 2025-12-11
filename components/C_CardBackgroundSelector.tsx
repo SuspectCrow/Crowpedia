@@ -12,6 +12,7 @@ interface BackgroundSelectorProps {
 
 export interface BackgroundSelectorRef {
     save: () => Promise<void>;
+    getValues: () => { background: string; isLarge: boolean };
 }
 
 export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSelectorProps>(
@@ -71,6 +72,13 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                 } finally {
                     setIsSaving(false);
                 }
+            },
+            getValues: () => {
+                const backgroundToSave = isLargeCard ? imageUrl : selectedColor;
+                return {
+                    background: backgroundToSave,
+                    isLarge: isLargeCard
+                };
             }
         }), [isLargeCard, imageUrl, selectedColor, card]);
 

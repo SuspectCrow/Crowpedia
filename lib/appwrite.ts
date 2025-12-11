@@ -1,7 +1,8 @@
-import {Account, Avatars, Client, Databases, OAuthProvider, Query} from "react-native-appwrite";
+import {Account, Avatars, Client, Databases, ID, OAuthProvider, Query} from "react-native-appwrite";
 
 import * as Linking from 'expo-linking'
 import {openAuthSessionAsync} from "expo-web-browser";
+import {ICard} from "@/interfaces/ICard";
 
 export const config = {
     platform: 'com.suspectcrow.estateapp',
@@ -96,3 +97,27 @@ export async function updateCard(
         return null;
     }
 }
+
+export const createCard = async (data: ICard) => {
+    try {
+        const response = await databases.createDocument(
+            config.databaseId!,
+            config.CardsTableId!,
+            ID.unique(),
+            {
+                parentFolder: data.parentFolder || null,
+                title: data.title,
+                type: data.type,
+                content: data.content || '',
+                isLarge: data.isLarge || false,
+                background: data.background || '',
+                order: data.order || 10,
+                isFavorite: data.isFavorite || false
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error('Card oluşturma hatası:', error);
+        throw error;
+    }
+};

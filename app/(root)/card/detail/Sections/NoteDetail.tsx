@@ -1,13 +1,12 @@
 import {ICard} from "@/interfaces/ICard";
 import React, {useRef, useState} from "react";
-import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
-import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {RichEditor} from "react-native-pell-rich-editor";
+import {ScrollView, Text, TouchableOpacity, View, Alert} from "react-native";
 import colors from "tailwindcss/colors";
-import htmlToMd from "html-to-md";
 import {updateCard} from "@/lib/appwrite";
 import showdown from "showdown";
 import { MaterialIcons } from "@expo/vector-icons";
-import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
+import {NoteEditor} from "@/components/C_NoteEditor"; // YENİ COMPONENT
 
 const converter = new showdown.Converter();
 
@@ -57,140 +56,55 @@ const NoteViewer = ({ card, onEdit }: { card: ICard, onEdit: () => void }) => {
     );
 };
 
-const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel:  () => void }) => {
-    const richText = useRef<RichEditor>(null);
-    const initialHtml = converter.makeHtml(card.content ?? '');
-    const [editedHtml, setEditedHtml] = useState(initialHtml);
-    const [title, setTitle] = useState(card.title);
-
-    const backgroundSelectorRef = useRef<BackgroundSelectorRef>(null);
-
-    const handleSave = async () => {
-        if (!card.$id) return;
-
-        const markdownContent = htmlToMd(editedHtml);
-
-        if (markdownContent === card.content && title == card.title) {
-            Alert.alert("Değişiklik Yok", "Herhangi bir değişiklik yapmadınız.");
-            onCancel();
-            return;
-        }
-
-        try {
-            await updateCard(card.$id, { title: title, content: markdownContent });
-            card.title = title;
-            card.content = markdownContent;
-            onCancel();
-        } catch (error) {
-            console.error("Kaydetme hatası:", error);
-            Alert.alert("Hata", "Not kaydedilirken bir sorun oluştu.");
-        }
-    };
-
-    return (
-        <ScrollView className="flex-1">
-            <View className="mb-2">
-                <View>
-                    <View>
-                        <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Title</Text>
-                        <TextInput
-                            value={title}
-                            onChangeText={setTitle}
-                            placeholder="Başlık Girin"
-                            placeholderTextColor={colors.stone['600']}
-                            className="w-full text-stone-400 font-dmsans-bold text-xl p-3 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900/50"
-                        />
-                    </View>
-
-                    <BackgroundSelector ref={backgroundSelectorRef} card={card} />
-                </View>
-            </View>
-            <RichToolbar
-                editor={richText}
-                actions={[
-                    actions.setBold,
-                    actions.setItalic,
-                    actions.setUnderline,
-                    actions.setStrikethrough,
-                    actions.removeFormat,
-                    actions.heading1,
-                    actions.heading2,
-                    actions.heading3,
-                    actions.heading4,
-                    actions.heading5,
-                    actions.heading6,
-                    actions.alignLeft,
-                    actions.alignCenter,
-                    actions.alignRight,
-                    actions.insertBulletsList,
-                    actions.insertOrderedList,
-                    actions.insertLink,
-                    actions.blockquote,
-                    actions.code,
-                    actions.undo,
-                    actions.redo
-                ]}
-                style={{
-                    backgroundColor: '#1c1917',
-                    borderColor: colors.stone[700],
-                    borderWidth: 2,
-                    borderRadius: 12,
-                    marginBottom: 8,
-                }}
-                selectedIconTint={colors.sky[400]}
-                iconTint={colors.stone[400]}
-            />
-
-            <ScrollView className="flex-1 mb-4">
-                <RichEditor
-                    ref={richText}
-                    initialContentHTML={initialHtml}
-                    onChange={setEditedHtml}
-                    placeholder="Notunuzu buraya yazın..."
-                    containerStyle={{
-                        backgroundColor: '#1c1917',
-                        borderRadius: 12,
-                        borderColor: colors.stone[700] + '80',
-                        borderWidth: 4,
-                        minHeight: 300,
-                    }}
-                    editorStyle={{
-                        backgroundColor: '#1c1917',
-                        color: '#d6d3d1',
-                        placeholderColor: colors.stone[600],
-                        contentCSSText: `
-                            font-family: 'DMSans-Regular', sans-serif;
-                            font-size: 16px;
-                            line-height: 1.5;
-                            padding: 16px;
-                        `
-                    }}
-                />
-            </ScrollView>
-
-            <View className="flex-row gap-2">
-                <TouchableOpacity
-                    className="flex-1 bg-stone-700 p-4 rounded-xl border-solid border-stone-700/50 border-4"
-                    onPress={onCancel}
-                >
-                    <Text className="text-white font-dmsans-bold text-lg text-center">İptal</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    className="flex-1 bg-green-700 p-4 rounded-xl border-solid border-green-800/50 border-4"
-                    onPress={handleSave}
-                >
-                    <Text className="text-white font-dmsans-bold text-lg text-center">Kaydet</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
-    );
-}
+// NoteEditor fonksiyonunu sildik, yerine C_NoteEditor kullanıyoruz
 
 const NoteDetail = ({ card }: { card: ICard }) => {
     const [isEditing, setIsEditing] = useState(false);
 
+    const handleUpdate = async (data: any) => {
+        if (!card.$id) return;
+
+        // Değişiklik kontrolü (opsiyonel ama iyi olur)
+        if (data.content === card.content && data.title === card.title &&
+            data.background === card.background && data.isLarge === card.isLarge &&
+            data.parentFolder === card.parentFolder) {
+            Alert.alert("Değişiklik Yok", "Herhangi bir değişiklik yapmadınız.");
+            setIsEditing(false);
+            return;
+        }
+
+        try {
+            await updateCard(card.$id, {
+                title: data.title,
+                content: data.content,
+                background: data.background,
+                isLarge: data.isLarge,
+                // parentFolder güncellemesi gerekirse buraya eklenebilir
+                // appwrite.ts içindeki updateCard fonksiyonuna parentFolder desteği eklemen gerekebilir.
+            });
+
+            // UI'ı güncelle
+            card.title = data.title;
+            card.content = data.content;
+            card.background = data.background;
+            card.isLarge = data.isLarge;
+
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Kaydetme hatası:", error);
+            Alert.alert("Hata", "Not güncellenirken bir sorun oluştu.");
+        }
+    };
+
     if (isEditing) {
-        return <NoteEditor card={card} onCancel={() => setIsEditing(false)} />;
+        return (
+            <NoteEditor
+                initialData={card}
+                onSave={handleUpdate}
+                onCancel={() => setIsEditing(false)}
+                saveButtonLabel="Güncelle"
+            />
+        );
     }
 
     return <NoteViewer card={card} onEdit={() => setIsEditing(true)} />;
