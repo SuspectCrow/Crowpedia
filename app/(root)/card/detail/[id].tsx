@@ -45,7 +45,7 @@ const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh:
 
     switch (card.type) {
         case "Event":
-            return <EventDetail card={card} parsedCardContent={parsedCardContent} />;
+            return <EventDetail card={card} parsedCardContent={parsedCardContent} onRefresh={onRefresh} />;
         case "Objective":
             return <ObjectiveDetail card={card} parsedCardContent={parsedCardContent} onRefresh={onRefresh} />;
         case "Note":

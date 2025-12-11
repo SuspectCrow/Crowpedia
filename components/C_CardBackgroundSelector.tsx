@@ -197,7 +197,7 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
 
                                         <ColorPicker
                                             style={{ width: '100%', marginBottom: 20 }}
-                                            value={card.background}
+                                            value={tempColor}
                                             onChangeJS={({ hex }) => setTempColor(hex)}
                                         >
                                             <Preview style={{ marginBottom: 12 }}/>

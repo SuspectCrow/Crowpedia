@@ -1,12 +1,13 @@
 import {ICard} from "@/interfaces/ICard";
 import React, {useRef, useState} from "react";
 import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
-import {Alert, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import colors from "tailwindcss/colors";
 import htmlToMd from "html-to-md";
 import {updateCard} from "@/lib/appwrite";
 import showdown from "showdown";
 import { MaterialIcons } from "@expo/vector-icons";
+import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
 
 const converter = new showdown.Converter();
 
@@ -60,22 +61,25 @@ const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel:  () => void }) 
     const richText = useRef<RichEditor>(null);
     const initialHtml = converter.makeHtml(card.content ?? '');
     const [editedHtml, setEditedHtml] = useState(initialHtml);
+    const [title, setTitle] = useState(card.title);
+
+    const backgroundSelectorRef = useRef<BackgroundSelectorRef>(null);
 
     const handleSave = async () => {
         if (!card.$id) return;
 
         const markdownContent = htmlToMd(editedHtml);
 
-        if (markdownContent === card.content) {
+        if (markdownContent === card.content && title == card.title) {
             Alert.alert("Değişiklik Yok", "Herhangi bir değişiklik yapmadınız.");
             onCancel();
             return;
         }
 
         try {
-            await updateCard(card.$id, { content: markdownContent });
+            await updateCard(card.$id, { title: title, content: markdownContent });
+            card.title = title;
             card.content = markdownContent;
-            Alert. alert("Başarılı", "Notunuz güncellendi.");
             onCancel();
         } catch (error) {
             console.error("Kaydetme hatası:", error);
@@ -84,7 +88,23 @@ const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel:  () => void }) 
     };
 
     return (
-        <View className="flex-1">
+        <ScrollView className="flex-1">
+            <View className="mb-2">
+                <View>
+                    <View>
+                        <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Title</Text>
+                        <TextInput
+                            value={title}
+                            onChangeText={setTitle}
+                            placeholder="Başlık Girin"
+                            placeholderTextColor={colors.stone['600']}
+                            className="w-full text-stone-400 font-dmsans-bold text-xl p-3 rounded-xl border-solid border-4 border-stone-700/50 bg-stone-900/50"
+                        />
+                    </View>
+
+                    <BackgroundSelector ref={backgroundSelectorRef} card={card} />
+                </View>
+            </View>
             <RichToolbar
                 editor={richText}
                 actions={[
@@ -162,7 +182,7 @@ const NoteEditor = ({ card, onCancel }: { card: ICard, onCancel:  () => void }) 
                     <Text className="text-white font-dmsans-bold text-lg text-center">Kaydet</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
