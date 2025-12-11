@@ -1,29 +1,75 @@
 import { ICard } from "@/interfaces/ICard";
-import { Alert, Linking, View, Text, TouchableOpacity, Image, Modal, TextInput, ActivityIndicator } from "react-native";
+import {
+    Alert,
+    Linking,
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    Modal,
+    TextInput,
+    ActivityIndicator,
+    Switch
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { MovieCard } from "@/components/C_MovieCard";
-import { useState, useCallback } from "react";
+import { MediaCard } from "@/components/C_MediaCard";
+import React, {useState, useCallback, useRef} from "react";
 import colors from "tailwindcss/colors";
-import { searchMovies } from "@/lib/tmdbapi";
+import { searchMedia } from "@/lib/tmdbapi";
 import { updateCard } from "@/lib/appwrite";
 import { MaterialIcons } from "@expo/vector-icons";
+import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
 
 const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, parsedCardContent: any, onRefresh: () => void }) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [isAddMode, setIsAddMode] = useState(false);
-    const [selectedMovie, setSelectedMovie] = useState<any>(null);
+    const [selectedMedia, setSelectedMedia] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [searchType, setSearchType] = useState<'movie' | 'tv'>('movie');
 
-    const handleMoviePress = async (movieItem: any) => {
-        if (!movieItem?.metadata?.fragman) {
+    const [title, setTitle] = useState(card.title);
+
+    const backgroundSelectorRef = useRef<BackgroundSelectorRef>(null);
+
+    const handleSave = async () => {
+        if (isEditMode){
+            setIsSaving(true);
+            try {
+                if (backgroundSelectorRef.current) {
+                    await backgroundSelectorRef.current.save();
+                }
+
+                await updateCard(card.$id, {
+                    title: title
+                });
+
+                card.title = title;
+
+                onRefresh();
+
+                setIsEditMode(false);
+
+            } catch (error) {
+                console.error("Ekleme hatası:", error);
+                Alert.alert("Hata", "Görev güncellenirken bir sorun oluştu.");
+            } finally {
+                setIsSaving(false);
+            }
+        } else {
+            setIsEditMode(true);
+        }
+    }
+
+    const handleMediaPress = async (mediaItem: any) => {
+        if (!mediaItem?.metadata?.fragman) {
             Alert.alert("Hata", "Fragman linki bulunamadı.");
             return;
         }
 
-        let targetUrl = movieItem.metadata.fragman.trim();
+        let targetUrl = mediaItem.metadata.fragman.trim();
         if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
             targetUrl = 'https://' + targetUrl;
         }
@@ -40,11 +86,11 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
         }
     };
 
-    const handleMovieLongPress = (movieItem: any) => {
-        setSelectedMovie(movieItem);
+    const handleMediaLongPress = (mediaItem: any) => {
+        setSelectedMedia(mediaItem);
     };
 
-    const handleDeleteMovie = async (externalId: string) => {
+    const handleDeleteMedia = async (externalId: string) => {
         Alert.alert(
             "Film Sil",
             "Bu filmi listeden silmek istediğinize emin misiniz?",
@@ -84,7 +130,7 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
 
         setIsSearching(true);
         try {
-            const results = await searchMovies(query);
+            const results = await searchMedia(query, searchType);
             setSearchResults(results?.results || []);
         } catch (error) {
             Alert.alert("Hata", "Arama sırasında bir hata oluştu.");
@@ -92,21 +138,33 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
         } finally {
             setIsSearching(false);
         }
-    }, []);
+    }, [searchType]);
 
-    const handleAddMovie = async (movie: any) => {
+    const handleAddMedia = async (item: any) => {
         try {
             setIsSaving(true);
 
+            const title = item.title || item.name;
+            const originalTitle = item.original_title || item.original_name;
+            const releaseDate = item.release_date || item.first_air_date;
+
+            const currentMediaType = searchType;
+
+            if (!title) {
+                setIsSaving(false);
+                return;
+            }
+
             const newItem = {
-                externalId: `${movie.id}-${movie.title.toLowerCase().replace(/\s+/g, '-')}`,
+                externalId: `${currentMediaType}-${item.id}`,
                 metadata: {
-                    title: movie.title || movie.original_title,
-                    background: movie.backdrop_path ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}` : "",
-                    poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "",
-                    overview: movie.overview || "",
-                    rating: movie.vote_average || 0,
-                    release_date: movie.release_date || "",
+                    title: title || originalTitle,
+                    media_type: currentMediaType,
+                    background: item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : "",
+                    poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "",
+                    overview: item.overview || "",
+                    rating: item.vote_average || 0,
+                    release_date: releaseDate || "",
                     fragman: ""
                 },
                 rating: 0
@@ -117,15 +175,12 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
             );
 
             if (existingItem) {
-                Alert.alert("Uyarı", "Bu film zaten listede mevcut!");
+                Alert.alert("Uyarı", "Bu içerik zaten listede mevcut!");
                 return;
             }
 
             const updatedItems = [...parsedCardContent.items, newItem];
-            const updatedContent = {
-                ...parsedCardContent,
-                items: updatedItems
-            };
+            const updatedContent = { ...parsedCardContent, items: updatedItems };
 
             await updateCard(card.$id, { content: JSON.stringify(updatedContent) });
 
@@ -133,10 +188,10 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
             setSearchQuery("");
             setSearchResults([]);
             onRefresh();
+            Alert.alert("Başarılı", "Listeye eklendi!");
 
-            Alert.alert("Başarılı", "Film listeye eklendi!");
         } catch (error) {
-            Alert.alert("Hata", "Film eklenirken bir hata oluştu.");
+            Alert.alert("Hata", "Ekleme sırasında hata oluştu.");
         } finally {
             setIsSaving(false);
         }
@@ -152,27 +207,27 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
         );
     }
 
-    const movieItems = parsedCardContent.items;
+    const mediaItems = parsedCardContent.items;
 
     return (
         <View className="flex-1">
             <FlashList
-                data={movieItems}
+                data={mediaItems}
                 numColumns={2}
                 renderItem={({ item, index } : any) => (
                     <View className="relative">
-                        <MovieCard
+                        <MediaCard
                             card={card}
-                            movieItem={item}
-                            onPress={() => !isEditMode && handleMoviePress(item)}
-                            onLongPress={() => handleMovieLongPress(item)}
+                            mediaItem={item}
+                            onPress={() => !isEditMode && handleMediaPress(item)}
+                            onLongPress={() => handleMediaLongPress(item)}
                         />
                         {isEditMode && (
                             <TouchableOpacity
-                                className="absolute top-3 right-3 bg-red-600 rounded-full p-2 z-10"
-                                onPress={() => handleDeleteMovie(item.externalId)}
+                                className="absolute top-3 right-3 bg-red-600 rounded-md p-1 z-10"
+                                onPress={() => handleDeleteMedia(item.externalId)}
                             >
-                                <MaterialIcons name={"star"} size={24} style={{ color: 'white' }}/>
+                                <MaterialIcons name={"delete"} size={24} style={{ color: 'white' }}/>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -182,18 +237,34 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                 ListHeaderComponent={
                     <View className="px-2 py-3">
                         <View className="flex-row items-center justify-center gap-3">
-                            <Text className="text-2xl font-dmsans-bold text-stone-400 text-center">
-                                {card.title}
-                            </Text>
+                            {
+                                isEditMode ? (
+                                    <TextInput
+                                        value={title}
+                                        onChangeText={setTitle}
+                                        placeholder="Enter a title"
+                                        className="text-2xl font-dmsans-bold text-stone-600 text-center"
+                                    ></TextInput>
+                                ) : (
+                                    <Text className="text-2xl font-dmsans-bold text-stone-400 text-center">
+                                        {title}
+                                    </Text>
+                                )
+                            }
                             <TouchableOpacity
-                                onPress={() => setIsEditMode(!isEditMode)}
-                                className="bg-stone-700 rounded-lg p-2"
+                                onPress={() => handleSave()}
+                                className= {`${isEditMode ? "bg-green-600" : "bg-stone-700"} rounded-lg p-2`}
                             >
-                                <MaterialIcons name={isEditMode ? "check" : "edit-note"} className="size-6" style={{ color: colors.stone["300"] }}/>
+                                <MaterialIcons size={24} name={isEditMode ? "save" : "edit-note"} className="size-6" style={{ color: colors.stone["300"] }}/>
                             </TouchableOpacity>
                         </View>
+
+                        { isEditMode && (
+                            <BackgroundSelector ref={backgroundSelectorRef} card={card} />
+                        ) }
+
                         <Text className="text-sm font-dmsans-regular text-stone-500 text-center mt-1">
-                            {movieItems.length} film
+                            {mediaItems.length} film
                         </Text>
                     </View>
                 }
@@ -203,26 +274,21 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                 }}
             />
 
-            {/* Add Button */}
-            <TouchableOpacity
-                onPress={() => setIsAddMode(true)}
-                className="absolute bottom-6 right-6 bg-stone-600 rounded-full p-4 shadow-lg"
-                style={{ elevation: 5 }}
-            >
+            <TouchableOpacity onPress={() => setIsAddMode(true)}
+                className="absolute bottom-6 right-6 bg-stone-600 rounded-full p-4">
                 <MaterialIcons name={"add"} size={32} style={{ color: 'white' }}/>
             </TouchableOpacity>
 
-            {/* Movie Details Modal */}
             <Modal
-                visible={selectedMovie !== null}
+                visible={selectedMedia !== null}
                 transparent
                 animationType="fade"
-                onRequestClose={() => setSelectedMovie(null)}
+                onRequestClose={() => setSelectedMedia(null)}
             >
                 <TouchableOpacity
                     className="flex-1 bg-black/80 justify-center items-center p-6"
                     activeOpacity={1}
-                    onPress={() => setSelectedMovie(null)}
+                    onPress={() => setSelectedMedia(null)}
                 >
                     <TouchableOpacity
                         activeOpacity={1}
@@ -230,43 +296,43 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                         onPress={(e) => e.stopPropagation()}
                     >
                         <View className="flex-row items-start gap-4 mb-4">
-                            {selectedMovie?.metadata?.poster && (
+                            {selectedMedia?.metadata?.poster && (
                                 <Image
-                                    source={{ uri: selectedMovie.metadata.poster }}
+                                    source={{ uri: selectedMedia.metadata.poster }}
                                     className="w-24 h-36 rounded-lg"
                                     resizeMode="cover"
                                 />
                             )}
                             <View className="flex-1">
                                 <Text className="text-white font-dmsans-bold text-xl mb-2">
-                                    {selectedMovie?.metadata?.title}
+                                    {selectedMedia?.metadata?.title}
                                 </Text>
-                                {selectedMovie?.metadata?.release_date && (
+                                {selectedMedia?.metadata?.release_date && (
                                     <Text className="text-stone-400 font-dmsans-regular text-sm mb-2">
-                                        {new Date(selectedMovie.metadata.release_date).getFullYear()}
+                                        {new Date(selectedMedia.metadata.release_date).getFullYear()}
                                     </Text>
                                 )}
-                                {selectedMovie?.metadata?.rating > 0 && (
+                                {selectedMedia?.metadata?.rating > 0 && (
                                     <View className="flex-row items-center gap-1">
-                                        <MaterialIcons name={"star"} className="size-5" style={{ color: colors.yellow["400"] }}/>
+                                        <MaterialIcons name={"star"} size={18} style={{ color: colors.yellow["400"] }}/>
                                         <Text className="text-white font-dmsans-medium text-base">
-                                            {selectedMovie.metadata.rating.toFixed(1)}/10
+                                            {selectedMedia.metadata.rating.toFixed(1)}/10
                                         </Text>
                                     </View>
                                 )}
                             </View>
                         </View>
 
-                        {selectedMovie?.metadata?.overview && (
+                        {selectedMedia?.metadata?.overview && (
                             <View className="mb-4">
                                 <Text className="text-stone-300 font-dmsans-regular text-base leading-6">
-                                    {selectedMovie.metadata.overview}
+                                    {selectedMedia.metadata.overview}
                                 </Text>
                             </View>
                         )}
 
                         <TouchableOpacity
-                            onPress={() => setSelectedMovie(null)}
+                            onPress={() => setSelectedMedia(null)}
                             className="bg-stone-600 rounded-lg p-3 mt-2"
                         >
                             <Text className="text-white font-dmsans-bold text-center text-base">
@@ -277,7 +343,6 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                 </TouchableOpacity>
             </Modal>
 
-            {/* Add Movie Modal */}
             <Modal
                 visible={isAddMode}
                 transparent
@@ -292,8 +357,31 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                             setSearchQuery("");
                             setSearchResults([]);
                         }}>
-                            <MaterialIcons name={"star"} className="size-8" style={{ color: colors.stone["400"] }}/>
+                            <MaterialIcons name={"close"} size={32} style={{ color: colors.stone["400"] }}/>
                         </TouchableOpacity>
+                    </View>
+
+                    <View className="flex-row items-center justify-center py-4 bg-stone-900 border-b border-stone-800">
+                        <Text className={`font-dmsans-bold text-base mr-3 ${searchType === 'tv' ? 'text-white' : 'text-stone-500'}`}>
+                            Dizi
+                        </Text>
+
+                        <Switch
+                            trackColor={{ false: "#44403c", true: "#44403c" }}
+                            thumbColor={searchType === 'movie' ? "#16a34a" : "#dc2626"}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(value) => {
+                                const newType = value ? 'movie' : 'tv';
+                                setSearchType(newType);
+                                setSearchResults([]);
+                                setSearchQuery("");
+                            }}
+                            value={searchType === 'movie'}
+                        />
+
+                        <Text className={`font-dmsans-bold text-base ml-3 ${searchType === 'movie' ? 'text-white' : 'text-stone-500'}`}>
+                            Film
+                        </Text>
                     </View>
 
                     <View className="p-4">
@@ -320,39 +408,59 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                     ) : (
                         <FlashList
                             data={searchResults}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    className="flex-row p-4 bg-stone-800 m-2 rounded-lg border-2 border-stone-700"
-                                    onPress={() => handleAddMovie(item)}
-                                    disabled={isSaving}
-                                >
-                                    {item.poster_path && (
-                                        <Image
-                                            source={{ uri: `https://image.tmdb.org/t/p/w92${item.poster_path}` }}
-                                            className="w-16 h-24 rounded-md mr-3"
-                                            resizeMode="cover"
-                                        />
-                                    )}
-                                    <View className="flex-1">
-                                        <Text className="text-white font-dmsans-bold text-base mb-1">
-                                            {item.title || item.original_title}
-                                        </Text>
-                                        {item.release_date && (
-                                            <Text className="text-stone-400 font-dmsans-regular text-sm mb-2">
-                                                {new Date(item.release_date).getFullYear()}
-                                            </Text>
-                                        )}
-                                        {item.vote_average > 0 && (
-                                            <View className="flex-row items-center gap-1">
-                                                <MaterialIcons name={"star"} className="size-4" style={{ color: colors.yellow["400"] }}/>
-                                                <Text className="text-stone-300 font-dmsans-medium text-sm">
-                                                    {item.vote_average.toFixed(1)}
-                                                </Text>
+                            renderItem={({ item }) => {
+                                const displayTitle = searchType === 'movie' ? item.title : item.name;
+                                const displayDate = searchType === 'movie' ? item.release_date : item.first_air_date;
+
+                                if (!displayTitle) return null;
+
+                                return (
+                                    <TouchableOpacity
+                                        className="flex-row p-4 bg-stone-800 m-2 rounded-lg border-2 border-stone-700"
+                                        onPress={() => handleAddMedia(item)}
+                                        disabled={isSaving}
+                                    >
+                                        {item.poster_path ? (
+                                            <Image
+                                                source={{ uri: `https://image.tmdb.org/t/p/w92${item.poster_path}` }}
+                                                className="w-16 h-24 rounded-md mr-3"
+                                                resizeMode="cover"
+                                            />
+                                        ) : (
+                                            <View className="w-16 h-24 rounded-md mr-3 bg-stone-700 justify-center items-center">
+                                                <MaterialIcons name="movie" size={24} color="#78716c" />
                                             </View>
                                         )}
-                                    </View>
-                                </TouchableOpacity>
-                            )}
+
+                                        <View className="flex-1">
+                                            <Text className="text-white font-dmsans-bold text-base mb-1">
+                                                {displayTitle}
+                                            </Text>
+
+                                            {displayDate && (
+                                                <Text className="text-stone-400 font-dmsans-regular text-sm mb-2">
+                                                    {new Date(displayDate).getFullYear()}
+                                                </Text>
+                                            )}
+
+                                            {item.vote_average > 0 && (
+                                                <View className="flex-row items-center gap-1">
+                                                    <MaterialIcons name={"star"} className="size-4" style={{ color: colors.yellow["400"] }}/>
+                                                    <Text className="text-stone-300 font-dmsans-medium text-sm">
+                                                        {item.vote_average.toFixed(1)}
+                                                    </Text>
+
+                                                    {item.media_type === 'tv' && (
+                                                        <View className="bg-stone-600 px-1.5 py-0.5 rounded ml-2">
+                                                            <Text className="text-stone-300 text-[10px] font-bold">TV</Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            }}
                             keyExtractor={(item) => item.id.toString()}
                             showsVerticalScrollIndicator={false}
                             ListEmptyComponent={
@@ -375,7 +483,6 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
                 </View>
             </Modal>
 
-            {/* Saving Overlay */}
             {isSaving && (
                 <View className="absolute inset-0 bg-black/50 justify-center items-center">
                     <ActivityIndicator size="large" color="white" />

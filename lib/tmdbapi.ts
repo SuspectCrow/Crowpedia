@@ -7,7 +7,6 @@ export const TMDB_CONFIG = {
     }
 }
 
-// Temel film arama/keşfetme fonksiyonu
 export const fetchMovies = async ({ query }: { query: string }) => {
     const endpoint = query
         ? `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=tr-TR`
@@ -26,10 +25,8 @@ export const fetchMovies = async ({ query }: { query: string }) => {
     return data.results;
 }
 
-// Tek film detayı getirme
 export const fetchMovie = async (movieId: string) => {
     try {
-        // movieId format: "27205-inception" veya sadece "27205" olabilir
         const id = movieId.split('-')[0];
 
         const response = await fetch(
@@ -52,8 +49,7 @@ export const fetchMovie = async (movieId: string) => {
     }
 }
 
-// Film arama (CollectionDetail için)
-export const searchMovies = async (query: string) => {
+export const searchMedia = async (query: string, searchType: 'movie' | 'tv' | 'multi' = 'multi') => {
     try {
         if (!TMDB_CONFIG.API_KEY) {
             throw new Error("TMDB API anahtarı tanımlanmamış! Lütfen .env dosyasını kontrol edin.");
@@ -64,7 +60,7 @@ export const searchMovies = async (query: string) => {
         }
 
         const response = await fetch(
-            `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=tr-TR&page=1&include_adult=false`,
+            `${TMDB_CONFIG.BASE_URL}/search/${searchType}?query=${encodeURIComponent(query)}&language=tr-TR&page=1&include_adult=false`,
             {
                 method: "GET",
                 headers: TMDB_CONFIG.headers
@@ -81,12 +77,11 @@ export const searchMovies = async (query: string) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("Error searching movies:", error);
+        console.error("Error searching contents:", error);
         throw error;
     }
 }
 
-// Popüler filmler
 export const getTrendingMovies = async () => {
     try {
         if (!TMDB_CONFIG.API_KEY) {

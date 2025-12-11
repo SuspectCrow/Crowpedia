@@ -11,13 +11,13 @@ interface ICardProps {
     onPress?: () => void;
     onLongPress?: () => void;
     card: ICard;
-    movieItem: any;
+    mediaItem: any;
 }
 
-export const MovieCard = ({ card, onPress, onLongPress, movieItem }: ICardProps) => {
+export const MediaCard = ({ card, onPress, onLongPress, mediaItem }: ICardProps) => {
     const CardStyle = getCardStyle(card.type);
 
-    if (!movieItem || !movieItem.metadata) {
+    if (!mediaItem || !mediaItem.metadata) {
         return (
             <TouchableOpacity
                 className={`flex-row m-1 justify-start items-start gap-2 p-3 ${borderRadius} border-solid border-4 border-stone-700/50 bg-stone-900`}
@@ -29,7 +29,7 @@ export const MovieCard = ({ card, onPress, onLongPress, movieItem }: ICardProps)
         );
     }
 
-    const { metadata } = movieItem;
+    const { metadata } = mediaItem;
     const posterUrl = metadata.poster || metadata.background;
 
     return (
@@ -50,16 +50,16 @@ export const MovieCard = ({ card, onPress, onLongPress, movieItem }: ICardProps)
             />
             <View className="absolute bottom-3 left-3 max-w-[75%]" style={{ zIndex: 2 }}>
                 <View className="flex flex-row justify-start items-end gap-2">
-                    <MaterialIcons name={"save"} size={24} className={`${CardStyle.iconClass}`} style={[{ color: colors.stone["100"] }, CardStyle.iconStyle]} />
+                    <MaterialIcons name={`${ metadata.media_type == 'movie' ? "movie" : "tv" }`} size={24} className={`${CardStyle.iconClass}`} style={[{ color: colors.stone["100"] }, CardStyle.iconStyle]} />
                     <Text className="font-dmsans-medium text-base text-stone-100/80 max-w-[80%]" numberOfLines={2}>
                         {metadata.title || "Unknown"}
                     </Text>
                 </View>
-                {!!movieItem.rating && (
+                {!!mediaItem.rating && (
                     <View className="flex flex-row items-center gap-1 mt-1">
                         <MaterialIcons name={"star"} className="size-4" style={{ color: colors.yellow["400"] }} />
                         <Text className="font-dmsans-regular text-sm text-stone-100/60">
-                            {movieItem.rating}/5
+                            {mediaItem.rating}/5
                         </Text>
                     </View>
                 )}

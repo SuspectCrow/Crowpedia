@@ -1,10 +1,11 @@
 import {ICard} from "@/interfaces/ICard";
 import {Alert, Image, Text, TextInput, TouchableOpacity, View} from "react-native";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import colors from "tailwindcss/colors";
 import {updateCard} from "@/lib/appwrite";
 import {MaterialIcons} from "@expo/vector-icons";
+import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
 
 const TZ = 'Europe/Istanbul';
 
@@ -56,6 +57,8 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
     const sd = toDate(stRaw);
     const ed = toDate(etRaw);
 
+    const backgroundSelectorRef = useRef<BackgroundSelectorRef>(null);
+
     const handleSave = async () => {
         setIsSaving(true);
         try {
@@ -71,6 +74,8 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
 
             card.content = updatedContent;
             card.title = title;
+
+            await backgroundSelectorRef.current?.save();
 
             onRefresh();
             setIsEditing(false);
@@ -99,9 +104,8 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
         if (isEditing) {
             return (
                 <View className="mx-4 mt-4">
-                    {/* Title */}
                     <View className="mb-4">
-                        <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Başlık</Text>
+                        <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Title</Text>
                         <TextInput
                             value={title}
                             onChangeText={setTitle}
@@ -111,7 +115,6 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
                         />
                     </View>
 
-                    {/* Start Date & End Date - Side by Side */}
                     <View className="flex-row gap-4 mb-4">
                         <View className="flex-1">
                             <TouchableOpacity
@@ -164,14 +167,15 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
                         </View>
                     </View>
 
-                    {/* Action Buttons */}
+                    <BackgroundSelector ref={backgroundSelectorRef} card={card} />
+
                     <View className="flex-row gap-4 mt-6">
                         <TouchableOpacity
                             className="flex-1 bg-stone-700 p-4 rounded-xl border-solid border-stone-800/50 border-4 items-center justify-center"
                             onPress={handleCancel}
                             disabled={isSaving}
                         >
-                            <Text className="text-white font-dmsans-bold text-xl">İptal</Text>
+                            <Text className="text-white font-dmsans-bold text-xl">Cancel</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -180,11 +184,11 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
                             disabled={isSaving}
                         >
                             {isSaving ? (
-                                <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
+                                <Text className="text-white font-dmsans-bold text-xl">Saving...</Text>
                             ) : (
                                 <View className="flex-row items-center gap-2">
-                                    <MaterialIcons name={"content-save"} size={24} style={{ color: 'white' }}/>
-                                    <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
+                                    <MaterialIcons name={"save"} size={24} style={{ color: 'white' }}/>
+                                    <Text className="text-white font-dmsans-bold text-xl">Save</Text>
                                 </View>
                             )}
                         </TouchableOpacity>
@@ -222,7 +226,7 @@ const ObjectiveDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard, 
                     onPress={() => setIsEditing(true)}
                 >
                     <View className="flex-row items-center gap-2">
-                        <MaterialIcons name={"note-edit"} className="size-6" style={{ color: 'white' }}/>
+                        <MaterialIcons name={"edit-note"} size={24} style={{ color: 'white' }}/>
                         <Text className="text-white font-dmsans-bold text-xl">Düzenle</Text>
                     </View>
                 </TouchableOpacity>

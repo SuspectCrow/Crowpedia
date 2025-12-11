@@ -72,7 +72,7 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                     setIsSaving(false);
                 }
             }
-        }));
+        }), [isLargeCard, imageUrl, selectedColor, card]);
 
         const handleConfirm = () => {
             setSelectedColor(tempColor);
