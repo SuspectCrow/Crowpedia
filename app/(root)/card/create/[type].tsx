@@ -8,6 +8,12 @@ import {MaterialIcons} from "@expo/vector-icons";
 // NoteCreate dosyanın yolunun ve adının doğru olduğundan emin ol
 import NoteCreate from "@/app/(root)/card/create/Sections/NoteCreate";
 import TaskListCreate from "@/app/(root)/card/create/Sections/TaskListCreate";
+import EventCreate from "@/app/(root)/card/create/Sections/EventCreate";
+import LinkCreate from "@/app/(root)/card/create/Sections/LinkCreate";
+import ObjectiveCreate from "@/app/(root)/card/create/Sections/ObjectiveCreate";
+import SimpleTaskCreate from "@/app/(root)/card/create/Sections/SimpleTaskCreate";
+import CollectionCreate from "@/app/(root)/card/create/Sections/CollectionCreate";
+import FolderCreate from "@/app/(root)/card/create/Sections/FolderCreate";
 
 const CreateCard = () => {
     const { type } = useLocalSearchParams<{ type?: string }>();
@@ -15,20 +21,22 @@ const CreateCard = () => {
     const CardCreationContent = () => {
         switch (type) {
             case 'Note':
-                return (
-                    <NoteCreate
-                        onClose={() => router.back()}
-                        onSuccess={() => router.back()}
-                    />
-                );
-
+                return (<NoteCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
             case 'TaskList':
-                return (
-                    <TaskListCreate
-                        onClose={() => router.back()}
-                        onSuccess={() => router.back()}
-                    />
-                );
+                return (<TaskListCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+            case 'Event':
+                return (<EventCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+            case 'Link':
+                return (<LinkCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+            case 'Objective':
+                return (<ObjectiveCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+            case 'SimpleTask':
+                return (<SimpleTaskCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+            case 'Collection':
+                return (<CollectionCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+            case 'Folder':
+                return (<FolderCreate onClose={() => router.back()} onSuccess={() => router.back()}/>);
+
             default:
                 return <Text className="text-white text-center mt-10">Bilinmeyen Tür</Text>;
         }

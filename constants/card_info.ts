@@ -32,6 +32,8 @@ export const getCardIcon = (type: string | undefined) => {
             return "notifications";
         case "Event":
             return "event";
+        case "Collection":
+                return "collections-bookmark";
         default:
             return "note";
     }

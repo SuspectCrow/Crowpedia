@@ -46,10 +46,13 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
 
     // BackgroundSelector için başlangıç verisi hazırlığı
     const initialCardMock = {
+        $id: '',
+        order: 10,
+        title: '',
+        type: 'Note',
+        content: '',
         background: initialData?.background || '#333',
         isLarge: initialData?.isLarge || false,
-        // Diğer zorunlu alanlar için dummy değerler
-        $id: '', $collectionId: '', $databaseId: '', $createdAt: '', $updatedAt: '', permissions: [], title: '', type: 'Note'
     } as ICard;
 
     const handleSavePress = async () => {

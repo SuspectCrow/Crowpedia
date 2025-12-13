@@ -4,7 +4,7 @@ import {MaterialIcons} from "@expo/vector-icons";
 
 interface Props {
     onPress?: () => void;
-    icon: any;
+    icon: keyof typeof MaterialIcons.glyphMap;
     dimensions?: {
         w: number;
         h: number;
