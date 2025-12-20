@@ -48,7 +48,7 @@ const FolderCreate = ({ onClose, onSuccess }: FolderCreateProps) => {
             const newCardData: ICard = {
                 title: title.trim(),
                 type: 'Folder',
-                content: '', // Klasör içeriği boştur (çocukları parentFolder ID ile bağlanır)
+                content: '',
                 background: backgroundData.background,
                 isLarge: backgroundData.isLarge,
                 parentFolder: selectedFolderId,
@@ -83,7 +83,6 @@ const FolderCreate = ({ onClose, onSuccess }: FolderCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Klasör Adı</Text>
                     <TextInput
@@ -95,7 +94,6 @@ const FolderCreate = ({ onClose, onSuccess }: FolderCreateProps) => {
                     />
                 </View>
 
-                {/* Parent Klasör Seçimi */}
                 <View className="mb-6">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -103,7 +101,6 @@ const FolderCreate = ({ onClose, onSuccess }: FolderCreateProps) => {
                     />
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-8">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -113,7 +110,6 @@ const FolderCreate = ({ onClose, onSuccess }: FolderCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

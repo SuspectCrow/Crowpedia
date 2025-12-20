@@ -27,7 +27,6 @@ const dateToTimestamp = (d: Date | null): string => {
 const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
     const [title, setTitle] = useState('');
 
-    // Tarih State'leri
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [showStartPicker, setShowStartPicker] = useState(false);
@@ -54,7 +53,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
             return;
         }
 
-        // Bitiş tarihi başlangıçtan önce mi kontrolü (Opsiyonel ama mantıklı)
         if (endDate < startDate) {
             Alert.alert("Hata", "Bitiş tarihi başlangıç tarihinden önce olamaz.");
             return;
@@ -69,7 +67,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                 backgroundData = backgroundSelectorRef.current.getValues();
             }
 
-            // İçeriği JSON string olarak hazırlıyoruz
             const contentObj = {
                 startdate: dateToTimestamp(startDate),
                 enddate: dateToTimestamp(endDate)
@@ -113,7 +110,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Başlık</Text>
                     <TextInput
@@ -125,7 +121,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                     />
                 </View>
 
-                {/* Klasör Seçimi */}
                 <View className="mb-6">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -133,11 +128,9 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                     />
                 </View>
 
-                {/* Tarih Seçimi */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Tarih Aralığı</Text>
                     <View className="flex-row gap-4">
-                        {/* Başlangıç Tarihi */}
                         <View className="flex-1">
                             <Text className="text-stone-500 font-dmsans-medium text-sm mb-1">Başlangıç</Text>
                             <TouchableOpacity
@@ -158,7 +151,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                                         setShowStartPicker(false);
                                         if (selectedDate) {
                                             setStartDate(selectedDate);
-                                            // Eğer bitiş tarihi başlangıçtan geride kalırsa onu da güncelle
                                             if (selectedDate > endDate) {
                                                 setEndDate(selectedDate);
                                             }
@@ -168,12 +160,10 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                             )}
                         </View>
 
-                        {/* Ok İşareti */}
                         <View className="justify-center mt-6">
                             <MaterialIcons name="arrow-right-alt" size={24} color={colors.stone[500]} />
                         </View>
 
-                        {/* Bitiş Tarihi */}
                         <View className="flex-1">
                             <Text className="text-stone-500 font-dmsans-medium text-sm mb-1">Bitiş</Text>
                             <TouchableOpacity
@@ -202,7 +192,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                     </View>
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-8">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -212,7 +201,6 @@ const ObjectiveCreate = ({ onClose, onSuccess }: ObjectiveCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

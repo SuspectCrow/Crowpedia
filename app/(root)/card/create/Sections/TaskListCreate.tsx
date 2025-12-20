@@ -70,12 +70,11 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                 backgroundData = backgroundSelectorRef.current.getValues();
             }
 
-            // Task listesini JSON string'e çeviriyoruz
             const contentString = JSON.stringify(taskList);
 
             const newCardData: ICard = {
                 title: title,
-                type: 'TaskList', // Tip TaskList olarak ayarlandı
+                type: 'TaskList',
                 content: contentString,
                 background: backgroundData.background,
                 isLarge: backgroundData.isLarge,
@@ -111,7 +110,6 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık Alanı */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Başlık</Text>
                     <TextInput
@@ -123,7 +121,6 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                     />
                 </View>
 
-                {/* Klasör Seçimi */}
                 <View className="mb-6">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -131,7 +128,6 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                     />
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -140,11 +136,9 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                     />
                 </View>
 
-                {/* Görev Ekleme Alanı */}
                 <View className="mb-20">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Görevler</Text>
 
-                    {/* Ekleme Inputu */}
                     <View className="flex-row gap-2 mb-4">
                         <TextInput
                             className="flex-1 bg-stone-800 text-stone-200 p-3 rounded-xl border-solid border-stone-700/50 border-4 font-dmsans-regular text-base"
@@ -162,7 +156,6 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Liste Önizleme */}
                     {taskList.length > 0 ? (
                         <View style={{
                             backgroundColor: '#1c1917',
@@ -191,7 +184,6 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

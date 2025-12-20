@@ -56,15 +56,12 @@ const NoteViewer = ({ card, onEdit }: { card: ICard, onEdit: () => void }) => {
     );
 };
 
-// NoteEditor fonksiyonunu sildik, yerine C_NoteEditor kullanıyoruz
-
 const NoteDetail = ({ card }: { card: ICard }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const handleUpdate = async (data: any) => {
         if (!card.$id) return;
 
-        // Değişiklik kontrolü (opsiyonel ama iyi olur)
         if (data.content === card.content && data.title === card.title &&
             data.background === card.background && data.isLarge === card.isLarge &&
             data.parentFolder === card.parentFolder) {
@@ -79,11 +76,8 @@ const NoteDetail = ({ card }: { card: ICard }) => {
                 content: data.content,
                 background: data.background,
                 isLarge: data.isLarge,
-                // parentFolder güncellemesi gerekirse buraya eklenebilir
-                // appwrite.ts içindeki updateCard fonksiyonuna parentFolder desteği eklemen gerekebilir.
             });
 
-            // UI'ı güncelle
             card.title = data.title;
             card.content = data.content;
             card.background = data.background;

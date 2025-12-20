@@ -28,7 +28,6 @@ const dateToTimestamp = (d: Date | null): string => {
 };
 
 const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
-    // Form State'leri
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [location, setLocation] = useState('');
@@ -36,7 +35,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
     const [importance, setImportance] = useState('1');
     const [eventDate, setEventDate] = useState(new Date());
 
-    // UI State'leri
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -69,7 +67,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                 backgroundData = backgroundSelectorRef.current.getValues();
             }
 
-            // İçeriği EventDetail formatına uygun JSON string'e çeviriyoruz
             const contentObj = {
                 timestamp: dateToTimestamp(eventDate),
                 description: description.trim(),
@@ -116,7 +113,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık */}
                 <View className="mb-4">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Başlık</Text>
                     <TextInput
@@ -128,7 +124,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                     />
                 </View>
 
-                {/* Klasör Seçimi */}
                 <View className="mb-4">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -136,7 +131,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                     />
                 </View>
 
-                {/* Açıklama */}
                 <View className="mb-4">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Açıklama</Text>
                     <TextInput
@@ -150,7 +144,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                     />
                 </View>
 
-                {/* Konum ve Online Switch */}
                 <View className="mb-4">
                     <View className="flex-row items-center justify-between mb-2">
                         <Text className="text-stone-400 font-dmsans-bold text-xl">
@@ -175,13 +168,11 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                     />
                 </View>
 
-                {/* Önem Derecesi */}
                 <View className="mb-4">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Önem Derecesi (1-5)</Text>
                     <TextInput
                         value={importance}
                         onChangeText={(text) => {
-                            // Sadece rakam ve 1-5 arası kontrolü
                             if (text === '' || (/^[1-5]$/.test(text))) {
                                 setImportance(text);
                             }
@@ -194,7 +185,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                     />
                 </View>
 
-                {/* Tarih ve Saat Seçimi */}
                 <View className="flex-row gap-4 mb-6">
                     <View className="flex-1">
                         <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Tarih</Text>
@@ -256,7 +246,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                     </View>
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-20">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -266,7 +255,6 @@ const EventCreate = ({ onClose, onSuccess }: EventCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

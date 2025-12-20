@@ -63,7 +63,7 @@ const LinkDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void })
                     <Text className="text-white font-dmsans-bold text-xl">Kaydediliyor...</Text>
                 ) : (
                     <View className="flex-row items-center gap-2">
-                        <MaterialIcons name={"content-save"} className="size-6" style={[{ color: '#fff' }]}/>
+                        <MaterialIcons name={'save'} className="size-6" style={[{ color: '#fff' }]}/>
                         <Text className="text-white font-dmsans-bold text-xl">Kaydet</Text>
                     </View>
                 )}

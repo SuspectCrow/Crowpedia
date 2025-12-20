@@ -13,8 +13,6 @@ interface NoteCreateProps {
 const NoteCreate = ({ onClose, onSuccess }: NoteCreateProps) => {
 
     const handleCreate = async (data: any) => {
-        // data parametresi NoteEditor'den gelen { title, content, background, isLarge, parentFolder } objesidir.
-
         const newCardData: ICard = {
             title: data.title,
             type: 'Note',

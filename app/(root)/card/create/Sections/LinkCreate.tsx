@@ -73,7 +73,7 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
             const newCardData: ICard = {
                 title: title.trim(),
                 type: 'Link',
-                content: link.trim(), // Link içeriği content alanına kaydedilir
+                content: link.trim(),
                 background: backgroundData.background,
                 isLarge: backgroundData.isLarge,
                 parentFolder: selectedFolderId,
@@ -108,7 +108,6 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Başlık</Text>
                     <TextInput
@@ -120,7 +119,6 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
                     />
                 </View>
 
-                {/* Klasör Seçimi */}
                 <View className="mb-6">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -128,7 +126,6 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
                     />
                 </View>
 
-                {/* Link Input */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">URL Adresi</Text>
                     <View className="flex-row items-center gap-2">
@@ -150,7 +147,6 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
                     </View>
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-8">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -160,7 +156,6 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

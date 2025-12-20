@@ -26,6 +26,7 @@ import SimpleTaskDetail from "@/app/(root)/card/detail/Sections/SimpleTaskDetail
 import CollectionDetail from "@/app/(root)/card/detail/Sections/CollectionDetail";
 import {MaterialIcons} from "@expo/vector-icons";
 import FolderDetail from "@/app/(root)/card/detail/Sections/FolderDetail";
+import PasswordDetail from "@/app/(root)/card/detail/Sections/PasswordDetail";
 
 
 const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh: () => void }) => {
@@ -61,6 +62,8 @@ const CardDetailContent = ({ card, onRefresh }: { card: ICard | null, onRefresh:
             return <CollectionDetail card={card} parsedCardContent={parsedCardContent} onRefresh={onRefresh} />
         case "Folder":
             return <FolderDetail card={card} onRefresh={onRefresh} />
+        case "Password":
+            return <PasswordDetail card={card} onRefresh={onRefresh} />
         default:
             return (
                 <Text className="font-dmsans-black text-4xl text-red-600">

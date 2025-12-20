@@ -49,7 +49,7 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: SimpleTaskCreateProps) => {
             const newCardData: ICard = {
                 title: title.trim(),
                 type: 'SimpleTask',
-                content: String(isDone), // true/false durumunu string olarak saklıyoruz
+                content: String(isDone),
                 background: backgroundData.background,
                 isLarge: backgroundData.isLarge,
                 parentFolder: selectedFolderId,
@@ -84,7 +84,6 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: SimpleTaskCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Başlık</Text>
                     <TextInput
@@ -96,7 +95,6 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: SimpleTaskCreateProps) => {
                     />
                 </View>
 
-                {/* Klasör Seçimi */}
                 <View className="mb-6">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -104,7 +102,6 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: SimpleTaskCreateProps) => {
                     />
                 </View>
 
-                {/* Durum (Tamamlandı mı?) */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Durum</Text>
                     <TouchableOpacity
@@ -128,7 +125,6 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: SimpleTaskCreateProps) => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-8">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -138,7 +134,6 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: SimpleTaskCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

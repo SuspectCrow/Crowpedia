@@ -33,10 +33,8 @@ const FolderDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void 
         setIsSaving(true);
         try {
             if (backgroundSelectorRef.current) {
-                // Selector'den değerleri al
                 const bgData = backgroundSelectorRef.current.getValues();
 
-                // Tek seferde güncelle
                 await updateCard(card.$id, {
                     title: title,
                     parentFolder: selectedFolderId,
@@ -44,20 +42,18 @@ const FolderDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void 
                     isLarge: bgData.isLarge
                 });
 
-                // Local card objesini güncelle (UI anlık değişsin diye)
                 card.title = title;
-                card.parentFolder = selectedFolderId;
+                card.parentFolder = selectedFolderId!;
                 card.background = bgData.background;
                 card.isLarge = bgData.isLarge;
 
             } else {
-                // Selector yüklenmediyse sadece bunları güncelle
                 await updateCard(card.$id, {
                     title: title,
                     parentFolder: selectedFolderId
                 });
                 card.title = title;
-                card.parentFolder = selectedFolderId;
+                card.parentFolder = selectedFolderId!;
             }
 
             onRefresh();
@@ -73,7 +69,6 @@ const FolderDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void 
 
     return (
         <View className="mx-4 mt-4">
-            {/* Başlık Düzenleme */}
             <View className="mb-4">
                 <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Klasör Adı</Text>
                 <TextInput
@@ -85,7 +80,6 @@ const FolderDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void 
                 />
             </View>
 
-            {/* Klasör Konumu Değiştirme */}
             <View className="mb-4">
                 <FolderSelector
                     selectedFolderId={selectedFolderId}
@@ -93,13 +87,11 @@ const FolderDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void 
                 />
             </View>
 
-            {/* Arka Plan ve Boyut */}
             <View className="mb-8">
                 <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                 <BackgroundSelector ref={backgroundSelectorRef} card={card} />
             </View>
 
-            {/* Kaydet Butonu */}
             <TouchableOpacity
                 className="bg-green-700 p-4 rounded-xl border-solid border-green-800/50 border-4 items-center justify-center mb-12"
                 onPress={handleSave}

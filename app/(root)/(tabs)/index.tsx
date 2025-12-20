@@ -1,7 +1,4 @@
 import {Text, View, TouchableOpacity, Alert, RefreshControl, ScrollView, Linking} from "react-native";
-import { FlashList } from "@shopify/flash-list";
-
-import { LargeCard, SmallCard } from "@/components/C_Card";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {useCallback, useState} from "react";
 import { useEffect } from "react";
@@ -14,9 +11,9 @@ import {ICard} from "@/interfaces/ICard";
 import CIconButton from "@/components/C_Button";
 import {MaterialIcons} from "@expo/vector-icons";
 import {CardTypeWrapper} from "@/components/C_CardTypeWrapper";
+import colors from "tailwindcss/colors";
 
-// Türlerin gösterim sırası
-const TYPE_ORDER = ['Event', 'Objective', 'TaskList', 'SimpleTask', 'Note', 'Link', 'Collection', 'Routine'];
+const TYPE_ORDER = ['Event', 'Objective', 'TaskList', 'SimpleTask', 'Note', 'Link', 'Collection', 'Password', 'Routine'];
 
 export default function Index() {
     const [quickButtonMenuVisibility, setQuickMenuButton] = useState(false);
@@ -104,7 +101,6 @@ export default function Index() {
     const folderList = cardList.filter(card => card.type === "Folder");
     const allCards = cardList.filter(card => card.type != "Folder");
 
-    // Kartları türlerine göre grupla
     const cardsByType = allCards.reduce((acc, card) => {
         const type = card.type || 'Other';
         if (!acc[type]) {
@@ -114,7 +110,6 @@ export default function Index() {
         return acc;
     }, {} as Record<string, ICard[]>);
 
-    // Türleri sıralı olarak diziye çevir (TYPE_ORDER'a göre)
     const sortedTypes = TYPE_ORDER.filter(type => cardsByType[type] && cardsByType[type].length > 0);
 
     const [refreshing, setRefreshing] = useState(false);
@@ -135,16 +130,28 @@ export default function Index() {
 
     return (
         <SafeAreaView className="p-1 h-full relative" style={{ backgroundColor: '#292524' }} >
-            <C_NavBar
-                activePaths={folderPath.map(f => f.name)}
-                OnPressBack={folderPath.length > 1 ? handleNavBarPressBack : undefined}
-            />
+            <View className="flex-row items-center justify-between px-4">
+                <View className="flex-1">
+                    <C_NavBar
+                        activePaths={folderPath.map(f => f.name)}
+                        OnPressBack={folderPath.length > 1 ? handleNavBarPressBack : undefined}
+                    />
+                </View>
+
+                <TouchableOpacity
+                    onPress={() => router.push('/settings')}
+                    className="p-3 ml-2 rounded-xl border-4 border-stone-700/50 bg-stone-900"
+                >
+                    <MaterialIcons name="settings" size={24} color={colors.stone[400]} />
+                </TouchableOpacity>
+            </View>
 
             <View className="absolute bottom-12 right-4 z-20 flex items-end justify-end gap-2 blur-lg">
                 {
                     quickButtonMenuVisibility && (
                         <View className="flex-col items-center justify-end gap-3 bg-stone-800 p-2 rounded-lg border-solid border-stone-700/50 border-4">
                             <CIconButton icon='create-new-folder' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Folder'}`); }} />
+                            <CIconButton icon='password' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Password'}`); }} />
                             <CIconButton icon='collections-bookmark' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Collection'}`); }} />
                             <CIconButton icon='add-task' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'SimpleTask'}`); }} />
                             <CIconButton icon='insert-chart-outlined' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Objective'}`); }} />
@@ -159,7 +166,7 @@ export default function Index() {
             </View>
 
             <ScrollView
-                className="mt-2 mb-2"
+                className="mt-4 mb-20"
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
@@ -170,7 +177,6 @@ export default function Index() {
                 }
                 showsVerticalScrollIndicator={false}
             >
-                {/* Folders Section */}
                 {folderList.length > 0 && (
                     <CardTypeWrapper
                         type="Folder"
@@ -181,7 +187,6 @@ export default function Index() {
                     />
                 )}
 
-                {/* Cards Grouped by Type */}
                 {sortedTypes.map(type => (
                     <CardTypeWrapper
                         key={type}
@@ -193,7 +198,6 @@ export default function Index() {
                     />
                 ))}
 
-                {/* Empty State */}
                 {folderList.length === 0 && sortedTypes.length === 0 && (
                     <View className="flex-1 items-center justify-center p-8 mt-20">
                         <MaterialIcons name="inbox" size={64} color="#57534e" />

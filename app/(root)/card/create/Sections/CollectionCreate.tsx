@@ -19,7 +19,7 @@ const PRESETS = [
 
 const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
     const [title, setTitle] = useState('');
-    const [selectedPreset, setSelectedPreset] = useState('media'); // Varsayılan: media
+    const [selectedPreset, setSelectedPreset] = useState('media');
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
 
@@ -50,10 +50,9 @@ const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
                 backgroundData = backgroundSelectorRef.current.getValues();
             }
 
-            // Collection yapısına uygun başlangıç content'i
             const contentObj = {
                 preset: selectedPreset,
-                items: [] // Başlangıçta boş liste
+                items: []
             };
 
             const newCardData: ICard = {
@@ -94,7 +93,6 @@ const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
-                {/* Başlık */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Başlık</Text>
                     <TextInput
@@ -106,7 +104,6 @@ const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
                     />
                 </View>
 
-                {/* Klasör Seçimi */}
                 <View className="mb-6">
                     <FolderSelector
                         selectedFolderId={selectedFolderId}
@@ -114,7 +111,6 @@ const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
                     />
                 </View>
 
-                {/* Preset Seçimi */}
                 <View className="mb-6">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Koleksiyon Türü</Text>
                     <View className="flex-row gap-3 flex-wrap">
@@ -141,14 +137,12 @@ const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
                             </TouchableOpacity>
                         ))}
 
-                        {/* Gelecek Özellikler İçin Placeholder (Opsiyonel) */}
                         <View className="p-3 rounded-xl border-4 border-stone-800/30 bg-stone-900/30 opacity-50">
                             <Text className="text-stone-600 font-dmsans-medium text-sm">Daha fazlası yakında...</Text>
                         </View>
                     </View>
                 </View>
 
-                {/* Görünüm Ayarları */}
                 <View className="mb-8">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-1">Görünüm</Text>
                     <BackgroundSelector
@@ -158,7 +152,6 @@ const CollectionCreate = ({ onClose, onSuccess }: CollectionCreateProps) => {
                 </View>
             </ScrollView>
 
-            {/* Alt Butonlar */}
             <View className="p-4 bg-stone-900 border-t-4 border-stone-800">
                 <View className="flex-row gap-4">
                     <TouchableOpacity

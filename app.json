@@ -9,7 +9,10 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Şifrelerinizi görüntülemek için Face ID kullanılacak"
+      }
     },
     "android": {
       "adaptiveIcon": {

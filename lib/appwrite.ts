@@ -81,6 +81,7 @@ export async function updateCard(
         title?: string,
         content?: string,
         background?: string,
+        parentFolder?: string | null,
         isLarge?: boolean
     }
 ) {

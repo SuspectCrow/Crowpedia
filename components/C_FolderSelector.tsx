@@ -10,9 +10,8 @@ interface FolderSelectorProps {
     onSelect: (folderId: string | null, folderName: string) => void;
 }
 
-// UI'da listelemek için genişletilmiş arayüz
 interface IFolderItem extends ICard {
-    level: number; // Girinti seviyesi (0: Root, 1: Child, vs.)
+    level: number;
 }
 
 export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorProps) => {
@@ -28,18 +27,11 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
     const loadFolders = async () => {
         setLoading(true);
         try {
-            // Sadece 'Folder' tipindeki kartları getiriyoruz
-            // Limit'i yüksek tutuyoruz ki tüm klasör ağacını görebilelim
             const docs = await getCards({ filter: "Folder", query: "", limit: 100 });
-
-            // Appwrite dökümanlarını ICard olarak cast ediyoruz
             const allFolders = docs.map(doc => doc as unknown as ICard);
-
-            // Düz listeyi hiyerarşik (tree) yapıya göre sıralayıp level ekliyoruz
             const organized = organizeFolders(allFolders);
             setFolders(organized);
 
-            // Eğer önceden seçili bir ID varsa adını bulup set edelim
             if (selectedFolderId) {
                 const selected = allFolders.find(f => f.$id === selectedFolderId);
                 if (selected) setSelectedFolderName(selected.title);
@@ -51,7 +43,6 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
         }
     };
 
-    // Recursive (Özyinelemeli) fonksiyon: Düz listeyi ağaç sırasına dizer
     const organizeFolders = (
         allFolders: ICard[],
         parentId: string | null = null,
@@ -59,10 +50,7 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
     ): IFolderItem[] => {
         const result: IFolderItem[] = [];
 
-        // Mevcut parentId'ye ait olan çocukları bul
         const children = allFolders.filter(folder => {
-            // Appwrite'da parentFolder null olabilir veya bir obje/string olabilir.
-            // Buradaki kontrol veri yapına göre değişebilir, genelde string ID döner.
             const pId = typeof folder.parentFolder === 'object' && folder.parentFolder
                 ? (folder.parentFolder as any).$id
                 : folder.parentFolder;
@@ -70,11 +58,10 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
             return pId === parentId || (parentId === null && !pId);
         });
 
-        // Her çocuk için işlem yap ve onun da çocuklarını altına ekle
         children.forEach(child => {
-            result.push({ ...child, level }); // Kendini ekle
-            const grandChildren = organizeFolders(allFolders, child.$id, level + 1); // Altındakileri bul
-            result.push(...grandChildren); // Altındakileri listeye ekle
+            result.push({ ...child, level });
+            const grandChildren = organizeFolders(allFolders, child.$id, level + 1);
+            result.push(...grandChildren);
         });
 
         return result;
@@ -115,7 +102,6 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
             >
                 <View className="flex-1 bg-black/80 justify-end">
                     <View className="bg-stone-900 h-[70%] rounded-t-3xl border-t-4 border-stone-700 overflow-hidden">
-                        {/* Modal Header */}
                         <View className="p-4 border-b-2 border-stone-800 flex-row justify-between items-center bg-stone-800">
                             <Text className="text-stone-200 font-dmsans-bold text-xl">Klasör Seçin</Text>
                             <TouchableOpacity onPress={() => setShowModal(false)} className="p-2">
@@ -129,7 +115,6 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
                             </View>
                         ) : (
                             <ScrollView className="flex-1 p-4">
-                                {/* Ana Dizin Seçeneği */}
                                 <TouchableOpacity
                                     onPress={() => handleSelect(null, "Ana Dizin (Klasörsüz)")}
                                     className={`flex-row items-center p-4 mb-2 rounded-xl border-2 ${
@@ -144,12 +129,11 @@ export const FolderSelector = ({ selectedFolderId, onSelect }: FolderSelectorPro
                                     </Text>
                                 </TouchableOpacity>
 
-                                {/* Klasör Listesi */}
                                 {folders.map((folder) => (
                                     <TouchableOpacity
                                         key={folder.$id}
                                         onPress={() => handleSelect(folder.$id, folder.title)}
-                                        style={{ marginLeft: folder.level * 24 }} // Girinti ayarı
+                                        style={{ marginLeft: folder.level * 24 }}
                                         className={`flex-row items-center p-3 mb-2 rounded-xl border-l-4 ${
                                             selectedFolderId === folder.$id
                                                 ? 'bg-amber-900/20 border-l-amber-500 border-y-0 border-r-0'

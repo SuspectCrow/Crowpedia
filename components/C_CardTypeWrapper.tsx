@@ -15,7 +15,6 @@ interface CardTypeWrapperProps {
     defaultExpanded?: boolean;
 }
 
-// Türkçe etiketler için mapping
 const TYPE_LABELS: Record<string, string> = {
     'Note': 'Notlar',
     'Link': 'Bağlantılar',
@@ -25,6 +24,7 @@ const TYPE_LABELS: Record<string, string> = {
     'Event': 'Etkinlikler',
     'Collection': 'Koleksiyonlar',
     'Routine': 'Rutinler',
+    'Password': 'Şifreler',
 };
 
 export const CardTypeWrapper = ({
@@ -52,7 +52,6 @@ export const CardTypeWrapper = ({
                 borderWidth: 4,
             }}
         >
-            {/* Header */}
             <TouchableOpacity
                 className="flex-row items-center justify-between p-4"
                 onPress={() => setIsExpanded(!isExpanded)}
@@ -81,7 +80,6 @@ export const CardTypeWrapper = ({
                 />
             </TouchableOpacity>
 
-            {/* Content */}
             {isExpanded && (
                 <View className="px-2 pb-2">
                     <FlashList

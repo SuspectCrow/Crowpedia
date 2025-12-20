@@ -12,7 +12,6 @@ import {ICard} from "@/interfaces/ICard";
 const converter = new showdown.Converter();
 
 interface NoteEditorProps {
-    // Düzenleme modunda ise mevcut kart verisi, yeni ise undefined olabilir
     initialData?: Partial<ICard>;
     onSave: (data: {
         title: string;
@@ -26,25 +25,20 @@ interface NoteEditorProps {
 }
 
 export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "Kaydet" }: NoteEditorProps) => {
-    // State Tanımları
     const [title, setTitle] = useState(initialData?.title || '');
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(
-        // initialData.parentFolder obje ise ID'sini al, string ise direkt al, yoksa null
         typeof initialData?.parentFolder === 'object' && initialData.parentFolder
             ? (initialData.parentFolder as any).$id
             : (initialData?.parentFolder || null)
     );
     const [isSaving, setIsSaving] = useState(false);
 
-    // Refs
     const richText = useRef<RichEditor>(null);
     const backgroundSelectorRef = useRef<BackgroundSelectorRef>(null);
 
-    // HTML İçeriği Hazırla (Düzenleme ise Markdown -> HTML çevir)
     const initialHtml = initialData?.content ? converter.makeHtml(initialData.content) : '';
     const [contentHtml, setContentHtml] = useState(initialHtml);
 
-    // BackgroundSelector için başlangıç verisi hazırlığı
     const initialCardMock = {
         $id: '',
         order: 10,
@@ -63,16 +57,12 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
 
         setIsSaving(true);
         try {
-            // 1. HTML'i Markdown'a çevir
             const markdownContent = htmlToMd(contentHtml);
-
-            // 2. Background değerlerini al
             let backgroundData = { background: '#333', isLarge: false };
             if (backgroundSelectorRef.current) {
                 backgroundData = backgroundSelectorRef.current.getValues();
             }
 
-            // 3. Parent'a veriyi gönder
             await onSave({
                 title: title,
                 content: markdownContent,
@@ -91,7 +81,6 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
 
     return (
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-            {/* Üst Kısım: Başlık, Klasör, Arka Plan */}
             <View className="mb-2">
                 <View className="mb-4">
                     <Text className="text-stone-400 font-dmsans-bold text-xl mb-2">Title</Text>
@@ -114,7 +103,6 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
                 <BackgroundSelector ref={backgroundSelectorRef} card={initialCardMock} />
             </View>
 
-            {/* Editör Toolbar */}
             <RichToolbar
                 editor={richText}
                 actions={[
@@ -133,7 +121,6 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
                 iconTint={colors.stone[400]}
             />
 
-            {/* Editör Alanı */}
             <View className="flex-1 mb-4" style={{ minHeight: 300 }}>
                 <RichEditor
                     ref={richText}
@@ -162,7 +149,6 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
                 />
             </View>
 
-            {/* Aksiyon Butonları */}
             <View className="flex-row gap-2 mb-8">
                 <TouchableOpacity
                     className="flex-1 bg-stone-700 p-4 rounded-xl border-solid border-stone-700/50 border-4"
