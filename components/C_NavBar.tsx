@@ -47,6 +47,8 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
                 ))}
             </View>
 
+
+
             {/*{*/}
             {/*    navbarVisibility && (*/}
             {/*        <View className="p-4 mt-4 rounded-xl border-solid border-4 bg-stone-900 border-stone-700/50">*/}

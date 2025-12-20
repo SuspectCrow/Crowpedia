@@ -1,9 +1,9 @@
 import {ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import images from "@/constants/images";
 import {ICard} from "@/interfaces/ICard";
 import {getCardIcon} from "@/constants/card_info";
 import colors from "tailwindcss/colors";
 import {MaterialIcons} from "@expo/vector-icons";
+import images from "@/constants/images";
 
 export type CardStyle = {
     iconClass?: string;

@@ -64,14 +64,16 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
     }
 
     const handleMediaPress = async (mediaItem: any) => {
-        if (!mediaItem?.metadata?.fragman) {
-            Alert.alert("Hata", "Fragman linki bulunamadı.");
-            return;
-        }
+        let targetUrl = mediaItem?.metadata?.fragman;
 
-        let targetUrl = mediaItem.metadata.fragman.trim();
-        if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-            targetUrl = 'https://' + targetUrl;
+        if (!targetUrl || targetUrl.trim() === "") {
+            const searchQuery = `${mediaItem.metadata.title} trailer fragman`;
+            targetUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
+        } else {
+            targetUrl = targetUrl.trim();
+            if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+                targetUrl = 'https://' + targetUrl;
+            }
         }
 
         try {
@@ -79,10 +81,17 @@ const CollectionDetail = ({ card, parsedCardContent, onRefresh }: { card: ICard,
             if (supported) {
                 await Linking.openURL(targetUrl);
             } else {
-                Alert.alert("Hata", `Bu link açılamıyor: ${targetUrl}`);
+                await Linking.openURL(targetUrl).catch(() => {
+                    Alert.alert("Hata", `Link açılamadı: ${targetUrl}`);
+                });
             }
         } catch (error) {
-            Alert.alert("Hata", "Link açılırken bir sorun oluştu.");
+            console.error("Link açma hatası:", error);
+            try {
+                await Linking.openURL(targetUrl);
+            } catch (e) {
+                Alert.alert("Hata", "Link açılırken bir sorun oluştu.");
+            }
         }
     };
 

@@ -1,4 +1,4 @@
-import {Text, View, TouchableOpacity, Animated, Linking, Alert, RefreshControl, ScrollView} from "react-native";
+import {Text, View, TouchableOpacity, Alert, RefreshControl, ScrollView, Linking} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import { LargeCard, SmallCard } from "@/components/C_Card";
@@ -13,10 +13,13 @@ import C_NavBar from "@/components/C_NavBar";
 import {ICard} from "@/interfaces/ICard";
 import CIconButton from "@/components/C_Button";
 import {MaterialIcons} from "@expo/vector-icons";
+import {CardTypeWrapper} from "@/components/C_CardTypeWrapper";
+
+// Türlerin gösterim sırası
+const TYPE_ORDER = ['Event', 'Objective', 'TaskList', 'SimpleTask', 'Note', 'Link', 'Collection', 'Routine'];
 
 export default function Index() {
     const [quickButtonMenuVisibility, setQuickMenuButton] = useState(false);
-    const [foldersVisibility, setFolderVisibility] = useState(true);
     const [activeFolder, setActiveFolder] = useState<string | null>(null);
     const [folderPath, setFolderPath] = useState<Array<{id: string | null, name: string}>>([
         { id: null, name: "HOME" }
@@ -98,10 +101,21 @@ export default function Index() {
         })
         : [];
 
-    const folderList = foldersVisibility ? cardList.filter(card => card.type === "Folder") : [];
+    const folderList = cardList.filter(card => card.type === "Folder");
     const allCards = cardList.filter(card => card.type != "Folder");
 
-    // console.log(JSON.stringify(cardList, null, 2));
+    // Kartları türlerine göre grupla
+    const cardsByType = allCards.reduce((acc, card) => {
+        const type = card.type || 'Other';
+        if (!acc[type]) {
+            acc[type] = [];
+        }
+        acc[type].push(card);
+        return acc;
+    }, {} as Record<string, ICard[]>);
+
+    // Türleri sıralı olarak diziye çevir (TYPE_ORDER'a göre)
+    const sortedTypes = TYPE_ORDER.filter(type => cardsByType[type] && cardsByType[type].length > 0);
 
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(async () => {
@@ -144,73 +158,53 @@ export default function Index() {
                 <CIconButton icon={"add"} onPress={() => { setQuickMenuButton(!quickButtonMenuVisibility) }} />
             </View>
 
-            <ScrollView className="mt-4" refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    colors={['#000000', '#2c2c2c']}
-                    tintColor="#ffffff"
-                />
-            }>
-                <FlashList
-                    data={folderList}
-                    masonry
-                    numColumns={2}
-                    renderItem={({ item, index }) => (
-                        item.isLarge ?
-                            <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
-                            :
-                            <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
-                    )}
-                    keyExtractor={(item) => item.$id}
-                    showsVerticalScrollIndicator={false}
-                    ListHeaderComponent={
-                        <TouchableOpacity className="flex-row items-center justify-center gap-2 w-fit my-4" onPress={() => setFolderVisibility(v => !v)}>
-                            <MaterialIcons name={!foldersVisibility ? "arrow-upward" : "arrow-downward"} size={24} style={{color: "rgba(255, 255, 255, 0.8)"}} />
-                            <Text className="text-2xl font-dmsans-bold text-stone-400 text-center">Folders</Text>
-                        </TouchableOpacity>
-                    }
-                    style={{
-                        backgroundColor: '#1c1917',
-                        borderRadius: 12,
-                        marginHorizontal: 6,
-                        marginTop: 12,
-                        paddingHorizontal: 6,
-                        paddingVertical: 6,
-                        borderColor: '#0c0a09',
-                        borderWidth: 4,
-                    }}
-                />
+            <ScrollView
+                className="mt-2 mb-2"
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={['#000000', '#2c2c2c']}
+                        tintColor="#ffffff"
+                    />
+                }
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Folders Section */}
+                {folderList.length > 0 && (
+                    <CardTypeWrapper
+                        type="Folder"
+                        cards={folderList}
+                        onCardPress={handlePress}
+                        onCardLongPress={handleLongPress}
+                        defaultExpanded={true}
+                    />
+                )}
 
-                <FlashList
-                    data={allCards}
-                    masonry
-                    numColumns={2}
-                    renderItem={({ item , index }) => (
-                        item.isLarge ?
-                            <LargeCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
-                            :
-                            <SmallCard card={item as unknown as ICard} onPress={() => handlePress(item.$id)} onLongPress={() => handleLongPress(item.$id)}/>
-                    )}
-                    keyExtractor={(item) => item.$id}
-                    showsVerticalScrollIndicator={false}
-                    ListHeaderComponent={
-                        <View>
-                            <Text className="text-2xl font-dmsans-bold text-stone-400 my-2 text-center">Cards</Text>
-                        </View>
-                    }
-                    style={{
-                        backgroundColor: '#1c1917',
-                        borderRadius: 12,
-                        marginHorizontal: 6,
-                        marginTop: 24,
-                        marginBottom: 72,
-                        paddingHorizontal: 6,
-                        paddingVertical: 6,
-                        borderColor: '#0c0a09',
-                        borderWidth: 4,
-                    }}
-                />
+                {/* Cards Grouped by Type */}
+                {sortedTypes.map(type => (
+                    <CardTypeWrapper
+                        key={type}
+                        type={type}
+                        cards={cardsByType[type]}
+                        onCardPress={handlePress}
+                        onCardLongPress={handleLongPress}
+                        defaultExpanded={true}
+                    />
+                ))}
+
+                {/* Empty State */}
+                {folderList.length === 0 && sortedTypes.length === 0 && (
+                    <View className="flex-1 items-center justify-center p-8 mt-20">
+                        <MaterialIcons name="inbox" size={64} color="#57534e" />
+                        <Text className="text-stone-500 font-dmsans-medium text-lg mt-4 text-center">
+                            Bu klasörde henüz içerik yok
+                        </Text>
+                        <Text className="text-stone-600 font-dmsans-regular text-sm mt-2 text-center">
+                            Sağ alttaki + butonuna tıklayarak yeni kart ekleyin
+                        </Text>
+                    </View>
+                )}
             </ScrollView>
 
         </SafeAreaView>

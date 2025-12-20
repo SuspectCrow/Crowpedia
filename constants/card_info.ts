@@ -11,7 +11,8 @@ export const cardtypes = [
     "Objective",
     "Routine",
     "Event",
-    "Collection"
+    "Collection",
+    "Password"
 ] as const;
 
 export const getCardIcon = (type: string | undefined) => {

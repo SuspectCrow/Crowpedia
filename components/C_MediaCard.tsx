@@ -1,9 +1,9 @@
 import {getCardStyle} from "@/components/C_Card";
 import {ICard} from "@/interfaces/ICard";
-import images from "@/constants/images";
 import colors from "tailwindcss/colors";
 import {Image, Text, TouchableOpacity, View} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import images from "@/constants/images";
 
 const borderRadius = "rounded-lg";
 
