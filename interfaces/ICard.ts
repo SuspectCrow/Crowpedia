@@ -9,4 +9,6 @@ export interface ICard {
     isFavorite?: boolean;
     isLarge?: boolean;
     background?: any;
+    $createdAt: string;
+    $updatedAt: string;
 }
