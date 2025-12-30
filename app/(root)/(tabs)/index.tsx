@@ -1,4 +1,4 @@
-import {Text, View, TouchableOpacity, Alert, RefreshControl, ScrollView, Linking} from "react-native";
+import {Alert, Linking, ScrollView, Text, View} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {useCallback, useState} from "react";
 import { useEffect } from "react";
@@ -8,10 +8,13 @@ import { useAppwrite } from "@/lib/useAppwrite";
 import {getCards, getCardById, updateCard} from "@/lib/appwrite";
 import C_NavBar from "@/components/C_NavBar";
 import {ICard} from "@/interfaces/ICard";
-import CIconButton from "@/components/C_Button";
-import {MaterialIcons} from "@expo/vector-icons";
-import {CardTypeWrapper} from "@/components/C_CardTypeWrapper";
-import colors from "tailwindcss/colors";
+import {ButtonVariant, SCButton} from "@/components/Core/C_SCButton";
+import {SCInput} from "@/components/Core/C_SCInput";
+import {SCCheckBox} from "@/components/Core/C_SCCheckBox";
+import {SCSwitch} from "@/components/Core/C_SCSwitch";
+import {SCTimePicker} from "@/components/Core/C_SCTimePicker";
+import {SCDatePicker} from "@/components/Core/C_SCDatePicker";
+import {SCSelector, SelectorOption} from "@/components/Core/C_SCSelector";
 
 const TYPE_ORDER = ['Event', 'Objective', 'TaskList', 'SimpleTask', 'Note', 'Link', 'Collection', 'Password', 'Routine'];
 
@@ -98,20 +101,6 @@ export default function Index() {
         })
         : [];
 
-    const folderList = cardList.filter(card => card.type === "Folder");
-    const allCards = cardList.filter(card => card.type != "Folder");
-
-    const cardsByType = allCards.reduce((acc, card) => {
-        const type = card.type || 'Other';
-        if (!acc[type]) {
-            acc[type] = [];
-        }
-        acc[type].push(card);
-        return acc;
-    }, {} as Record<string, ICard[]>);
-
-    const sortedTypes = TYPE_ORDER.filter(type => cardsByType[type] && cardsByType[type].length > 0);
-
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
@@ -128,89 +117,160 @@ export default function Index() {
         }
     }, [refetchCards, params]);
 
+
+    const [darkMode, setDarkMode] = useState(false);
+    const [wifi, setWifi] = useState(true);
+
+    const [isAgreed, setIsAgreed] = useState(false);
+    const [isNotificationOn, setIsNotificationOn] = useState(true);
+
+    const [date, setDate] = useState(new Date());
+    const [time, setTime] = useState(new Date());
+
+    const [size, setSize] = useState("small");
+    const sizeOptions: SelectorOption[] = [
+        { key: "small", title: "Small" },
+        { key: "large", title: "Large" },
+        { key: "portrait", title: "Portrait" }
+    ];
+
+    const [mediaType, setMediaType] = useState("movie");
+    const mediaOptions: SelectorOption[] = [
+        { key: "movie", title: "Movie", icon: "movie" },
+        { key: "tv", title: "TV", icon: "tv" }
+    ];
+
+    const [filter, setFilter] = useState("all");
+    const manyOptions: SelectorOption[] = [
+        { key: "all", title: "All" },
+        { key: "recent", title: "Recent" },
+        { key: "popular", title: "Popular" },
+        { key: "fav", title: "Fav" },
+        { key: "old", title: "Oldest" },
+    ];
+
     return (
         <SafeAreaView className="p-1 h-full relative" style={{ backgroundColor: '#292524' }} >
-            <View className="flex-row items-center justify-between px-4">
-                <View className="flex-1">
-                    <C_NavBar
-                        activePaths={folderPath.map(f => f.name)}
-                        OnPressBack={folderPath.length > 1 ? handleNavBarPressBack : undefined}
-                    />
+            <C_NavBar activePaths={folderPath.map(f => f.name)} OnPressBack={folderPath.length > 1 ? handleNavBarPressBack : undefined}/>
+            <ScrollView className="pb-20">
+                {/*<SCButton text="Default Button" />*/}
+
+                {/*<SCButton*/}
+                {/*    variant={ButtonVariant.SMALL}*/}
+                {/*    text="Back"*/}
+                {/*    icon="chevron-left"*/}
+                {/*/>*/}
+
+                {/*<SCButton*/}
+                {/*    variant={ButtonVariant.ICON_ONLY}*/}
+                {/*    icon="add"*/}
+                {/*/>*/}
+
+                {/*<SCButton*/}
+                {/*    text="Custom Color"*/}
+                {/*    className="bg-red-600 border-red-400"*/}
+                {/*/>*/}
+
+                {/*<SCInput*/}
+                {/*    label="Input Title"*/}
+                {/*    placeholder="Search on Cards.."*/}
+                {/*    leftIcon="search"*/}
+                {/*/>*/}
+
+                {/*<SCInput*/}
+                {/*    label="Password"*/}
+                {/*    placeholder="Enter password"*/}
+                {/*    secureTextEntry={!showPassword}*/}
+                {/*    rightIcon={showPassword ? "visibility" : "visibility-off"}*/}
+                {/*    onRightIconPress={() => setShowPassword(!showPassword)}*/}
+                {/*/>*/}
+
+                {/*<SCInput*/}
+                {/*    placeholder="Search with filter..."*/}
+                {/*    leftIcon="search"*/}
+                {/*    rightIcon="filter-list"*/}
+                {/*    onRightIconPress={() => console.log("Filtre açılıyor...")}*/}
+                {/*/>*/}
+                {/*<SCCheckBox*/}
+                {/*    label="Kullanım koşullarını kabul ediyorum"*/}
+                {/*    checked={isAgreed}*/}
+                {/*    onChange={setIsAgreed}*/}
+                {/*/>*/}
+
+                {/*<SCCheckBox*/}
+                {/*    label="Bildirimleri aç"*/}
+                {/*    icon="notifications"*/}
+                {/*    checked={isNotificationOn}*/}
+                {/*    onChange={setIsNotificationOn}*/}
+                {/*/>*/}
+
+
+                {/*<SCSwitch*/}
+                {/*    label="Karanlık Mod"*/}
+                {/*    icon="dark-mode"*/}
+                {/*    value={darkMode}*/}
+                {/*    onValueChange={setDarkMode}*/}
+                {/*/>*/}
+
+                {/*<SCSwitch*/}
+                {/*    label="Wi-Fi"*/}
+                {/*    icon="wifi"*/}
+                {/*    labelPosition="right"*/}
+                {/*    value={wifi}*/}
+                {/*    onValueChange={setWifi}*/}
+                {/*    className="self-start"*/}
+                {/*/>*/}
+
+                {/*<View className="flex flex-row gap-1.5 p-5 justify-center">*/}
+
+                {/*    <SCDatePicker*/}
+                {/*        label="Date"*/}
+                {/*        value={date}*/}
+                {/*        onChange={setDate}*/}
+                {/*    />*/}
+
+                {/*    <SCTimePicker*/}
+                {/*        label="Time"*/}
+                {/*        value={time}*/}
+                {/*        onChange={setTime}*/}
+                {/*    />*/}
+                {/*</View>*/}
+
+                <View className="flex-1 p-5 gap-8 justify-center">
+
+                    {/* 3 Seçenekli Yapı */}
+                    <View>
+                        <Text className="text-gray-400 mb-2">Background Size</Text>
+                        <SCSelector
+                            options={sizeOptions}
+                            selectedKey={size}
+                            onSelect={setSize}
+                        />
+                    </View>
+
+                    {/* 2 Seçenekli İkonlu Yapı */}
+                    <View>
+                        <Text className="text-gray-400 mb-2">Media Type</Text>
+                        <SCSelector
+                            options={mediaOptions}
+                            selectedKey={mediaType}
+                            onSelect={setMediaType}
+                        />
+                    </View>
+
+                    {/* 5 Seçenekli (Wrap) Yapı */}
+                    <View>
+                        <Text className="text-gray-400 mb-2">Filters (Multi-line)</Text>
+                        <SCSelector
+                            options={manyOptions}
+                            selectedKey={filter}
+                            onSelect={setFilter}
+                        />
+                    </View>
+
                 </View>
 
-                <TouchableOpacity
-                    onPress={() => router.push('/settings')}
-                    className="p-3 ml-2 rounded-xl border-4 border-stone-700/50 bg-stone-900"
-                >
-                    <MaterialIcons name="settings" size={24} color={colors.stone[400]} />
-                </TouchableOpacity>
-            </View>
-
-            <View className="absolute bottom-12 right-4 z-20 flex items-end justify-end gap-2 blur-lg">
-                {
-                    quickButtonMenuVisibility && (
-                        <View className="flex-col items-center justify-end gap-3 bg-stone-800 p-2 rounded-lg border-solid border-stone-700/50 border-4">
-                            <CIconButton icon='create-new-folder' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Folder'}`); }} />
-                            <CIconButton icon='password' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Password'}`); }} />
-                            <CIconButton icon='collections-bookmark' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Collection'}`); }} />
-                            <CIconButton icon='add-task' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'SimpleTask'}`); }} />
-                            <CIconButton icon='insert-chart-outlined' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Objective'}`); }} />
-                            <CIconButton icon='add-link' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Link'}`); }} />
-                            <CIconButton icon='event' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Event'}`); }} />
-                            <CIconButton icon='checklist' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'TaskList'}`); }} />
-                            <CIconButton icon='note-add' dimensions={{ w:48, h:48 }} onPress={() => { router.push(`/card/create/${'Note'}`); }} />
-                        </View>
-                    )
-                }
-                <CIconButton icon={"add"} onPress={() => { setQuickMenuButton(!quickButtonMenuVisibility) }} />
-            </View>
-
-            <ScrollView
-                className="mt-4 mb-20"
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={['#000000', '#2c2c2c']}
-                        tintColor="#ffffff"
-                    />
-                }
-                showsVerticalScrollIndicator={false}
-            >
-                {folderList.length > 0 && (
-                    <CardTypeWrapper
-                        type="Folder"
-                        cards={folderList}
-                        onCardPress={handlePress}
-                        onCardLongPress={handleLongPress}
-                        defaultExpanded={true}
-                    />
-                )}
-
-                {sortedTypes.map(type => (
-                    <CardTypeWrapper
-                        key={type}
-                        type={type}
-                        cards={cardsByType[type]}
-                        onCardPress={handlePress}
-                        onCardLongPress={handleLongPress}
-                        defaultExpanded={true}
-                    />
-                ))}
-
-                {folderList.length === 0 && sortedTypes.length === 0 && (
-                    <View className="flex-1 items-center justify-center p-8 mt-20">
-                        <MaterialIcons name="inbox" size={64} color="#57534e" />
-                        <Text className="text-stone-500 font-dmsans-medium text-lg mt-4 text-center">
-                            Bu klasörde henüz içerik yok
-                        </Text>
-                        <Text className="text-stone-600 font-dmsans-regular text-sm mt-2 text-center">
-                            Sağ alttaki + butonuna tıklayarak yeni kart ekleyin
-                        </Text>
-                    </View>
-                )}
             </ScrollView>
-
         </SafeAreaView>
     );
 }

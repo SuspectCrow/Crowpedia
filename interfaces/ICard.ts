@@ -1,15 +1,13 @@
 export enum CardVariant {
     SMALL = 'small',
     LARGE = 'large',
-    MASONRY = 'masonry',
-    DETAILED = 'detailed'
+    PORTRAIT = 'portrait',
 }
 
 export const CARD_VARIANTS = {
     SMALL: CardVariant.SMALL,
     LARGE: CardVariant.LARGE,
-    MASONRY: CardVariant.MASONRY,
-    DETAILED: CardVariant.DETAILED
+    PORTRAIT: CardVariant.PORTRAIT
 } as const;
 
 export interface ICard {

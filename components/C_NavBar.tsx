@@ -18,8 +18,6 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
 
     return (
         <View className="flex-row items-center justify-center gap-2 mt-4 px-6" style={[{ width: '80%', marginHorizontal: 'auto' }]}>
-            {/*<TouchableOpacity className="p-4 mx-2 mt-4 rounded-xl border-solid border-4 border-stone-700/50"  onPress={() => setNavbarVisibility(v => !v)}>*/}
-            {/*</TouchableOpacity>*/}
             {
                 activePaths.length > 1 && (
                     <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50" onPress={OnPressBack}>
@@ -47,41 +45,6 @@ const CNavBar = ({ activePaths, OnPressBack } : Props) => {
                 ))}
             </View>
 
-
-
-            {/*{*/}
-            {/*    navbarVisibility && (*/}
-            {/*        <View className="p-4 mt-4 rounded-xl border-solid border-4 bg-stone-900 border-stone-700/50">*/}
-            {/*            {*/}
-            {/*                activePaths.length > 1 && (*/}
-            {/*                    <TouchableOpacity className="p-3 rounded-xl border-solid border-4 bg-stone-700 border-stone-900/50" onPress={OnPressBack}>*/}
-            {/*                        <View className="flex-row items-center justify-center">*/}
-            {/*                            <Image source={icons.arrow_left} className="size-6 mx-2" />*/}
-            {/*                            <Text className="font-dmsans-bold text-lg text-white">Back</Text>*/}
-            {/*                        </View>*/}
-            {/*                    </TouchableOpacity>*/}
-            {/*                )*/}
-            {/*            }*/}
-            {/*            <View className={`${ activePaths.length > 1 ? "mt-4" : "" } flex-col items-start justify-start gap-2`}>*/}
-            {/*                {activePaths.map((item, index) => (*/}
-            {/*                    <TouchableOpacity key={index} className={`flex-row items-center w-full`} disabled={ index == activePaths.length - 1 } onPress={() =>{ Alert.alert(`${ item }`) }}>*/}
-            {/*                        {*/}
-            {/*                            index > 0 && (*/}
-            {/*                                <View className={`${index == activePaths.length -1 ? "bg-stone-100" : "bg-stone-600" } ms-4 h-0.5 bg-stone-600 relative`} style={[{ width: index * 24 }]}>*/}
-            {/*                                    <View className={`${ index == activePaths.length -1 ? "bg-stone-100" : "bg-stone-600" } absolute w-0.5 h-6 bg-stone-600 bottom-0`}></View>*/}
-            {/*                                </View>*/}
-            {/*                            )*/}
-            {/*                        }*/}
-            {/*                        <Image source={icons.folder} className="size-7 mx-2" style={[{ tintColor: `${index == activePaths.length -1 ? '#fff' : `${ colors.stone['500'] }`}` }]} />*/}
-            {/*                        <Text className={`${ index == activePaths.length - 1 ? 'text-stone-300 font-dmsans-bold' : 'text-stone-600 font-dmsans-medium' } text-xl`}>*/}
-            {/*                            { item }*/}
-            {/*                        </Text>*/}
-            {/*                    </TouchableOpacity>*/}
-            {/*                ))}*/}
-            {/*            </View>*/}
-            {/*        </View>*/}
-            {/*    )*/}
-            {/*}*/}
         </View>
     )
 }

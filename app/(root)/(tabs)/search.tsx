@@ -6,7 +6,7 @@ import colors from 'tailwindcss/colors';
 import { getCards } from '@/lib/appwrite';
 import { ICard, CardVariant } from '@/interfaces/ICard';
 import { FlashList } from '@shopify/flash-list';
-import { DetailedCard, LargeCard, MasonryCard, SmallCard } from '@/components/C_Card';
+import { LargeCard, SmallCard } from '@/components/C_Card';
 import { router } from 'expo-router';
 
 const CARD_TYPES = [
@@ -388,10 +388,6 @@ const Search = () => {
                             switch (item.variant) {
                                 case CardVariant.LARGE:
                                     return <LargeCard {...commonProps} />;
-                                case CardVariant.MASONRY:
-                                    return <MasonryCard {...commonProps} />;
-                                case CardVariant.DETAILED:
-                                    return <DetailedCard {...commonProps} />;
                                 case CardVariant.SMALL:
                                 default:
                                     return <SmallCard {...commonProps} />;

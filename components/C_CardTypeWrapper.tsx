@@ -3,7 +3,7 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {MaterialIcons} from '@expo/vector-icons';
 import {FlashList} from '@shopify/flash-list';
 import {ICard, CardVariant} from '@/interfaces/ICard';
-import {DetailedCard, LargeCard, MasonryCard, SmallCard} from '@/components/C_Card';
+import {LargeCard, SmallCard} from '@/components/C_Card';
 import {getCardIcon} from '@/constants/card_info';
 import colors from 'tailwindcss/colors';
 
@@ -96,10 +96,6 @@ export const CardTypeWrapper = ({
                             switch (item.variant) {
                                 case CardVariant.LARGE:
                                     return <LargeCard {...commonProps} />;
-                                case CardVariant.MASONRY:
-                                    return <MasonryCard {...commonProps} />;
-                                case CardVariant.DETAILED:
-                                    return <DetailedCard {...commonProps} />;
                                 case CardVariant.SMALL:
                                 default:
                                     return <SmallCard {...commonProps} />;
