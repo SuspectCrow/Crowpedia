@@ -1,4 +1,4 @@
-import {ICard} from "@/interfaces/ICard";
+import {ICard, CardVariant} from "@/interfaces/ICard";
 import {useEffect, useImperativeHandle, useState, forwardRef} from "react";
 import {Alert, Image, Modal, Text, TextInput, TouchableOpacity, View} from "react-native";
 import ColorPicker, {HueSlider, OpacitySlider, Panel1, Preview} from "reanimated-color-picker";
@@ -12,12 +12,12 @@ interface BackgroundSelectorProps {
 
 export interface BackgroundSelectorRef {
     save: () => Promise<void>;
-    getValues: () => { background: string; isLarge: boolean };
+    getValues: () => { background: string; variant: CardVariant };
 }
 
 export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSelectorProps>(
     ({ card, onSaveSuccess }, ref) => {
-        const [isLargeCard, setIsLargeCard] = useState(false);
+        const [variant, setVariant] = useState<CardVariant>(CardVariant.SMALL);
         const [showModal, setShowModal] = useState(false);
         const [selectedColor, setSelectedColor] = useState('#ff0000');
         const [tempColor, setTempColor] = useState('#ff0000');
@@ -25,8 +25,8 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
         const [isSaving, setIsSaving] = useState(false);
 
         useEffect(() => {
-            if (card.isLarge !== undefined) {
-                setIsLargeCard(card.isLarge);
+            if (card.variant) {
+                setVariant(card.variant);
             }
             if (card.background) {
                 if (card.background.startsWith('#')) {
@@ -41,28 +41,28 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
         }, [card]);
 
         useEffect(() => {
-            if (isLargeCard && card.background && !card.background.startsWith('#')) {
+            if (variant === CardVariant.LARGE && card.background && !card.background.startsWith('#')) {
                 setImageUrl(card.background);
-            } else if (isLargeCard) {
+            } else if (variant === CardVariant.LARGE) {
                 setImageUrl('');
             }
-        }, [isLargeCard]);
+        }, [variant]);
 
         useImperativeHandle(ref, () => ({
             save: async () => {
                 setIsSaving(true);
                 try {
-                    const backgroundToSave = isLargeCard ? imageUrl : selectedColor;
+                    const backgroundToSave = variant === CardVariant.LARGE ? imageUrl : selectedColor;
 
                     await updateCard(card.$id, {
                         background: backgroundToSave,
-                        isLarge: isLargeCard
+                        variant: variant
                     });
 
                     card.background = backgroundToSave;
-                    card.isLarge = isLargeCard;
+                    card.variant = variant;
 
-                    console.log('Background kaydedildi:', { background: backgroundToSave, isLarge: isLargeCard });
+                    console.log('Background kaydedildi:', { background: backgroundToSave, variant: variant });
 
                     onSaveSuccess?.();
                 } catch (error) {
@@ -74,13 +74,13 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                 }
             },
             getValues: () => {
-                const backgroundToSave = isLargeCard ? imageUrl : selectedColor;
+                const backgroundToSave = variant === CardVariant.LARGE ? imageUrl : selectedColor;
                 return {
                     background: backgroundToSave,
-                    isLarge: isLargeCard
+                    variant: variant
                 };
             }
-        }), [isLargeCard, imageUrl, selectedColor, card]);
+        }), [variant, imageUrl, selectedColor, card]);
 
         const handleConfirm = () => {
             setSelectedColor(tempColor);
@@ -103,38 +103,32 @@ export const BackgroundSelector = forwardRef<BackgroundSelectorRef, BackgroundSe
                   }}>
                 <View className="mb-6">
                     <View className="flex-row bg-stone-800/50 rounded-xl p-1 border-2 border-stone-700/30">
-                        <TouchableOpacity
-                            onPress={() => setIsLargeCard(false)}
-                            disabled={isSaving}
-                            className={`flex-1 py-2 px-3 rounded-lg items-center ${
-                                !isLargeCard
-                                    ? 'bg-stone-700'
-                                    : 'bg-transparent'
-                            }`}
-                        >
-                            <Text className={`font-dmsans-bold text-base ${
-                                !isLargeCard ? 'text-white' : 'text-stone-400'
-                            }`}>Small</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => setIsLargeCard(true)}
-                            disabled={isSaving}
-                            className={`flex-1 py-2 px-3 rounded-lg items-center ${
-                                isLargeCard
-                                    ? 'bg-stone-700'
-                                    : 'bg-transparent'
-                            }`}
-                        >
-                            <Text className={`font-dmsans-bold text-base ${
-                                isLargeCard ? 'text-white' : 'text-stone-400'
-                            }`}>Large</Text>
-                        </TouchableOpacity>
+                        {[
+                            { id: CardVariant.SMALL, label: 'Small' },
+                            { id: CardVariant.LARGE, label: 'Large' },
+                            { id: CardVariant.MASONRY, label: 'Masonry' },
+                            { id: CardVariant.DETAILED, label: 'Detailed' }
+                        ].map((v) => (
+                            <TouchableOpacity
+                                key={v.id}
+                                onPress={() => setVariant(v.id)}
+                                disabled={isSaving}
+                                className={`flex-1 py-2 px-3 rounded-lg items-center ${
+                                    variant === v.id
+                                        ? 'bg-stone-700'
+                                        : 'bg-transparent'
+                                }`}
+                            >
+                                <Text className={`font-dmsans-bold text-sm ${
+                                    variant === v.id ? 'text-white' : 'text-stone-400'
+                                }`}>{v.label}</Text>
+                            </TouchableOpacity>
+                        ))}
                     </View>
                 </View>
 
                 <View>
-                    {isLargeCard ? (
+                    {variant === CardVariant.LARGE ? (
                         <View>
                             <Text className="text-stone-400 font-dmsans-bold text-xl mb-3">Background Image URL</Text>
                             <TextInput

@@ -18,7 +18,7 @@ const NoteCreate = ({ onClose, onSuccess }: NoteCreateProps) => {
             type: 'Note',
             content: data.content,
             background: data.background,
-            isLarge: data.isLarge,
+            variant: data.variant,
             parentFolder: data.parentFolder,
         } as ICard;
 

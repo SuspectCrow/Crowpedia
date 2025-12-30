@@ -4,7 +4,7 @@ import {createCard} from "@/lib/appwrite";
 import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
 import {FolderSelector} from "@/components/C_FolderSelector";
 import colors from "tailwindcss/colors";
-import {ICard} from "@/interfaces/ICard";
+import {ICard, CardVariant} from "@/interfaces/ICard";
 import {MaterialIcons} from "@expo/vector-icons";
 import {router} from "expo-router";
 
@@ -28,7 +28,7 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
         content: '',
         type: 'Note',
         background: '#333',
-        isLarge: false
+        variant: CardVariant.SMALL
     };
 
     const handleOpenLink = async () => {
@@ -64,7 +64,7 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
         setIsCreating(true);
 
         try {
-            let backgroundData = { background: '#333', isLarge: false };
+            let backgroundData = { background: '#333', variant: CardVariant.SMALL };
 
             if (backgroundSelectorRef.current) {
                 backgroundData = backgroundSelectorRef.current.getValues();
@@ -75,7 +75,7 @@ const LinkCreate = ({ onClose, onSuccess }: LinkCreateProps) => {
                 type: 'Link',
                 content: link.trim(),
                 background: backgroundData.background,
-                isLarge: backgroundData.isLarge,
+                variant: backgroundData.variant,
                 parentFolder: selectedFolderId,
             } as ICard;
 

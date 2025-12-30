@@ -7,7 +7,7 @@ import colors from "tailwindcss/colors";
 import {MaterialIcons} from "@expo/vector-icons";
 import htmlToMd from "html-to-md";
 import showdown from "showdown";
-import {ICard} from "@/interfaces/ICard";
+import {ICard, CardVariant} from "@/interfaces/ICard";
 
 const converter = new showdown.Converter();
 
@@ -17,7 +17,7 @@ interface NoteEditorProps {
         title: string;
         content: string;
         background: string;
-        isLarge: boolean;
+        variant: CardVariant;
         parentFolder: string | null;
     }) => Promise<void>;
     onCancel: () => void;
@@ -46,7 +46,7 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
         type: 'Note',
         content: '',
         background: initialData?.background || '#333',
-        isLarge: initialData?.isLarge || false,
+        variant: initialData?.variant || CardVariant.SMALL,
     } as ICard;
 
     const handleSavePress = async () => {
@@ -58,7 +58,7 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
         setIsSaving(true);
         try {
             const markdownContent = htmlToMd(contentHtml);
-            let backgroundData = { background: '#333', isLarge: false };
+            let backgroundData = { background: '#333', variant: CardVariant.SMALL };
             if (backgroundSelectorRef.current) {
                 backgroundData = backgroundSelectorRef.current.getValues();
             }
@@ -67,7 +67,7 @@ export const NoteEditor = ({ initialData, onSave, onCancel, saveButtonLabel = "K
                 title: title,
                 content: markdownContent,
                 background: backgroundData.background,
-                isLarge: backgroundData.isLarge,
+                variant: backgroundData.variant,
                 parentFolder: selectedFolderId
             });
 

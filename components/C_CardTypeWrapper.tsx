@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {MaterialIcons} from '@expo/vector-icons';
 import {FlashList} from '@shopify/flash-list';
-import {ICard} from '@/interfaces/ICard';
-import {LargeCard, SmallCard} from '@/components/C_Card';
+import {ICard, CardVariant} from '@/interfaces/ICard';
+import {DetailedCard, LargeCard, MasonryCard, SmallCard} from '@/components/C_Card';
 import {getCardIcon} from '@/constants/card_info';
 import colors from 'tailwindcss/colors';
 
@@ -85,21 +85,26 @@ export const CardTypeWrapper = ({
                     <FlashList
                         data={cards}
                         numColumns={2}
-                        renderItem={({item}) =>
-                            item.isLarge ? (
-                                <LargeCard
-                                    card={item}
-                                    onPress={() => onCardPress(item.$id)}
-                                    onLongPress={() => onCardLongPress(item.$id)}
-                                />
-                            ) : (
-                                <SmallCard
-                                    card={item}
-                                    onPress={() => onCardPress(item.$id)}
-                                    onLongPress={() => onCardLongPress(item.$id)}
-                                />
-                            )
-                        }
+                        masonry
+                        renderItem={({item}) => {
+                            const commonProps = {
+                                card: item,
+                                onPress: () => onCardPress(item.$id),
+                                onLongPress: () => onCardLongPress(item.$id),
+                            };
+
+                            switch (item.variant) {
+                                case CardVariant.LARGE:
+                                    return <LargeCard {...commonProps} />;
+                                case CardVariant.MASONRY:
+                                    return <MasonryCard {...commonProps} />;
+                                case CardVariant.DETAILED:
+                                    return <DetailedCard {...commonProps} />;
+                                case CardVariant.SMALL:
+                                default:
+                                    return <SmallCard {...commonProps} />;
+                            }
+                        }}
                         keyExtractor={(item) => item.$id}
                         showsVerticalScrollIndicator={false}
                     />

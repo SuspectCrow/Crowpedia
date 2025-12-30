@@ -63,7 +63,7 @@ const NoteDetail = ({ card }: { card: ICard }) => {
         if (!card.$id) return;
 
         if (data.content === card.content && data.title === card.title &&
-            data.background === card.background && data.isLarge === card.isLarge &&
+            data.background === card.background && data.variant === card.variant &&
             data.parentFolder === card.parentFolder) {
             Alert.alert("Değişiklik Yok", "Herhangi bir değişiklik yapmadınız.");
             setIsEditing(false);
@@ -75,13 +75,13 @@ const NoteDetail = ({ card }: { card: ICard }) => {
                 title: data.title,
                 content: data.content,
                 background: data.background,
-                isLarge: data.isLarge,
+                variant: data.variant,
             });
 
             card.title = data.title;
             card.content = data.content;
             card.background = data.background;
-            card.isLarge = data.isLarge;
+            card.variant = data.variant;
 
             setIsEditing(false);
         } catch (error) {

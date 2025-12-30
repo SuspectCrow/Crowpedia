@@ -39,13 +39,13 @@ const FolderDetail = ({ card, onRefresh }: { card: ICard, onRefresh: () => void 
                     title: title,
                     parentFolder: selectedFolderId,
                     background: bgData.background,
-                    isLarge: bgData.isLarge
+                    variant: bgData.variant
                 });
 
                 card.title = title;
                 card.parentFolder = selectedFolderId!;
                 card.background = bgData.background;
-                card.isLarge = bgData.isLarge;
+                card.variant = bgData.variant;
 
             } else {
                 await updateCard(card.$id, {

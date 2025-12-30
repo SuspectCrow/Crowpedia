@@ -2,7 +2,7 @@ import {Account, Avatars, Client, Databases, ID, OAuthProvider, Query} from "rea
 
 import * as Linking from 'expo-linking'
 import {openAuthSessionAsync} from "expo-web-browser";
-import {ICard} from "@/interfaces/ICard";
+import {ICard, CardVariant} from "@/interfaces/ICard";
 
 export const config = {
     platform: 'com.suspectcrow.estateapp',
@@ -82,7 +82,7 @@ export async function updateCard(
         content?: string,
         background?: string,
         parentFolder?: string | null,
-        isLarge?: boolean
+        variant?: CardVariant
     }
 ) {
     try {
@@ -110,7 +110,7 @@ export const createCard = async (data: ICard) => {
                 title: data.title,
                 type: data.type,
                 content: data.content || '',
-                isLarge: data.isLarge || false,
+                variant: data.variant || CardVariant.SMALL,
                 background: data.background || '',
                 order: data.order || 10,
                 isFavorite: data.isFavorite || false

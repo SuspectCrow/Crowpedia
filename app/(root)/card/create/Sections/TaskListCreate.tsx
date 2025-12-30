@@ -4,7 +4,7 @@ import {createCard} from "@/lib/appwrite";
 import {BackgroundSelector, BackgroundSelectorRef} from "@/components/C_CardBackgroundSelector";
 import {FolderSelector} from "@/components/C_FolderSelector";
 import colors from "tailwindcss/colors";
-import {ICard} from "@/interfaces/ICard";
+import {ICard, CardVariant} from "@/interfaces/ICard";
 import {MaterialIcons} from "@expo/vector-icons";
 import {router} from "expo-router";
 
@@ -35,7 +35,7 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
         content: '',
         type: 'Note',
         background: '#333',
-        isLarge: false
+        variant: CardVariant.SMALL
     };
 
     const handleAddTask = () => {
@@ -64,7 +64,7 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
         setIsCreating(true);
 
         try {
-            let backgroundData = { background: '#333', isLarge: false };
+            let backgroundData = { background: '#333', variant: CardVariant.SMALL };
 
             if (backgroundSelectorRef.current) {
                 backgroundData = backgroundSelectorRef.current.getValues();
@@ -77,7 +77,7 @@ const TaskListCreate = ({ onClose, onSuccess }: TaskListCreateProps) => {
                 type: 'TaskList',
                 content: contentString,
                 background: backgroundData.background,
-                isLarge: backgroundData.isLarge,
+                variant: backgroundData.variant,
                 parentFolder: selectedFolderId,
             } as ICard;
 
