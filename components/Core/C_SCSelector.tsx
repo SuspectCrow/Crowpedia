@@ -38,7 +38,7 @@ export const SCSelector: React.FC<SelectorProps> = ({
                 return (
                     <View
                         key={item.key}
-                        style={[{ width: itemWidth }]}
+                        style={[{ width: itemWidth as string }]}
                     >
                         <SCButton
                             text={item.title}
@@ -48,7 +48,7 @@ export const SCSelector: React.FC<SelectorProps> = ({
                             onPress={() => onSelect(item.key)}
 
                             className={clsx(
-                                "w-full justify-center m-0 border-0 mx-0",
+                                "w-full justify-center m-0 border-0",
                                 isSelected ? "bg-[#262626]" : "opacity-60 hover:opacity-100"
                             )}
                         />

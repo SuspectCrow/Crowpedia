@@ -7,7 +7,7 @@ export const AppTheme = {
     layout: {
         radius: 'rounded-[6px]',
         borderWidth: 'border',
-        margin: 'mx-[24px] my-[8px]',
+        margin: 'mx-0 my-[8px]',
     },
     typography: {
         fontMedium: 'font-dmsans-medium',
