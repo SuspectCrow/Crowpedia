@@ -15,11 +15,7 @@ const TabIcon = ({
   title: string;
 }) => (
   <View className="flex-1 flex flex-col items-center">
-    <MaterialIcons
-      name={icon}
-      size={28}
-      color={focused ? colors.stone["300"] : colors.stone["500"]}
-    />
+    <MaterialIcons name={icon} size={28} color={focused ? colors.stone["300"] : colors.stone["500"]} />
   </View>
 );
 
@@ -34,8 +30,8 @@ const TabsLayout = () => {
           borderTopColor: colors.neutral["800"],
           elevation: 0,
           borderTopWidth: 1,
-          paddingTop: 6,
-          minHeight: 96,
+          paddingTop: 12,
+          minHeight: 112,
         },
         tabBarBackground: () => (
           <BlurView
@@ -53,9 +49,7 @@ const TabsLayout = () => {
         options={{
           title: "Home",
           headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon="home" title="Home" />
-          ),
+          tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon="home" title="Home" />,
         }}
       />
       <Tabs.Screen
@@ -63,9 +57,7 @@ const TabsLayout = () => {
         options={{
           title: "Search",
           headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon="search" title="Search" />
-          ),
+          tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon="search" title="Search" />,
         }}
       />
       <Tabs.Screen
@@ -73,9 +65,7 @@ const TabsLayout = () => {
         options={{
           title: "Calendar",
           headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon="calendar-month" title="Calendar" />
-          ),
+          tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon="calendar-month" title="Calendar" />,
         }}
       />
     </Tabs>

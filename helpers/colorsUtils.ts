@@ -25,9 +25,11 @@ export const hexToHsla = (hex: string, alpha = 1) => {
         h = (r - g) / d + 4;
         break;
     }
+    // @ts-ignore
     h /= 6;
   }
 
+  // @ts-ignore
   const hDeg = Math.round(h * 360);
   const sPct = Math.round(s * 100);
   const lPct = Math.round(l * 100);
@@ -62,9 +64,11 @@ export function getHexWithLightness(hex: string, lightnessPercent: any) {
         h = (r - g) / d + 4;
         break;
     }
+    // @ts-ignore
     h /= 6;
   }
 
+  // @ts-ignore
   const hDeg = Math.round(h * 360);
   const sPct = Math.round(s * 100);
 

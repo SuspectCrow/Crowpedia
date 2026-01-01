@@ -8,9 +8,7 @@ export const appwriteConfig = {
   cardsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_CARDS_TABLE_ID!,
 };
 
-const client = new Client()
-  .setEndpoint(appwriteConfig.endpoint)
-  .setProject(appwriteConfig.projectId);
+const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 
 client.setPlatform("com.suspectcrow.estateapp");
 
@@ -20,9 +18,7 @@ type NewCardPayload = Omit<ICard, "$id" | "$createdAt" | "$updatedAt">;
 /**
  * @param data Card data
  */
-export async function createCard(
-  data: NewCardPayload,
-): Promise<Models.Document> {
+export async function createCard(data: NewCardPayload): Promise<Models.Document> {
   try {
     const response = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -52,6 +48,7 @@ export async function createCard(
 export async function getCards(options?: {
   searchTerm?: string;
   filterType?: string;
+  parentFolder?: string;
   limit?: number;
   offset?: number;
 }): Promise<ICard[]> {
@@ -74,11 +71,11 @@ export async function getCards(options?: {
       queries.push(Query.offset(options.offset));
     }
 
-    const result = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.cardsCollectionId,
-      queries,
-    );
+    if (options?.parentFolder) {
+      queries.push(Query.equal("parentFolder", options.parentFolder));
+    }
+
+    const result = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.cardsCollectionId, queries);
 
     return result.documents as unknown as ICard[];
   } catch (error) {
@@ -92,11 +89,7 @@ export async function getCards(options?: {
  */
 export async function getCardById(documentId: string): Promise<ICard | null> {
   try {
-    const result = await databases.getDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.cardsCollectionId,
-      documentId,
-    );
+    const result = await databases.getDocument(appwriteConfig.databaseId, appwriteConfig.cardsCollectionId, documentId);
     return result as unknown as ICard;
   } catch (error) {
     console.error("getCardById Hatası:", error);
@@ -109,10 +102,7 @@ export async function getCardById(documentId: string): Promise<ICard | null> {
  * @param documentId ID of the card to be updated
  * @param updates Data to be updated
  */
-export async function updateCard(
-  documentId: string,
-  updates: Partial<ICard>,
-): Promise<Models.Document> {
+export async function updateCard(documentId: string, updates: Partial<ICard>): Promise<Models.Document> {
   try {
     const { $id, $createdAt, $updatedAt, ...cleanUpdates } = updates;
 
@@ -134,11 +124,7 @@ export async function updateCard(
  */
 export async function deleteCard(documentId: string): Promise<boolean> {
   try {
-    await databases.deleteDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.cardsCollectionId,
-      documentId,
-    );
+    await databases.deleteDocument(appwriteConfig.databaseId, appwriteConfig.cardsCollectionId, documentId);
     return true;
   } catch (error) {
     console.error("deleteCard Hatası:", error);
@@ -150,12 +136,19 @@ export async function deleteCard(documentId: string): Promise<boolean> {
  * @param type Desired card type
  * @param limit Optional: How many to bring
  */
-export async function getCardsByType(
-  type: string,
-  limit?: number,
-): Promise<ICard[]> {
+export async function getCardsByType(type: string, limit?: number): Promise<ICard[]> {
   return await getCards({
     filterType: type,
     limit: limit,
+  });
+}
+
+/**
+ * @param folderId Folder id
+ */
+export async function getCardsInFolder(folderId: string): Promise<ICard[]> {
+  return await getCards({
+    parentFolder: folderId,
+    limit: 100,
   });
 }

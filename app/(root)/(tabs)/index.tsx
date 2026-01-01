@@ -32,11 +32,11 @@ export default function Index() {
 
   return (
     <View className="flex-1 h-full" style={{ backgroundColor: colors.neutral["950"] }}>
-      <Image
-        source={{ uri: "https://i.pinimg.com/736x/2e/32/dc/2e32dcc152177503e7fb6cafac26fe22.jpg" }}
-        className="absolute inset-0 w-full h-full"
-        resizeMode="cover"
-      />
+      {/*<Image*/}
+      {/*  source={{ uri: "https://i.pinimg.com/736x/2e/32/dc/2e32dcc152177503e7fb6cafac26fe22.jpg" }}*/}
+      {/*  className="absolute inset-0 w-full h-full"*/}
+      {/*  resizeMode="cover"*/}
+      {/*/>*/}
 
       <SafeAreaView className="h-full relative" edges={["bottom", "left", "right"]}>
         <SCNavbar
@@ -53,7 +53,7 @@ export default function Index() {
             data={dataCards}
             numColumns={2}
             masonry
-            className="pt-[128px]"
+            className="pt-[128px] pb-16"
             renderItem={({ item, index }) => {
               return <SCCard card={item} />;
             }}

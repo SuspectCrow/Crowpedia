@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import clsx from "clsx";
-import { ICard, CardVariant, getCardIcon } from "@/interfaces/ICard";
+import { ICard, CardVariant, getCardIcon, CardType } from "@/interfaces/ICard";
 import { Canvas, LinearGradient, Rect, vec } from "@shopify/react-native-skia";
 import colors from "tailwindcss/colors";
 import { getHexWithLightness } from "@/helpers/colorsUtils";
+import images from "@/constants/commonImages";
+import { getCards, getCardsInFolder } from "@/services/appwrite";
+import { useAppwrite } from "@/lib/useAppwrite";
+import { data } from "browserslist";
 
 export type IconName = keyof typeof MaterialIcons.glyphMap;
 
@@ -30,6 +34,20 @@ const isColorString = (str: string) => {
   return str?.includes("#") || str?.includes("rgb") || str?.includes("rgba");
 };
 
+const renderGradientBackground = (card: ICard, layout: { width: number; height: number }) => {
+  return (
+    <Canvas style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
+      <Rect x={0} y={0} width={layout.width} height={layout.height}>
+        <LinearGradient
+          start={vec(0, 0)}
+          end={vec(layout.width, layout.height)}
+          colors={[card.background, getHexWithLightness(card.background, 20)]}
+        />
+      </Rect>
+    </Canvas>
+  );
+};
+
 const renderCardIcon = (card: ICard) => {
   switch (card.type) {
     case "SimpleTask":
@@ -49,22 +67,51 @@ const renderCardIcon = (card: ICard) => {
   }
 };
 
-const renderCardContent = (card: ICard) => {
+const FolderInfoCard = ({ cardId }: { cardId: string }) => {
+  const { data: folderContents } = useAppwrite({
+    fn: getCardsInFolder,
+    params: cardId,
+  });
+
+  const count = folderContents?.length || 0;
+
+  return (
+    <Text className="text-sm text-neutral-300 font-dmsans" numberOfLines={2}>
+      {`${count} child card`}
+    </Text>
+  );
+};
+
+const renderCardContent = async (card: ICard) => {
   let contentPreview = "";
 
   try {
     const parsed = JSON.parse(card.content || "{}");
 
-    if (card.type === "Event") {
-      contentPreview = parsed.timestamp;
-    } else if (card.type === "Objective") {
-      contentPreview = parsed.description || "";
-    } else if (card.type === "TaskList" && Array.isArray(parsed)) {
-      const incompleteTasks = parsed.filter((t: any) => !t.Value).length;
-      contentPreview = `${incompleteTasks} görev kaldı`;
+    switch (card.type) {
+      case CardType.EVENT:
+        return (
+          <Text className="text-sm text-neutral-300 font-dmsans" numberOfLines={2}>
+            {parsed.timestamp}
+          </Text>
+        );
+
+      case CardType.TASK_LIST:
+        const incompleteTasks = parsed.filter((t: any) => !t.Value).length;
+
+        return (
+          Array.isArray(parsed) && (
+            <Text className="text-sm text-neutral-300 font-dmsans" numberOfLines={2}>
+              {`${incompleteTasks} task left`}
+            </Text>
+          )
+        );
+
+      case CardType.FOLDER:
+        return <FolderInfoCard cardId={card.$id} />;
     }
   } catch {
-    contentPreview = card.content?.substring(0, 50) || "";
+    contentPreview = "";
   }
 
   return contentPreview;
@@ -91,20 +138,12 @@ const SCCardSmall: React.FC<CardProps> = ({ card, onPress, onLongPress, classNam
       onLongPress={onLongPress}
       onLayout={(e) => setLayout({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
       className={clsx(
-        "border-4 border-[#0a0a0a5e] rounded-2xl overflow-hidden p-4 mx-1 my-1",
+        "border-4 border-[#0a0a0a5e] rounded-2xl overflow-hidden p-3 min-h-[72px] max-h-[72px]",
         "active:opacity-80",
         className,
       )}
     >
-      <Canvas style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
-        <Rect x={0} y={0} width={layout.width} height={layout.height}>
-          <LinearGradient
-            start={vec(0, 0)}
-            end={vec(layout.width, layout.height)}
-            colors={[card.background, getHexWithLightness(card.background, 30)]}
-          />
-        </Rect>
-      </Canvas>
+      {renderGradientBackground(card, layout)}
 
       <View className="flex-row items-start gap-3">
         {renderCardIcon(card)}
@@ -120,11 +159,7 @@ const SCCardSmall: React.FC<CardProps> = ({ card, onPress, onLongPress, classNam
             {card.title}
           </Text>
 
-          {renderCardContent(card) && (
-            <Text className="text-sm text-neutral-400 font-dmsans" numberOfLines={1}>
-              {renderCardContent(card)}
-            </Text>
-          )}
+          {renderCardContent(card)}
         </View>
       </View>
     </Pressable>
@@ -132,26 +167,22 @@ const SCCardSmall: React.FC<CardProps> = ({ card, onPress, onLongPress, classNam
 };
 
 const SCCardLarge: React.FC<CardProps> = ({ card, onPress, onLongPress, className }) => {
-  const backgroundStyle = isColorString(card.background) ? { backgroundColor: card.background } : {};
+  const [layout, setLayout] = useState({ width: 0, height: 0 });
 
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
+      onLayout={(e) => setLayout({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
       className={clsx(
-        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-72",
+        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-48 max-h-48",
         "active:opacity-80",
         className,
       )}
-      style={backgroundStyle}
     >
-      {isNetworkUrl(card.background) && (
-        <Image source={{ uri: card.background }} className="absolute inset-0 w-full h-full" resizeMode="cover" />
-      )}
+      {renderGradientBackground(card, layout)}
 
-      <View className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-      <View className="absolute bottom-0 left-0 right-0 p-4">
+      <View className="absolute top-0 bottom-0 left-0 right-0 p-4">
         <View className="flex-row items-center gap-2 mb-2">
           {renderCardIcon(card)}
           <Text className="font-dmsans-medium text-lg text-white flex-1" numberOfLines={2}>
@@ -159,11 +190,7 @@ const SCCardLarge: React.FC<CardProps> = ({ card, onPress, onLongPress, classNam
           </Text>
         </View>
 
-        {renderCardContent(card) && (
-          <Text className="text-sm text-neutral-300 font-dmsans" numberOfLines={2}>
-            {renderCardContent(card)}
-          </Text>
-        )}
+        {renderCardContent(card)}
       </View>
     </Pressable>
   );
@@ -177,32 +204,27 @@ const SCCardPortrait: React.FC<CardProps> = ({ card, onPress, onLongPress, class
       onPress={onPress}
       onLongPress={onLongPress}
       className={clsx(
-        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-72",
+        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-72 max-h-72",
         "active:opacity-80",
         className,
       )}
       style={backgroundStyle}
     >
+      <Image source={images.largecardgradient} className={`absolute bottom-0 left-0 size-full`} style={{ zIndex: 1 }} />
+
       {isNetworkUrl(card.background) && (
         <Image source={{ uri: card.background }} className="absolute inset-0 w-full h-full" resizeMode="cover" />
       )}
 
-      <View className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-      <View className="absolute bottom-0 left-0 right-0 p-4">
+      <View className="absolute bottom-0 left-0 right-0 p-4" style={{ zIndex: 2 }}>
         <View className="flex-row items-center gap-2 mb-2">
           {renderCardIcon(card)}
           <Text className="font-dmsans-medium text-lg text-white flex-1" numberOfLines={2}>
             {card.title}
           </Text>
-          <MaterialIcons name="check-circle" size={20} color="#22c55e" />
         </View>
 
-        {renderCardContent(card) && (
-          <Text className="text-sm text-neutral-300 font-dmsans" numberOfLines={2}>
-            {renderCardContent(card)}
-          </Text>
-        )}
+        {renderCardContent(card)}
       </View>
     </Pressable>
   );
@@ -221,7 +243,7 @@ const SCCardCollection: React.FC<CardProps> = ({ card, onPress, onLongPress, cla
       onPress={onPress}
       onLongPress={onLongPress}
       className={clsx(
-        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-72",
+        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-72 max-h-72",
         "active:opacity-80",
         className,
       )}
