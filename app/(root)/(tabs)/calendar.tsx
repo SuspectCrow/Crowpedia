@@ -1,20 +1,32 @@
-import { View, Text } from "react-native";
+import { View, Text, Image, ScrollView } from "react-native";
 import React from "react";
+import colors from "tailwindcss/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCNavbar } from "@/components/Partials/C_SCNavbar";
 
-const Search = () => {
+const Calendar = () => {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#292524",
-      }}
-    >
-      <Text className=" font-dmsans-black text-4xl text-red-600">Calendar</Text>
-    </SafeAreaView>
+    <View className="flex-1 h-full" style={{ backgroundColor: colors.neutral["950"] }}>
+      <Image
+        source={{ uri: "https://i.pinimg.com/736x/2e/32/dc/2e32dcc152177503e7fb6cafac26fe22.jpg" }}
+        className="absolute inset-0 w-full h-full"
+        resizeMode="cover"
+      />
+
+      <SafeAreaView className="h-full relative" edges={["bottom", "left", "right"]}>
+        <SCNavbar
+          variant="root"
+          rightAction={{
+            icon: "settings",
+            onPress: () => console.log("Settings"),
+          }}
+        />
+
+        <ScrollView className="pb-20">
+          <Text>Calendar</Text>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
-export default Search;
+export default Calendar;
