@@ -54,3 +54,8 @@ export const getCardIcon = (type: string | undefined): IconName => {
   };
   return iconMap[type || ""] || "note";
 };
+
+export interface CardTypeProps {
+  card: ICard;
+  className?: string;
+}
