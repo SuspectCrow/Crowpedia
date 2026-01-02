@@ -85,15 +85,22 @@ const SCCardSmall: React.FC<CardProps> = ({ card, onPress, onLongPress, classNam
       onPress={onPress}
       onLongPress={onLongPress}
       onLayout={(e) => setLayout({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
-      className={clsx(
-        "border-4 border-[#0a0a0a5e] rounded-2xl overflow-hidden p-3 min-h-[72px] max-h-[72px]",
-        "active:opacity-80",
-        className,
-      )}
+      className={clsx("relative min-h-[72px] max-h-[72px]", "active:opacity-80", className)}
     >
-      {renderGradientBackground(card, layout)}
+      {card.isFavorite && (
+        <MaterialIcons
+          className="absolute bottom-[8px] right-[8px] z-10 overflow-visible"
+          name={"star"}
+          size={24}
+          color={colors.yellow["500"]}
+        />
+      )}
 
-      {CardContent(card)}
+      <View className="w-full h-full border-4 border-[#0a0a0a5e] rounded-2xl overflow-hidden p-3">
+        {renderGradientBackground(card, layout)}
+
+        {CardContent(card)}
+      </View>
     </Pressable>
   );
 };
@@ -106,15 +113,22 @@ const SCCardLarge: React.FC<CardProps> = ({ card, onPress, onLongPress, classNam
       onPress={onPress}
       onLongPress={onLongPress}
       onLayout={(e) => setLayout({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
-      className={clsx(
-        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-48 max-h-48",
-        "active:opacity-80",
-        className,
-      )}
+      className={clsx("relative mx-1 my-1 max-h-48", "active:opacity-80", className)}
     >
-      {renderGradientBackground(card, layout)}
+      {card.isFavorite && (
+        <MaterialIcons
+          className="absolute top-[8px] right-[8px] z-10 overflow-visible"
+          name={"star"}
+          size={24}
+          color={colors.yellow["500"]}
+        />
+      )}
 
-      {CardContent(card)}
+      <View className="w-full border border-neutral-800 rounded-2xl overflow-hidden h-48">
+        {renderGradientBackground(card, layout)}
+
+        {CardContent(card)}
+      </View>
     </Pressable>
   );
 };
@@ -126,20 +140,31 @@ const SCCardPortrait: React.FC<CardProps> = ({ card, onPress, onLongPress, class
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
-      className={clsx(
-        "border border-neutral-800 rounded-2xl overflow-hidden mx-1 my-1 h-72 max-h-72",
-        "active:opacity-80",
-        className,
-      )}
+      className={clsx("relative mx-1 my-1 max-h-72", "active:opacity-80", className)}
       style={backgroundStyle}
     >
-      <Image source={images.largecardgradient} className={`absolute bottom-0 left-0 size-full`} style={{ zIndex: 1 }} />
-
-      {isNetworkUrl(card.background) && (
-        <Image source={{ uri: card.background }} className="absolute inset-0 w-full h-full" resizeMode="cover" />
+      {card.isFavorite && (
+        <MaterialIcons
+          className="absolute top-[8px] right-[8px] z-10 overflow-visible"
+          name={"star"}
+          size={24}
+          color={colors.yellow["500"]}
+        />
       )}
 
-      {CardContent(card)}
+      <View className="h-72 border border-neutral-800 rounded-2xl overflow-hidden">
+        <Image
+          source={images.largecardgradient}
+          className={`absolute bottom-0 left-0 size-full`}
+          style={{ zIndex: 1 }}
+        />
+
+        {isNetworkUrl(card.background) && (
+          <Image source={{ uri: card.background }} className="absolute inset-0 w-full h-full" resizeMode="cover" />
+        )}
+
+        {CardContent(card)}
+      </View>
     </Pressable>
   );
 };

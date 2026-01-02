@@ -10,7 +10,7 @@ export const appwriteConfig = {
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 
-client.setPlatform("com.suspectcrow.estateapp");
+client.setPlatform("com.suspectcrow.Crowpedia");
 
 const databases = new Databases(client);
 type NewCardPayload = Omit<ICard, "$id" | "$createdAt" | "$updatedAt">;
@@ -78,8 +78,13 @@ export async function getCards(options?: {
     const result = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.cardsCollectionId, queries);
 
     return result.documents as unknown as ICard[];
-  } catch (error) {
-    console.error("getCards Hatası:", error);
+  } catch (error: any) {
+    console.error("getCards Hatası Detay:", {
+      message: error.message,
+      code: error.code,
+      type: error.type,
+      options,
+    });
     throw error;
   }
 }

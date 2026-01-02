@@ -27,7 +27,7 @@ const FolderCardContent: React.FC<CardTypeProps> = ({ ...props }) => {
           <View className="flex-1">
             <Text
               className={clsx(
-                "font-dmsans-medium text-base text-white mb-1",
+                "font-dmsans-medium text-base text-white mb-1 z-20",
                 card.type === "SimpleTask" && card.content === "true" && "line-through text-neutral-500",
               )}
               numberOfLines={1}
@@ -49,7 +49,7 @@ const FolderCardContent: React.FC<CardTypeProps> = ({ ...props }) => {
               <MaterialIcons name={getCardIcon(card.type)} size={24} color="white" />
             </View>
 
-            <Text className="font-dmsans-medium text-lg text-white flex-1" numberOfLines={2}>
+            <Text className="font-dmsans-medium text-lg text-white flex-1 z-20" numberOfLines={2}>
               {card.title}
             </Text>
           </View>
@@ -66,7 +66,7 @@ const FolderCardContent: React.FC<CardTypeProps> = ({ ...props }) => {
             <View className="w-10 h-10 bg-[#fafafa33] rounded-xl items-center justify-center">
               <MaterialIcons name={getCardIcon(card.type)} size={24} color="white" />
             </View>
-            <Text className="font-dmsans-medium text-lg text-white flex-1" numberOfLines={2}>
+            <Text className="font-dmsans-medium text-lg text-white flex-1 z-20" numberOfLines={2}>
               {card.title}
             </Text>
           </View>
