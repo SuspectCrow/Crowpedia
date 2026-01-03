@@ -1,14 +1,14 @@
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
-import React from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import React, { useState } from "react";
 import colors from "tailwindcss/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCNavbar } from "@/components/Partials/C_SCNavbar";
-import { useLocalSearchParams } from "expo-router";
-import { FlashList } from "@shopify/flash-list";
-import { SCCard } from "@/components/S_SCCard";
-import { SCTagSelector } from "@/components/Core/C_SCTagSelector";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCardsData } from "@/hooks/useCardsData";
 import { useFolderNavigation } from "@/hooks/useFolderNavigation";
+import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
+import { getCardIcon } from "@/interfaces/ICard";
+import SCQuickActionsMenu from "@/components/Partials/C_SCQuickActionsMenu";
 
 export default function Index() {
   const params = useLocalSearchParams<{ query?: string; filter?: string; folderId?: string }>();
@@ -46,6 +46,8 @@ export default function Index() {
             </Text>
           </View>
         )}
+
+        <SCQuickActionsMenu options={filterOptions} />
 
         <ScrollView className="relative"></ScrollView>
       </SafeAreaView>

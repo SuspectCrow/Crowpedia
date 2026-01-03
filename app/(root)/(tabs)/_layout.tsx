@@ -57,7 +57,7 @@ const TabsLayout = () => {
         options={{
           title: "Folders",
           headerShown: false,
-          tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon="folder-shared" title="Folders" />,
+          tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon="folder" title="Folders" />,
         }}
       />
       <Tabs.Screen

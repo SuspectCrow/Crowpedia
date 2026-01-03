@@ -9,6 +9,7 @@ import { SCCard } from "@/components/S_SCCard";
 import { SCTagSelector } from "@/components/Core/C_SCTagSelector";
 import { useCardsData } from "@/hooks/useCardsData";
 import { useFolderNavigation } from "@/hooks/useFolderNavigation";
+import SCQuickActionsMenu from "@/components/Partials/C_SCQuickActionsMenu";
 
 export default function Folders() {
   const params = useLocalSearchParams<{ query?: string; filter?: string; folderId?: string }>();
@@ -51,6 +52,8 @@ export default function Folders() {
             </Text>
           </View>
         )}
+
+        <SCQuickActionsMenu options={filterOptions} />
 
         <ScrollView className="relative">
           <SCTagSelector

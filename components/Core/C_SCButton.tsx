@@ -10,6 +10,8 @@ export enum ButtonVariant {
   MEDIUM = "medium",
   LARGE = "large",
   ICON_ONLY = "icon_only",
+  ICON_ONLY_LARGE = "icon_only_large",
+  ICON_ONLY_MEDIUM = "icon_only_medium",
 }
 
 export type IconName = keyof typeof MaterialIcons.glyphMap;
@@ -57,6 +59,16 @@ const ButtonStyleMap: Record<ButtonVariant, ButtonStyleConfig> = {
     containerClass: "h-10 w-10 justify-center items-center p-0",
     textClass: "hidden",
     iconSize: 24,
+  },
+  [ButtonVariant.ICON_ONLY_MEDIUM]: {
+    containerClass: "h-12 w-12 justify-center items-center p-0",
+    textClass: "hidden",
+    iconSize: 26,
+  },
+  [ButtonVariant.ICON_ONLY_LARGE]: {
+    containerClass: "h-16 w-16 justify-center items-center p-0",
+    textClass: "hidden",
+    iconSize: 36,
   },
 };
 
