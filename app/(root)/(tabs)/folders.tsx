@@ -10,7 +10,7 @@ import { SCTagSelector } from "@/components/Core/C_SCTagSelector";
 import { useCardsData } from "@/hooks/useCardsData";
 import { useFolderNavigation } from "@/hooks/useFolderNavigation";
 
-export default function Index() {
+export default function Folders() {
   const params = useLocalSearchParams<{ query?: string; filter?: string; folderId?: string }>();
 
   const { dataCards, filteredCards, loadingCards, selectedFilters, setSelectedFilters, filterOptions } = useCardsData(
@@ -18,13 +18,18 @@ export default function Index() {
     params.folderId,
   );
 
-  const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!);
+  const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!, "/folders");
 
   return (
     <View className="flex-1 h-full" style={{ backgroundColor: colors.neutral["950"] }}>
       <SafeAreaView className="h-full relative" edges={["top", "bottom", "left", "right"]}>
         <SCNavbar
-          variant={"root"}
+          variant={!params.folderId ? "root" : "breadcrumb"}
+          breadcrumbs={folderPaths}
+          title={params.folderId ? activeFolderName : "Folders"}
+          icon="folder"
+          showBackButton={!!params.folderId}
+          onBackPress={handleBack}
           rightAction={{
             icon: "settings",
             onPress: () => console.log("Settings"),
@@ -47,7 +52,34 @@ export default function Index() {
           </View>
         )}
 
-        <ScrollView className="relative"></ScrollView>
+        <ScrollView className="relative">
+          <SCTagSelector
+            options={[
+              { key: "favorites", title: "Favorites", icon: "star", iconColor: `${colors.yellow["500"]}` },
+              ...filterOptions,
+            ]}
+            selectedKeys={selectedFilters}
+            onSelect={setSelectedFilters}
+            className="absolute top-1 mt-[72px] z-50 px-1"
+          />
+
+          {filteredCards.length > 0 && (
+            <FlashList
+              data={filteredCards}
+              numColumns={2}
+              masonry
+              className="pt-[128px] pb-20"
+              renderItem={({ item }) => (
+                <SCCard
+                  card={item}
+                  onPress={() => {
+                    handleCardPress(item);
+                  }}
+                />
+              )}
+            />
+          )}
+        </ScrollView>
       </SafeAreaView>
     </View>
   );

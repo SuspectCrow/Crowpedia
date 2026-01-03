@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Platform } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
@@ -25,6 +25,47 @@ interface NavbarProps {
   className?: string;
 }
 
+const NavBreadcrumbs: React.FC<{ breadcrumbs: string[]; rootIcon?: IconName }> = ({
+  breadcrumbs,
+  rootIcon = "home",
+}) => (
+  <View className="flex-row items-center flex-wrap flex-1 ml-2">
+    <MaterialIcons name={rootIcon} size={18} color="#9ca3af" />
+    {breadcrumbs.map((path, index) => {
+      const isLast = index === breadcrumbs.length - 1;
+      return (
+        <View key={index} className="flex-row items-center">
+          <MaterialIcons name="chevron-right" size={20} color="#52525b" />
+          <Text className={clsx("font-dmsans text-base", isLast ? "text-white font-medium" : "text-[#9ca3af]")}>
+            {path}
+          </Text>
+        </View>
+      );
+    })}
+  </View>
+);
+
+const NavTitle: React.FC<{
+  title?: string;
+  icon?: IconName;
+  centered?: boolean;
+  variant?: NavbarVariant;
+}> = ({ title, icon, centered = false, variant }) => (
+  <View className={clsx("flex-row items-center gap-2", centered && "justify-center")}>
+    {(icon || (variant === "root" && !icon)) && (
+      <MaterialIcons name={icon || "home"} size={20} color={centered ? "white" : "#9ca3af"} />
+    )}
+    <Text
+      className={clsx(
+        "font-dmsans text-white",
+        centered ? "text-lg font-medium" : variant === "root" ? "text-md text-neutral-300" : "text-lg",
+      )}
+    >
+      {title || (variant === "root" ? "Home" : "")}
+    </Text>
+  </View>
+);
+
 export const SCNavbar: React.FC<NavbarProps> = ({
   variant = "root",
   title,
@@ -35,30 +76,6 @@ export const SCNavbar: React.FC<NavbarProps> = ({
   rightAction,
   className,
 }) => {
-  const renderBreadcrumbs = () => (
-    <View className="flex-row items-center flex-wrap flex-1 ml-2">
-      <MaterialIcons name="home" size={18} color="#9ca3af" />
-      {breadcrumbs.map((path, index) => {
-        const isLast = index === breadcrumbs.length - 1;
-        return (
-          <View key={index} className="flex-row items-center">
-            <MaterialIcons name="chevron-right" size={20} color="#52525b" />
-            <Text className={clsx("font-dmsans text-base", isLast ? "text-white font-medium" : "text-[#9ca3af]")}>
-              {path}
-            </Text>
-          </View>
-        );
-      })}
-    </View>
-  );
-
-  const renderTitle = (centered: boolean = false) => (
-    <View className={clsx("flex-row items-center gap-2", centered && "justify-center")}>
-      {icon && <MaterialIcons name={icon} size={20} color={centered ? "white" : "#9ca3af"} />}
-      <Text className={clsx("font-dmsans text-lg text-white", centered && "font-medium")}>{title}</Text>
-    </View>
-  );
-
   return (
     <BlurView
       intensity={Platform.OS === "android" ? 2 : 20}
@@ -82,20 +99,17 @@ export const SCNavbar: React.FC<NavbarProps> = ({
               transparent={false}
             />
           ) : (
-            variant === "root" && (
-              <View className="flex-row items-center gap-2">
-                <MaterialIcons name="home" size={20} color="#9ca3af" />
-                <Text className="text-neutral-300 font-dmsans text-md">Home</Text>
-              </View>
-            )
+            variant === "root" && <NavTitle title={title} icon={icon} variant={variant} />
           )}
 
-          {variant === "breadcrumb" && renderBreadcrumbs()}
-          {variant === "simple" && renderTitle(false)}
+          {variant === "breadcrumb" && <NavBreadcrumbs breadcrumbs={breadcrumbs} rootIcon={icon} />}
+          {variant === "simple" && <NavTitle title={title} icon={icon} variant={variant} />}
         </View>
 
         {variant === "center" && (
-          <View className="absolute left-0 right-0 items-center pointer-events-none">{renderTitle(true)}</View>
+          <View className="absolute left-0 right-0 items-center pointer-events-none">
+            <NavTitle title={title} icon={icon} centered variant={variant} />
+          </View>
         )}
 
         <View className="flex-row justify-end min-w-[40px]">
