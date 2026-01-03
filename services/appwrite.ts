@@ -157,3 +157,16 @@ export async function getCardsInFolder(folderId: string): Promise<ICard[]> {
     limit: 100,
   });
 }
+
+export async function getAllFolders(): Promise<ICard[]> {
+  try {
+    const queries = [Query.equal("type", "Folder"), Query.limit(1000)];
+
+    const result = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.cardsCollectionId, queries);
+
+    return result.documents as unknown as ICard[];
+  } catch (error) {
+    console.error("getAllFolders Hatası:", error);
+    throw error;
+  }
+}

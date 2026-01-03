@@ -58,7 +58,7 @@ const TreeNode: React.FC<{
         </View>
 
         <MaterialIcons
-          name={hasChildren ? (isExpanded ? "folder-open" : "folder") : "insert-drive-file"}
+          name={isExpanded ? "folder-open" : "folder"}
           size={20}
           color={iconColor}
           style={{ marginRight: 8 }}

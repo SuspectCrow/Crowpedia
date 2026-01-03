@@ -6,6 +6,12 @@ export enum CardVariant {
   PORTRAIT = "portrait",
 }
 
+export const CARD_VARIANTS = {
+  SMALL: CardVariant.SMALL,
+  LARGE: CardVariant.LARGE,
+  PORTRAIT: CardVariant.PORTRAIT,
+} as const;
+
 export enum CardType {
   FOLDER = "Folder",
   NOTE = "Note",
@@ -18,12 +24,6 @@ export enum CardType {
   COLLECTION = "Collection",
   PASSWORD = "Password",
 }
-
-export const CARD_VARIANTS = {
-  SMALL: CardVariant.SMALL,
-  LARGE: CardVariant.LARGE,
-  PORTRAIT: CardVariant.PORTRAIT,
-} as const;
 
 export interface ICard {
   $id: string;
