@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Platform, BackHandler } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import clsx from "clsx";
@@ -76,6 +76,19 @@ export const SCNavbar: React.FC<NavbarProps> = ({
   rightAction,
   className,
 }) => {
+  useEffect(() => {
+    if (!showBackButton || !onBackPress) return;
+
+    const backAction = () => {
+      onBackPress();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => backHandler.remove();
+  }, [showBackButton, onBackPress]);
+
   return (
     <BlurView
       intensity={Platform.OS === "android" ? 2 : 20}

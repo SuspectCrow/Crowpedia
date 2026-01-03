@@ -22,8 +22,8 @@ export default function Folders() {
   const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!, "/folders");
 
   return (
-    <View className="flex-1 h-full" style={{ backgroundColor: colors.neutral["950"] }}>
-      <SafeAreaView className="h-full relative" edges={["top", "bottom", "left", "right"]}>
+    <View className="flex-1 bg-neutral-950">
+      <SafeAreaView className="flex-1 relative" edges={["top", "bottom", "left", "right"]}>
         <SCNavbar
           variant={!params.folderId ? "root" : "breadcrumb"}
           breadcrumbs={folderPaths}

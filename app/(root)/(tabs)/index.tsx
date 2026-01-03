@@ -1,6 +1,5 @@
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import React, { useState } from "react";
-import colors from "tailwindcss/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCNavbar } from "@/components/Partials/C_SCNavbar";
 import { router, useLocalSearchParams } from "expo-router";
@@ -9,7 +8,7 @@ import { useFolderNavigation } from "@/hooks/useFolderNavigation";
 import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 import { getCardIcon } from "@/interfaces/ICard";
 import SCQuickActionsMenu from "@/components/Partials/C_SCQuickActionsMenu";
-
+import colors from "tailwindcss/colors";
 export default function Index() {
   const params = useLocalSearchParams<{ query?: string; filter?: string; folderId?: string }>();
 
@@ -21,8 +20,8 @@ export default function Index() {
   const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!);
 
   return (
-    <View className="flex-1 h-full" style={{ backgroundColor: colors.neutral["950"] }}>
-      <SafeAreaView className="h-full relative" edges={["top", "bottom", "left", "right"]}>
+    <View className="flex-1 bg-neutral-950">
+      <SafeAreaView className="flex-1 relative" edges={["top", "bottom", "left", "right"]}>
         <SCNavbar
           variant={"root"}
           rightAction={{
@@ -49,7 +48,7 @@ export default function Index() {
 
         <SCQuickActionsMenu options={filterOptions} />
 
-        <ScrollView className="relative"></ScrollView>
+        {/*<ScrollView className="relative"></ScrollView>*/}
       </SafeAreaView>
     </View>
   );
