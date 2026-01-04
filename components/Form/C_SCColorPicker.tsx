@@ -5,7 +5,7 @@ import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 
 interface SCColorPickerProps {
   label?: string;
-  value: string; 
+  value: string;
   onChange: (color: string) => void;
   containerClassName?: string;
 }
@@ -15,7 +15,7 @@ export const SCColorPicker: React.FC<SCColorPickerProps> = ({ label, value, onCh
   const [tempColor, setTempColor] = useState(value);
 
   const handleOpen = () => {
-    setTempColor(value); 
+    setTempColor(value);
     setShowModal(true);
   };
 
