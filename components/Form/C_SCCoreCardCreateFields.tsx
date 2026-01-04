@@ -20,7 +20,7 @@ export const SCCoreCardCreateFields = ({
   onSelect,
   card,
 }: SCCoreCardCreateFieldsProps) => {
-  const [isCardCoreSettingsCollapsed, setIsCardCoreSettingsCollapsed] = useState(true);
+  const [isCardCoreSettingsCollapsed, setIsCardCoreSettingsCollapsed] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | undefined>(initialFolderId);
 
   const handleSelectFolder = (folderId: string) => {

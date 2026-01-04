@@ -5,6 +5,7 @@ import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFiel
 import { CardType, CardVariant, ICard } from "@/interfaces/ICard";
 import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 import { createCard } from "@/services/appwrite";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const FolderCreate = ({ onClose, onSuccess }: CreateCardProps) => {
   const newCard: ICard = useMemo(
@@ -37,13 +38,13 @@ const FolderCreate = ({ onClose, onSuccess }: CreateCardProps) => {
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <SCCoreCardCreateFields card={newCard} />
       <View className="flex-row items-center justify-center gap-4">
         <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} />
         <SCButton text="Create" variant={ButtonVariant.LARGE} className={"bg-green-700"} onPress={handleCreate} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 export default FolderCreate;
