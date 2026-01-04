@@ -47,8 +47,8 @@ export const useCardsData = (query: string | undefined, folderId: string | undef
 
     let filtered = [...dataCards];
 
-    const activeFolder = folderId || null;
-    filtered = filtered.filter((card) => (card.parentFolder || null) === activeFolder);
+    const activeFolder = folderId || "home";
+    filtered = filtered.filter((card) => card.parentFolder === activeFolder);
 
     if (selectedFilters.length > 0) {
       const isFavoriteSelected = selectedFilters.includes("favorites");
@@ -86,6 +86,7 @@ export const useCardsData = (query: string | undefined, folderId: string | undef
     dataCards,
     filteredCards,
     loadingCards,
+    refetch: refetchCards,
     selectedFilters,
     setSelectedFilters,
     filterOptions,

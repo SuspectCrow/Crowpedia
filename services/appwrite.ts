@@ -29,7 +29,7 @@ export async function createCard(data: NewCardPayload): Promise<Models.Document>
         content: data.content,
         type: data.type,
         order: data.order,
-        parentFolder: data.parentFolder || null,
+        parentFolder: data.parentFolder || "home",
         isFavorite: data.isFavorite || false,
         variant: data.variant || CardVariant.SMALL,
         background: data.background || null,

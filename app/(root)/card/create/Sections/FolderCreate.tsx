@@ -1,81 +1,47 @@
-import { View, Text, Pressable, Linking, Alert } from "react-native";
-import React, { useMemo, useState } from "react";
+import { View, Alert } from "react-native";
+import React, { useMemo } from "react";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
-import { MaterialIcons } from "@expo/vector-icons";
-import colors from "tailwindcss/colors";
-import { SCFolderSelect } from "@/components/Form/C_SCFolderSelect";
-import { SCSelector, SelectorOption } from "@/components/Core/C_SCSelector";
-import { TagOption } from "@/components/Core/C_SCTagSelector";
-import { CardType, CardVariant, getCardIcon } from "@/interfaces/ICard";
-import { SCColorPicker } from "@/components/Form/C_SCColorPicker";
-import { SCInput } from "@/components/Core/C_SCInput";
+import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFields";
+import { CardType, CardVariant, ICard } from "@/interfaces/ICard";
+import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
+import { createCard } from "@/services/appwrite";
 
 const FolderCreate = ({ onClose, onSuccess }: CreateCardProps) => {
-  const [isCardCoreSettingsColapsed, setIsCardCoreSettingsColapsed] = useState(false);
-  const [selectedFolderId, setSelectedFolderId] = useState<string | undefined>();
+  const newCard: ICard = useMemo(
+    () => ({
+      $id: "",
+      order: 10,
+      title: "",
+      content: "",
+      type: CardType.FOLDER,
+      background: "#f00",
+      variant: CardVariant.SMALL,
+    }),
+    [],
+  );
 
-  const [selectedCardVariant, setSelectedCardVariant] = useState("small");
-  const cardVariants: SelectorOption[] = useMemo(() => {
-    return Object.values(CardVariant).map((type) => ({
-      key: type,
-      title: type,
-    }));
-  }, []);
+  const handleCreate = async () => {
+    try {
+      if (!newCard.title) {
+        Alert.alert("Error", "Please enter a title");
+        return;
+      }
 
-  const [backgroundColor, setBackgroundColor] = useState("#ff0000");
-  const [backgroundURL, setBackgroundURL] = useState("");
+      await createCard(newCard);
+      onSuccess?.();
+      onClose();
+    } catch (error) {
+      console.error("Failed to create folder:", error);
+      Alert.alert("Error", "Failed to create folder. Please try again.");
+    }
+  };
 
   return (
     <View>
-      <View className="bg-neutral-900 border border-neutral-800 rounded-xl mx-3 p-3">
-        <Pressable
-          className="flex-row justify-between items-center mb-6"
-          onPress={() => setIsCardCoreSettingsColapsed(!isCardCoreSettingsColapsed)}
-        >
-          <Text className="text-neutral-300 font-dmsans-semibold text-xl">Apperance and Location</Text>
-          <MaterialIcons
-            name={isCardCoreSettingsColapsed ? "arrow-upward" : "arrow-downward"}
-            size={24}
-            color={colors.neutral["300"]}
-          />
-        </Pressable>
-        {isCardCoreSettingsColapsed && (
-          <View className="mb-4">
-            <SCFolderSelect
-              selectedFolderId={selectedFolderId}
-              onSelect={(folderId) => setSelectedFolderId(folderId)}
-            />
-            <SCSelector
-              options={cardVariants}
-              selectedKey={selectedCardVariant}
-              onSelect={(key) => {
-                setSelectedCardVariant(key);
-              }}
-              className="mt-4"
-            />
-
-            {(selectedCardVariant === CardVariant.SMALL || selectedCardVariant === CardVariant.LARGE) && (
-              <View className="flex-1 bg-neutral-950 border border-neutral-900 rounded-xl mt-4 p-5 justify-center">
-                <SCColorPicker
-                  label="Bacground Color"
-                  value={backgroundColor}
-                  onChange={(newColor) => setBackgroundColor(newColor)}
-                />
-              </View>
-            )}
-
-            {selectedCardVariant === CardVariant.PORTRAIT && (
-              <View className="mt-4">
-                <SCInput
-                  label="Background URL"
-                  placeholder="Enter a image URL"
-                  value={backgroundURL}
-                  onChange={(text) => setBackgroundURL(text)}
-                />
-              </View>
-            )}
-          </View>
-        )}
+      <SCCoreCardCreateFields card={newCard} />
+      <View className="flex-row items-center justify-center gap-4">
+        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} />
+        <SCButton text="Create" variant={ButtonVariant.LARGE} className={"bg-green-700"} onPress={handleCreate} />
       </View>
     </View>
   );

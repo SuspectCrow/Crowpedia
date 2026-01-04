@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
 import React from "react";
 import colors from "tailwindcss/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,10 +14,8 @@ import SCQuickActionsMenu from "@/components/Partials/C_SCQuickActionsMenu";
 export default function Folders() {
   const params = useLocalSearchParams<{ query?: string; filter?: string; folderId?: string }>();
 
-  const { dataCards, filteredCards, loadingCards, selectedFilters, setSelectedFilters, filterOptions } = useCardsData(
-    params.query,
-    params.folderId,
-  );
+  const { dataCards, filteredCards, loadingCards, refetch, selectedFilters, setSelectedFilters, filterOptions } =
+    useCardsData(params.query, params.folderId);
 
   const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!, "/folders");
 
@@ -25,11 +23,11 @@ export default function Folders() {
     <View className="flex-1 bg-neutral-950">
       <SafeAreaView className="flex-1 relative" edges={["top", "bottom", "left", "right"]}>
         <SCNavbar
-          variant={!params.folderId ? "root" : "breadcrumb"}
+          variant={!params.folderId || params.folderId === "home" ? "root" : "breadcrumb"}
           breadcrumbs={folderPaths}
-          title={params.folderId ? activeFolderName : "Folders"}
+          title={params.folderId && params.folderId !== "home" ? activeFolderName : "Folders"}
           icon="folder"
-          showBackButton={!!params.folderId}
+          showBackButton={!!params.folderId && params.folderId !== "home"}
           onBackPress={handleBack}
           rightAction={{
             icon: "settings",
@@ -38,7 +36,7 @@ export default function Folders() {
           className="absolute z-[100]"
         />
 
-        {loadingCards && (
+        {loadingCards && !dataCards && (
           <View className="absolute top-0 w-full px-1 flex-row justify-center items-center gap-3 h-full z-30 bg-neutral-950">
             <ActivityIndicator size="small" color={colors.neutral["600"]} />
             <Text className="text-neutral-600 font-dmsans-medium text-center text-xl">Loading</Text>
@@ -55,7 +53,12 @@ export default function Folders() {
 
         <SCQuickActionsMenu options={filterOptions} />
 
-        <ScrollView className="relative">
+        <ScrollView
+          className="relative"
+          refreshControl={
+            <RefreshControl refreshing={loadingCards} onRefresh={refetch} tintColor={colors.neutral["600"]} />
+          }
+        >
           <SCTagSelector
             options={[
               { key: "favorites", title: "Favorites", icon: "star", iconColor: `${colors.yellow["500"]}` },

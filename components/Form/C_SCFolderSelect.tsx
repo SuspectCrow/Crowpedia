@@ -21,6 +21,9 @@ export const SCFolderSelect = ({ selectedFolderId, onSelect }: SCFolderSelectPro
       try {
         const folderData = await getAllFolders();
         const tree = buildFolderTree(folderData);
+        if (!tree.find((f) => f.id === "home")) {
+          tree.unshift({ id: "home", name: "Home" });
+        }
         setFolders(tree);
       } catch (error) {
         console.error("Failed to fetch folders:", error);
@@ -31,6 +34,14 @@ export const SCFolderSelect = ({ selectedFolderId, onSelect }: SCFolderSelectPro
 
     fetchFolders();
   }, []);
+
+  useEffect(() => {
+    if (!selectedFolderId && folders.length > 0) {
+      const defaultFolder = folders[0];
+      setSelectedFolder(defaultFolder);
+      onSelect(defaultFolder.id);
+    }
+  }, [selectedFolderId, folders, onSelect]);
 
   if (loading) {
     return (

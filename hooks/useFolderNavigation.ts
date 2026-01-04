@@ -8,12 +8,12 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
   const navigation = useNavigation();
 
   const folderPaths = useMemo(() => {
-    if (!params.folderId || !dataCards) return [];
+    if (!params.folderId || params.folderId === "home" || !dataCards) return [];
 
     const paths: string[] = [];
     let currentId: string | undefined = params.folderId;
 
-    while (currentId) {
+    while (currentId && currentId !== "home") {
       const folder = dataCards.find((c) => c.$id === currentId);
       if (folder) {
         paths.unshift(folder.title);
@@ -37,10 +37,10 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
   );
 
   const handleBack = useCallback(() => {
-    if (params.folderId) {
+    if (params.folderId && params.folderId !== "home") {
       const currentFolder = dataCards?.find((c) => c.$id === params.folderId);
 
-      if (currentFolder?.parentFolder) {
+      if (currentFolder?.parentFolder && currentFolder.parentFolder !== "home") {
         router.push({ pathname: pathname as any, params: { folderId: currentFolder.parentFolder } });
       } else {
         router.push({ pathname: pathname as any, params: { folderId: undefined } });
@@ -51,7 +51,9 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
   }, [params.folderId, dataCards, navigation, router, pathname]);
 
   const activeFolderName =
-    params.folderId && dataCards ? dataCards.find((c) => c.$id === params.folderId)?.title || "Folder" : "Home";
+    params.folderId && params.folderId !== "home" && dataCards
+      ? dataCards.find((c) => c.$id === params.folderId)?.title || "Folder"
+      : "Home";
 
   return {
     folderPaths,

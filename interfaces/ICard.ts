@@ -26,18 +26,18 @@ export enum CardType {
 }
 
 export interface ICard {
-  $id: string;
+  $id?: string;
   index?: number;
-  order: any;
+  order?: any;
   parentFolder?: string;
   title: any;
-  content: string;
+  content?: string;
   type?: string;
   isFavorite?: boolean;
   variant?: CardVariant;
   background?: any;
-  $createdAt: string;
-  $updatedAt: string;
+  $createdAt?: string;
+  $updatedAt?: string;
 }
 
 export const getCardIcon = (type: string | undefined): IconName => {

@@ -1,4 +1,4 @@
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View, RefreshControl } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCNavbar } from "@/components/Partials/C_SCNavbar";
@@ -12,10 +12,8 @@ import colors from "tailwindcss/colors";
 export default function Index() {
   const params = useLocalSearchParams<{ query?: string; filter?: string; folderId?: string }>();
 
-  const { dataCards, filteredCards, loadingCards, selectedFilters, setSelectedFilters, filterOptions } = useCardsData(
-    params.query,
-    params.folderId,
-  );
+  const { dataCards, filteredCards, loadingCards, refetch, selectedFilters, setSelectedFilters, filterOptions } =
+    useCardsData(params.query, params.folderId);
 
   const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!);
 
@@ -31,7 +29,7 @@ export default function Index() {
           className="absolute z-[100]"
         />
 
-        {loadingCards && (
+        {loadingCards && !dataCards && (
           <View className="absolute top-0 w-full px-1 flex-row justify-center items-center gap-3 h-full z-30 bg-neutral-950">
             <ActivityIndicator size="small" color={colors.neutral["600"]} />
             <Text className="text-neutral-600 font-dmsans-medium text-center text-xl">Loading</Text>
@@ -48,7 +46,13 @@ export default function Index() {
 
         <SCQuickActionsMenu options={filterOptions} />
 
-        {/*<ScrollView className="relative"></ScrollView>*/}
+        <ScrollView
+          className="relative"
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshControl={
+            <RefreshControl refreshing={loadingCards} onRefresh={refetch} tintColor={colors.neutral["600"]} />
+          }
+        />
       </SafeAreaView>
     </View>
   );
