@@ -130,7 +130,7 @@ export const SCButton: React.FC<ButtonProps> = ({
 
         transparent
           ? "bg-transparent border-0"
-          : clsx(AppTheme.colors.background, AppTheme.colors.border, AppTheme.layout.borderWidth),
+          : `${AppTheme.colors.background} ${AppTheme.colors.border} ${AppTheme.layout.borderWidth}`,
 
         icon && showText && "gap-2",
 

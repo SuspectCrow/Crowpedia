@@ -6,15 +6,27 @@ import clsx from "clsx";
 import { AppTheme } from "@/theme";
 
 export interface SCTaskInputProps {
+  id?: string | number;
   value?: boolean;
   onValueChange?: (value: boolean) => void;
   label: string;
+  isEditingDefault?: boolean;
   onLabelChange?: (value: string) => void;
+  onTaskSubmit?: (value: string) => void;
   onTaskDeleted?: () => void;
 }
 
-export const SCTaskInput = ({ value, onValueChange, label, onLabelChange, onTaskDeleted }: SCTaskInputProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const SCTaskInput = ({
+  id,
+  value,
+  onValueChange,
+  label,
+  isEditingDefault,
+  onLabelChange,
+  onTaskSubmit,
+  onTaskDeleted,
+}: SCTaskInputProps) => {
+  const [isEditing, setIsEditing] = useState(isEditingDefault);
 
   const handleValueChange = (newValue: boolean) => {
     if (onValueChange) {
@@ -26,19 +38,31 @@ export const SCTaskInput = ({ value, onValueChange, label, onLabelChange, onTask
     if (!label || label.trim() === "") {
       onTaskDeleted?.();
     } else {
-      setIsEditing(false);
+      if (onTaskSubmit) {
+        onTaskSubmit(label);
+      }
+      if (!isEditingDefault) {
+        setIsEditing(false);
+      }
     }
   };
 
   return (
     <View className="flex-row gap-1 items-center justify-start">
-      <SCCheckBox checked={value} onChange={handleValueChange} />
+      {!isEditingDefault && <SCCheckBox checked={value} onChange={handleValueChange} />}
       <View className="flex-1">
         {isEditing ? (
-          <SCInput value={label} onChangeText={onLabelChange} autoFocus onSubmitEditing={handleSubmitEditing} />
+          <SCInput
+            value={label}
+            onChangeText={onLabelChange}
+            placeholder={!isEditingDefault ? "Press enter for delete task" : "Enter your task..."}
+            autoFocus
+            onSubmitEditing={handleSubmitEditing}
+            containerClassName="mb-0"
+          />
         ) : (
-          <Pressable onPress={() => setIsEditing(true)}>
-            <Text className={clsx("mb-3 font-dmsans text-lg", AppTheme.colors.text)}>{label ? label : ""}</Text>
+          <Pressable onPress={() => setIsEditing(true)} className="h-12 justify-center">
+            <Text className={clsx("font-dmsans text-lg", AppTheme.colors.text)}>{label ? label : ""}</Text>
           </Pressable>
         )}
       </View>
