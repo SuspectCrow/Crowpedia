@@ -25,6 +25,12 @@ export enum CardType {
   PASSWORD = "Password",
 }
 
+export interface ITaskItem {
+  id: string;
+  label: string;
+  value: boolean;
+}
+
 export interface ICard {
   $id?: string;
   index?: number;
@@ -49,6 +55,7 @@ export const getCardIcon = (type: string | undefined): IconName => {
     TaskList: "checklist",
     Objective: "insert-chart-outlined",
     Event: "event",
+    Routine: "repeat",
     Collection: "collections-bookmark",
     Password: "password",
   };

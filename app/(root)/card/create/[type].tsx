@@ -55,16 +55,12 @@ const CreateCard = () => {
           variant={"simple"}
           showBackButton={true}
           onBackPress={() => router.back()}
-          rightAction={{
-            icon: "settings",
-            onPress: () => console.log("Settings"),
-          }}
           icon={getCardIcon(type)}
           title={`Create ${type}`}
           className="absolute z-[100]"
         />
 
-        <ScrollView className="flex-1 relative" contentContainerStyle={{ paddingTop: 112 }}>
+        <ScrollView className="flex-1 relative" contentContainerStyle={{ paddingTop: 72 }}>
           <View className="flex-1 mt-4">
             <CardCreationContent />
           </View>
