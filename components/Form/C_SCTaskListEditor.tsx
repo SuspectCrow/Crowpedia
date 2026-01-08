@@ -86,7 +86,7 @@ export const SCTaskListEditor = ({
       </View>
 
       <View className="flex-row items-center justify-center gap-4 mt-8">
-        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} />
+        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} transparent />
         <SCButton text={submitText} variant={ButtonVariant.LARGE} className={submitClassName} onPress={onSubmit} />
       </View>
     </View>

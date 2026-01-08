@@ -63,7 +63,7 @@ const NoteCreate = ({ onClose, onSuccess }: CreateCardProps) => {
       </View>
 
       <View className="flex-row items-center justify-center gap-4">
-        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} />
+        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} transparent />
         <SCButton text="Create" variant={ButtonVariant.LARGE} className={"bg-green-700"} onPress={handleCreate} />
       </View>
     </SafeAreaView>

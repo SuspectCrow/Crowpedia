@@ -112,7 +112,7 @@ const EventCreate = ({ onClose, onSuccess }: CreateCardProps) => {
           </View>
         </View>
         <View className="flex-row items-center justify-center gap-4 mt-8">
-          <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} />
+          <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} transparent />
           <SCButton text="Create" variant={ButtonVariant.LARGE} onPress={handleCreate} />
         </View>
       </View>
