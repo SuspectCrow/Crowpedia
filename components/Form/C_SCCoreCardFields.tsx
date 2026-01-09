@@ -8,6 +8,7 @@ import { SCColorPicker } from "@/components/Form/C_SCColorPicker";
 import { CardType, CardVariant, ICard } from "@/interfaces/ICard";
 import { SCInput } from "@/components/Core/C_SCInput";
 import { SCCard } from "@/components/S_SCCard";
+import { isUrl } from "expo-file-system/src/pathUtilities/url";
 
 interface SCCoreCardCreateFieldsProps {
   selectedFolderId?: string;
@@ -37,9 +38,13 @@ export const SCCoreCardCreateFields = ({
     }));
   }, []);
 
-  const [backgroundColor, setBackgroundColor] = useState("#ff0000");
-  const [backgroundURL, setBackgroundURL] = useState("");
-  const [title, setTitle] = useState("");
+  const [backgroundColor, setBackgroundColor] = useState(
+    card && card.background && !isUrl(card.background) ? card.background : "#ff0000",
+  );
+  const [backgroundURL, setBackgroundURL] = useState(
+    card && card.background && isUrl(card.background) ? card.background : "",
+  );
+  const [title, setTitle] = useState(card && card.title ? card.title : "");
 
   return (
     <View className="mx-3 mt-4">
@@ -82,7 +87,7 @@ export const SCCoreCardCreateFields = ({
               <View className="flex-1 bg-neutral-950 border border-neutral-900 rounded-xl mt-4 p-5 justify-center">
                 <SCColorPicker
                   label="Bacground Color"
-                  value={backgroundColor}
+                  value={backgroundColor as string}
                   onChange={(newColor) => {
                     setBackgroundColor(newColor);
                     card.background = newColor;

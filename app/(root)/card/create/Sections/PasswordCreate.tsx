@@ -6,7 +6,7 @@ import { ICard, CardType, CardVariant } from "@/interfaces/ICard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCInput, InputVariant } from "@/components/Core/C_SCInput";
 import { SCButton, ButtonVariant } from "@/components/Core/C_SCButton";
-import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFields";
+import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
 import CryptoJS from "crypto-js";
 

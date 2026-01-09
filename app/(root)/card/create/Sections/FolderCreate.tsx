@@ -1,7 +1,7 @@
 import { View, Alert } from "react-native";
 import React, { useMemo } from "react";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
-import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFields";
+import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { CardType, CardVariant, ICard } from "@/interfaces/ICard";
 import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 import { createCard } from "@/services/appwrite";

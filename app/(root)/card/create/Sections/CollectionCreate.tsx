@@ -4,7 +4,7 @@ import { createCard } from "@/services/appwrite";
 import { ICard, CardType, CardVariant } from "@/interfaces/ICard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCButton, ButtonVariant } from "@/components/Core/C_SCButton";
-import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFields";
+import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { SCSelector, SelectorOption } from "@/components/Core/C_SCSelector";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
 

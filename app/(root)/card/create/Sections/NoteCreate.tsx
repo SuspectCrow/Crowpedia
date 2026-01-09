@@ -1,8 +1,8 @@
-import { View, Alert } from "react-native";
+import { View, Alert, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
 import { SCTextEditor } from "@/components/Form/C_SCTextEditor";
-import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFields";
+import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { CardType, CardVariant, ICard } from "@/interfaces/ICard";
 import { SCButton, ButtonVariant } from "@/components/Core/C_SCButton";
 import { createCard } from "@/services/appwrite";
@@ -50,6 +50,13 @@ const NoteCreate = ({ onClose, onSuccess }: CreateCardProps) => {
           className="w-full bg-neutral-800 border-neutral-700"
         />
 
+        {/*<View className="flex-row items-center justify-between px-4 py-3 border-b border-neutral-800">*/}
+        {/*  <Text className="text-white font-dmsans-medium text-lg">{label || "Editor"}</Text>*/}
+        {/*  <TouchableOpacity onPress={onDonePressed} className="bg-neutral-800 px-4 py-1.5 rounded-lg">*/}
+        {/*    <Text className="text-white font-dmsans-medium">Done</Text>*/}
+        {/*  </TouchableOpacity>*/}
+        {/*</View>*/}
+
         <SCTextEditor
           label="Note Content"
           placeholder="Write your thoughts here..."
@@ -58,7 +65,7 @@ const NoteCreate = ({ onClose, onSuccess }: CreateCardProps) => {
             setNewCard((prev) => ({ ...prev, content: html }));
           }}
           visible={isEditorOpen}
-          onClose={() => setIsEditorOpen(false)}
+          onDonePressed={() => setIsEditorOpen(false)}
         />
       </View>
 

@@ -27,10 +27,13 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
 
   const handleCardPress = useCallback(
     (card: ICard) => {
-      if (card.type === CardType.FOLDER) {
-        router.push({ pathname: pathname as any, params: { folderId: card.$id } });
-      } else {
-        console.log(card.title);
+      switch (card.type) {
+        case CardType.FOLDER:
+          router.push({ pathname: pathname as any, params: { folderId: card.$id } });
+          break;
+        default:
+          router.push(`/card/detail/${card.$id}`);
+          break;
       }
     },
     [router, pathname],

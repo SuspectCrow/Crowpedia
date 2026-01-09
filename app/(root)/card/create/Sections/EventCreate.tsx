@@ -1,7 +1,7 @@
 import { Alert, Text, View } from "react-native";
 import React, { useState } from "react";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
-import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardCreateFields";
+import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { InputVariant, SCInput } from "@/components/Core/C_SCInput";
 import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 import { SafeAreaView } from "react-native-safe-area-context";

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator, RefreshControl, FlatList } from "react-native";
 import React from "react";
 import colors from "tailwindcss/colors";
 import { SafeAreaView } from "react-native-safe-area-context";

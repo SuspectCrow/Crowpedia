@@ -16,7 +16,8 @@ interface SCTextEditorProps {
   minHeight?: number;
   onImagePress?: () => void;
   visible: boolean;
-  onClose: () => void;
+  onDonePressed?: () => void;
+  ListHeaderComponent?: React.ReactElement | null;
 }
 
 export const SCTextEditor: React.FC<SCTextEditorProps> = ({
@@ -29,7 +30,8 @@ export const SCTextEditor: React.FC<SCTextEditorProps> = ({
   minHeight = 300,
   onImagePress,
   visible,
-  onClose,
+  onDonePressed,
+  ListHeaderComponent,
 }) => {
   const richText = useRef<RichEditor>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -136,15 +138,19 @@ export const SCTextEditor: React.FC<SCTextEditorProps> = ({
     </View>
   );
 
+  const renderDefaultHeader = () => (
+    <View className="flex-row items-center justify-between px-4 py-3 border-b border-neutral-800">
+      <Text className="text-white font-dmsans-medium text-lg">{label || "Editor"}</Text>
+      <TouchableOpacity onPress={onDonePressed} className="bg-neutral-800 px-4 py-1.5 rounded-lg">
+        <Text className="text-white font-dmsans-medium">Done</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onDonePressed}>
       <SafeAreaView className="flex-1 bg-neutral-900">
-        <View className="flex-row items-center justify-between px-4 py-3 border-b border-neutral-800">
-          <Text className="text-white font-dmsans-medium text-lg">{label || "Editor"}</Text>
-          <TouchableOpacity onPress={onClose} className="bg-neutral-800 px-4 py-1.5 rounded-lg">
-            <Text className="text-white font-dmsans-medium">Done</Text>
-          </TouchableOpacity>
-        </View>
+        {ListHeaderComponent ? ListHeaderComponent : renderDefaultHeader()}
 
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
           <View className="flex-1 bg-neutral-900">
@@ -153,7 +159,7 @@ export const SCTextEditor: React.FC<SCTextEditorProps> = ({
                 ref={richText}
                 onChange={richTextHandle}
                 placeholder={placeholder}
-                androidHardwareAccelerationDisabled={true}
+                // androidHardwareAccelerationDisabled={true}
                 initialContentHTML={initialValue}
                 editorStyle={{
                   backgroundColor: "#171717", // neutral-900 approx
