@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import React, { useState } from "react";
 import { CreateCardProps } from "@/app/(root)/card/create/[type]";
 import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
@@ -6,6 +6,7 @@ import { CardType, CardVariant, ICard, ITaskItem } from "@/interfaces/ICard";
 import { createCard } from "@/services/appwrite";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCTaskListEditor } from "@/components/Form/C_SCTaskListEditor";
+import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 
 const TaskListCreate = ({ onClose, onSuccess }: CreateCardProps) => {
   const [newCard, setNewCard] = useState<ICard>({
@@ -45,7 +46,12 @@ const TaskListCreate = ({ onClose, onSuccess }: CreateCardProps) => {
     <SafeAreaView className="flex-1">
       <SCCoreCardCreateFields card={newCard} />
 
-      <SCTaskListEditor taskList={taskList} onTaskListChange={setTaskList} onClose={onClose} onSubmit={handleCreate} />
+      <SCTaskListEditor taskList={taskList} onTaskListChange={setTaskList} />
+
+      <View className="flex-row items-center justify-center gap-4 mt-8">
+        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} transparent />
+        <SCButton text="Create" variant={ButtonVariant.LARGE} className={onClose} onPress={handleCreate} />
+      </View>
     </SafeAreaView>
   );
 };

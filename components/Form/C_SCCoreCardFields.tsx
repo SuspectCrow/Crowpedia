@@ -12,12 +12,14 @@ import { isUrl } from "expo-file-system/src/pathUtilities/url";
 
 interface SCCoreCardCreateFieldsProps {
   selectedFolderId?: string;
+  cardVariant?: CardVariant;
   onSelect?: (folderId: string) => void;
   card: ICard;
 }
 
 export const SCCoreCardCreateFields = ({
   selectedFolderId: initialFolderId,
+  cardVariant,
   onSelect,
   card,
 }: SCCoreCardCreateFieldsProps) => {
@@ -30,7 +32,7 @@ export const SCCoreCardCreateFields = ({
     card.parentFolder = folderId;
   };
 
-  const [selectedCardVariant, setSelectedCardVariant] = useState("small");
+  const [selectedCardVariant, setSelectedCardVariant] = useState(cardVariant ? cardVariant : CardVariant.SMALL);
   const cardVariants: SelectorOption[] = useMemo(() => {
     return Object.values(CardVariant).map((type) => ({
       key: type,
@@ -47,7 +49,7 @@ export const SCCoreCardCreateFields = ({
   const [title, setTitle] = useState(card && card.title ? card.title : "");
 
   return (
-    <View className="mx-3 mt-4">
+    <View className="mt-4">
       <SCInput
         label="Title"
         placeholder="Enter a Title"

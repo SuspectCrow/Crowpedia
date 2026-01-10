@@ -60,8 +60,9 @@ const NavTitle: React.FC<{
         "font-dmsans text-white",
         centered ? "text-lg font-medium" : variant === "root" ? "text-md text-neutral-300" : "text-lg",
       )}
+      numberOfLines={1}
     >
-      {title || (variant === "root" ? "Home" : "")}
+      {(title && title.length > 24 ? title.slice(0, 24) + "..." : title) || (variant === "root" ? "Home" : "")}
     </Text>
   </View>
 );

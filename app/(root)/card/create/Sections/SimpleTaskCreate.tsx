@@ -19,7 +19,7 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: CreateCardProps) => {
     variant: CardVariant.SMALL,
   });
 
-  const [linkURL, setlinkURL] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   const handleCreate = async () => {
     try {
@@ -30,7 +30,7 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: CreateCardProps) => {
 
       const finalCard = {
         ...newCard,
-        content: JSON.stringify(linkURL),
+        content: JSON.stringify(description),
       };
 
       await createCard(finalCard);
@@ -50,9 +50,9 @@ const SimpleTaskCreate = ({ onClose, onSuccess }: CreateCardProps) => {
         <SCInput
           label="Description"
           placeholder="Enter a description..."
-          value={linkURL}
+          value={description}
           onChangeText={(text) => {
-            setlinkURL(text);
+            setDescription(text);
             newCard.content = text;
           }}
         />

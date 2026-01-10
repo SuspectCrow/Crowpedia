@@ -17,7 +17,10 @@ export default function Folders() {
   const { dataCards, filteredCards, loadingCards, refetch, selectedFilters, setSelectedFilters, filterOptions } =
     useCardsData(params.query, params.folderId);
 
-  const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!, "/folders");
+  const { folderPaths, handleCardPress, handleCardLongPress, handleBack, activeFolderName } = useFolderNavigation(
+    dataCards!,
+    "/folders",
+  );
 
   return (
     <View className="flex-1 bg-neutral-950">
@@ -80,6 +83,9 @@ export default function Folders() {
                   card={item}
                   onPress={() => {
                     handleCardPress(item);
+                  }}
+                  onLongPress={() => {
+                    handleCardLongPress(item);
                   }}
                 />
               )}

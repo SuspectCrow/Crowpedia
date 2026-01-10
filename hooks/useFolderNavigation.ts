@@ -39,6 +39,16 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
     [router, pathname],
   );
 
+  const handleCardLongPress = useCallback(
+    (card: ICard) => {
+      switch (card.type) {
+        default:
+          router.push(`/card/detail/${card.$id}`);
+      }
+    },
+    [router, pathname],
+  );
+
   const handleBack = useCallback(() => {
     if (params.folderId && params.folderId !== "home") {
       const currentFolder = dataCards?.find((c) => c.$id === params.folderId);
@@ -61,6 +71,7 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
   return {
     folderPaths,
     handleCardPress,
+    handleCardLongPress,
     handleBack,
     activeFolderName,
   };

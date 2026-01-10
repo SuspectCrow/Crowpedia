@@ -9,24 +9,13 @@ import { ITaskItem } from "@/interfaces/ICard";
 interface SCTaskListEditorProps {
   taskList: ITaskItem[];
   onTaskListChange: (tasks: ITaskItem[]) => void;
-  onClose: () => void;
-  onSubmit: () => void;
-  submitText?: string;
-  submitClassName?: string;
 }
 
 const generateUniqueId = () => {
   return Date.now().toString() + Math.random().toString(36).substring(2, 11);
 };
 
-export const SCTaskListEditor = ({
-  taskList,
-  onTaskListChange,
-  onClose,
-  onSubmit,
-  submitText = "Create",
-  submitClassName = "bg-green-700",
-}: SCTaskListEditorProps) => {
+export const SCTaskListEditor = ({ taskList, onTaskListChange }: SCTaskListEditorProps) => {
   const [newTaskLabel, setNewTaskLabel] = useState("");
 
   const handleAddTask = (label: string) => {
@@ -83,11 +72,6 @@ export const SCTaskListEditor = ({
           />
         </View>
         <SCButton variant={ButtonVariant.ICON_ONLY} icon="add" onPress={() => handleAddTask(newTaskLabel)} />
-      </View>
-
-      <View className="flex-row items-center justify-center gap-4 mt-8">
-        <SCButton text="Cancel" variant={ButtonVariant.LARGE} onPress={onClose} transparent />
-        <SCButton text={submitText} variant={ButtonVariant.LARGE} className={submitClassName} onPress={onSubmit} />
       </View>
     </View>
   );

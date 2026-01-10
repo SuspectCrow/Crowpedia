@@ -59,7 +59,6 @@ const CardContentRenderer = ({ card }: { card: ICard }) => {
 
 const CardDetail = () => {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  console.log("CardDetail id:", id);
 
   const [card, setCard] = useState<ICard | null>(null);
   const [loading, setLoading] = useState(false);
