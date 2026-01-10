@@ -21,7 +21,7 @@ interface NavbarProps {
   breadcrumbs?: string[];
   showBackButton?: boolean;
   onBackPress?: () => void;
-  rightAction?: NavbarAction;
+  rightAction?: NavbarAction | NavbarAction[];
   className?: string;
 }
 
@@ -126,17 +126,19 @@ export const SCNavbar: React.FC<NavbarProps> = ({
           </View>
         )}
 
-        <View className="flex-row justify-end min-w-[40px]">
-          {rightAction && (
-            <SCButton
-              icon={rightAction.icon}
-              text={rightAction.text}
-              onPress={rightAction.onPress}
-              variant={ButtonVariant.SMALL}
-              transparent={!rightAction.text && !rightAction.icon ? true : false}
-              className={clsx("bg-[#262626] border-0 h-9", !rightAction.text && "px-0 justify-center items-center")}
-            />
-          )}
+        <View className="flex-row justify-end min-w-[40px] gap-2">
+          {rightAction &&
+            (Array.isArray(rightAction) ? rightAction : [rightAction]).map((action, index) => (
+              <SCButton
+                key={index}
+                icon={action.icon}
+                text={action.text}
+                onPress={action.onPress}
+                variant={ButtonVariant.SMALL}
+                transparent={!action.text && !action.icon}
+                className={clsx("bg-[#262626] border-0 h-9", !action.text && "px-0 justify-center items-center")}
+              />
+            ))}
         </View>
       </View>
     </BlurView>

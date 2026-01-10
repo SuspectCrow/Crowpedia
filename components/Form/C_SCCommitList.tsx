@@ -21,12 +21,10 @@ export const SCCommitList: React.FC<SCCommitListProps> = ({ commits, onCommitsCh
 
   const handleDelete = (id: string) => {
     onCommitsChange(commits.filter((item) => item.id !== id));
-    setEditingId(null);
   };
 
   const handleUpdate = (id: string, newText: string) => {
     onCommitsChange(commits.map((item) => (item.id === id ? { ...item, title: newText } : item)));
-    setEditingId(null);
   };
 
   const handleAddCommit = () => {
@@ -62,13 +60,31 @@ export const SCCommitList: React.FC<SCCommitListProps> = ({ commits, onCommitsCh
         <Text className="font-dmsans text-lg text-neutral-300">Commits</Text>
       </View>
 
+      <View className="flex-row items-center justify-center mx-2 mt-6">
+        <View className="flex-1">
+          <SCCommitItem
+            data={{
+              id: "new",
+              date: new Date(),
+              title: newCommitTitle,
+              icon: newCommitIcon,
+            }}
+            isLast={true}
+            isEditing={true}
+            onUpdate={handleNewCommitUpdate}
+            onUpdateIcon={handleNewCommitIconUpdate}
+          />
+        </View>
+        <SCButton variant={ButtonVariant.ICON_ONLY_MEDIUM} icon="add" onPress={handleAddCommit} />
+      </View>
+
       <TouchableWithoutFeedback
         onPress={() => {
           setEditingId(null);
           Keyboard.dismiss();
         }}
       >
-        <View className="flex-1 px-6 mt-8">
+        <View className="flex-1 px-6">
           <FlatList
             data={commits}
             keyExtractor={(item) => item.id}
@@ -88,24 +104,6 @@ export const SCCommitList: React.FC<SCCommitListProps> = ({ commits, onCommitsCh
           />
         </View>
       </TouchableWithoutFeedback>
-
-      <View className="flex-row items-center justify-center mx-2">
-        <View className="flex-1">
-          <SCCommitItem
-            data={{
-              id: "new",
-              date: new Date(),
-              title: newCommitTitle,
-              icon: newCommitIcon,
-            }}
-            isLast={true}
-            isEditing={true}
-            onUpdate={handleNewCommitUpdate}
-            onUpdateIcon={handleNewCommitIconUpdate}
-          />
-        </View>
-        <SCButton variant={ButtonVariant.ICON_ONLY_MEDIUM} icon="add" onPress={handleAddCommit} />
-      </View>
     </View>
   );
 };

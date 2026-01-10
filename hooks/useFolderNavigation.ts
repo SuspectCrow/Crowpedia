@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from "react";
 import { useRouter, useLocalSearchParams, useNavigation } from "expo-router";
 import { ICard, CardType } from "@/interfaces/ICard";
+import { updateCard } from "@/services/appwrite";
 
-export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: string = "/") => {
+export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: string = "/", onRefresh?: () => void) => {
   const router = useRouter();
   const params = useLocalSearchParams<{ folderId?: string }>();
   const navigation = useNavigation();
@@ -26,17 +27,45 @@ export const useFolderNavigation = (dataCards: ICard[] | undefined, pathname: st
   }, [params.folderId, dataCards]);
 
   const handleCardPress = useCallback(
-    (card: ICard) => {
+    async (card: ICard) => {
+      let parsedContent;
+      try {
+        parsedContent = JSON.parse(card.content || "{}");
+      } catch {
+        parsedContent = {};
+      }
+
       switch (card.type) {
         case CardType.FOLDER:
           router.push({ pathname: pathname as any, params: { folderId: card.$id } });
+          break;
+        case CardType.SIMPLE_TASK:
+          // Toggle value - works for both true and false
+          parsedContent.value = !parsedContent.value;
+
+          try {
+            await updateCard(card.$id as string, {
+              ...card,
+              content: JSON.stringify({
+                description: parsedContent.description || "",
+                value: parsedContent.value,
+              }),
+            });
+
+            // Refresh the page after successful update
+            if (onRefresh) {
+              onRefresh();
+            }
+          } catch (error) {
+            console.error("Error updating task card:", error);
+          }
           break;
         default:
           router.push(`/card/detail/${card.$id}`);
           break;
       }
     },
-    [router, pathname],
+    [router, pathname, onRefresh],
   );
 
   const handleCardLongPress = useCallback(

@@ -7,10 +7,18 @@ import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 import { SCInput } from "@/components/Core/C_SCInput";
 
-const SimpleTaskDetail = ({ card }: ICardDetailProps) => {
+const SimpleTaskDetail = ({ card, setAvailableActions, registerActionHandler }: ICardDetailProps) => {
   const [tempCard, setTempCard] = React.useState(card);
 
-  const [description, setDescription] = useState<string>("");
+  const parsedContent = React.useMemo(() => {
+    try {
+      return JSON.parse(card.content || "{}");
+    } catch {
+      return {};
+    }
+  }, [card.content]);
+
+  const [description, setDescription] = useState<string>(parsedContent.description || "");
 
   const handleUpdate = async () => {
     try {
@@ -19,7 +27,13 @@ const SimpleTaskDetail = ({ card }: ICardDetailProps) => {
         return;
       }
 
-      await updateCard(card.$id as string, tempCard);
+      await updateCard(card.$id as string, {
+        ...tempCard,
+        content: JSON.stringify({
+          description: description,
+          value: parsedContent.value || false,
+        }),
+      });
     } catch (error) {
       console.error("Failed to update note:", error);
       Alert.alert("Error", "Failed to update note. Please try again.");
@@ -27,6 +41,13 @@ const SimpleTaskDetail = ({ card }: ICardDetailProps) => {
 
     router.back();
   };
+
+  React.useEffect(() => {
+    if (setAvailableActions && registerActionHandler) {
+      setAvailableActions(["save"]);
+      registerActionHandler("save", handleUpdate);
+    }
+  }, [setAvailableActions, registerActionHandler, handleUpdate]);
 
   return (
     <View className="mx-3">
@@ -41,18 +62,6 @@ const SimpleTaskDetail = ({ card }: ICardDetailProps) => {
           tempCard.content = text;
         }}
       />
-
-      <View className="flex-row items-center justify-center gap-4">
-        <SCButton
-          text="Cancel"
-          variant={ButtonVariant.LARGE}
-          onPress={() => {
-            router.back();
-          }}
-          transparent
-        />
-        <SCButton text="Update" variant={ButtonVariant.LARGE} className={"bg-green-700"} onPress={handleUpdate} />
-      </View>
     </View>
   );
 };

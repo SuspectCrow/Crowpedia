@@ -15,7 +15,7 @@ export default function Index() {
   const { dataCards, filteredCards, loadingCards, refetch, selectedFilters, setSelectedFilters, filterOptions } =
     useCardsData(params.query, params.folderId);
 
-  const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!);
+  const { folderPaths, handleCardPress, handleBack, activeFolderName } = useFolderNavigation(dataCards!, "/", refetch);
 
   return (
     <View className="flex-1 bg-neutral-950">

@@ -1,5 +1,5 @@
 import { View, Text, ActivityIndicator, RefreshControl, ScrollView } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { CardType, getCardIcon, ICard } from "@/interfaces/ICard";
@@ -7,7 +7,7 @@ import { getCardById } from "@/services/appwrite";
 import colors from "tailwindcss/colors";
 import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 import { SCInput } from "@/components/Core/C_SCInput";
-import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
+import { ButtonVariant, SCButton, IconName } from "@/components/Core/C_SCButton";
 import { SCNavbar } from "@/components/Partials/C_SCNavbar";
 import { useFolderNavigation } from "@/hooks/useFolderNavigation";
 import NoteDetail from "@/app/(root)/card/detail/Sections/NoteDetail";
@@ -23,28 +23,31 @@ import TaskListDetail from "@/app/(root)/card/detail/Sections/TaskListDetail";
 export interface ICardDetailProps {
   card: ICard;
   refresh?: () => void;
+  setAvailableActions?: (actions: IconName[]) => void;
+  registerActionHandler?: (action: IconName, handler: () => void) => void;
 }
 
-const CardContentRenderer = ({ card }: { card: ICard }) => {
+const CardContentRenderer = (props: ICardDetailProps) => {
+  const { card } = props;
   switch (card.type) {
     case CardType.COLLECTION:
-      return <CollectionDetail card={card} />;
+      return <CollectionDetail {...props} />;
     case CardType.EVENT:
-      return <EventDetail card={card} />;
+      return <EventDetail {...props} />;
     case CardType.FOLDER:
-      return <FolderDetail card={card} />;
+      return <FolderDetail {...props} />;
     case CardType.LINK:
-      return <LinkDetail card={card} />;
+      return <LinkDetail {...props} />;
     case CardType.NOTE:
-      return <NoteDetail card={card} />;
+      return <NoteDetail {...props} />;
     case CardType.OBJECTIVE:
-      return <ObjectiveDetail card={card} />;
+      return <ObjectiveDetail {...props} />;
     case CardType.PASSWORD:
-      return <PasswordDetail card={card} />;
+      return <PasswordDetail {...props} />;
     case CardType.SIMPLE_TASK:
-      return <SimpleTaskDetail card={card} />;
+      return <SimpleTaskDetail {...props} />;
     case CardType.TASK_LIST:
-      return <TaskListDetail card={card} />;
+      return <TaskListDetail {...props} />;
 
     default:
       return (
@@ -62,6 +65,14 @@ const CardDetail = () => {
 
   const [card, setCard] = useState<ICard | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Navbar Action State
+  const [availableActions, setAvailableActions] = useState<IconName[]>([]);
+  const actionHandlers = useRef<Record<string, () => void>>({});
+
+  const registerActionHandler = useCallback((action: IconName, handler: () => void) => {
+    actionHandlers.current[action] = handler;
+  }, []);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -86,6 +97,14 @@ const CardDetail = () => {
         showBackButton={true}
         onBackPress={handleBack}
         className="absolute z-[100]"
+        rightAction={availableActions.map((action) => ({
+          icon: action,
+          onPress: () => {
+            if (actionHandlers.current[action]) {
+              actionHandlers.current[action]();
+            }
+          },
+        }))}
       />
 
       {loading && !card && (
@@ -99,7 +118,13 @@ const CardDetail = () => {
         className="relative mt-28"
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={colors.neutral["600"]} />}
       >
-        {card && <CardContentRenderer card={card} />}
+        {card && (
+          <CardContentRenderer
+            card={card}
+            setAvailableActions={setAvailableActions}
+            registerActionHandler={registerActionHandler}
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   );

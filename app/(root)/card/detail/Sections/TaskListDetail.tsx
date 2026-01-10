@@ -8,8 +8,10 @@ import { router } from "expo-router";
 import { ButtonVariant, SCButton } from "@/components/Core/C_SCButton";
 import { SCCoreCardCreateFields } from "@/components/Form/C_SCCoreCardFields";
 
-const TaskListDetail = ({ card }: ICardDetailProps) => {
+const TaskListDetail = ({ card, setAvailableActions, registerActionHandler }: ICardDetailProps) => {
   const [tempCard, setTempCard] = React.useState(card);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
   const rawTaskList = tempCard.content ? JSON.parse(tempCard.content) : [];
 
   const [taskList, setTaskList] = useState<ITaskItem[]>(rawTaskList);
@@ -21,7 +23,7 @@ const TaskListDetail = ({ card }: ICardDetailProps) => {
         return;
       }
 
-      await updateCard(card.$id as string, tempCard);
+      await updateCard(card.$id as string, { ...tempCard, content: JSON.stringify(taskList) });
     } catch (error) {
       console.error("Failed to update note:", error);
       Alert.alert("Error", "Failed to update note. Please try again.");
@@ -30,21 +32,36 @@ const TaskListDetail = ({ card }: ICardDetailProps) => {
     router.back();
   };
 
+  const handleTaskListChange = async (newTaskList: ITaskItem[]) => {
+    setTaskList(newTaskList);
+    try {
+      await updateCard(card.$id as string, { ...tempCard, content: JSON.stringify(newTaskList) });
+    } catch (error) {
+      console.error("Failed to update task list:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (setAvailableActions && registerActionHandler) {
+      if (isEditMode) {
+        setAvailableActions(["save"]);
+        registerActionHandler("save", handleUpdate);
+      } else {
+        setAvailableActions(["edit"]);
+        registerActionHandler("edit", () => setIsEditMode(true));
+      }
+    }
+  }, [isEditMode, setAvailableActions, registerActionHandler, handleUpdate]);
+
   return (
     <View className="mx-3">
-      <SCTaskListEditor taskList={taskList} onTaskListChange={setTaskList} />
-      <SCCoreCardCreateFields card={tempCard} />
-      <View className="flex-row items-center justify-center gap-4 mt-8">
-        <SCButton
-          text="Cancel"
-          variant={ButtonVariant.LARGE}
-          onPress={() => {
-            router.back();
-          }}
-          transparent
-        />
-        <SCButton text="Create" variant={ButtonVariant.LARGE} onPress={handleUpdate} />
-      </View>
+      {isEditMode ? (
+        <View>
+          <SCCoreCardCreateFields card={tempCard} />
+        </View>
+      ) : (
+        <SCTaskListEditor taskList={taskList} onTaskListChange={handleTaskListChange} />
+      )}
     </View>
   );
 };

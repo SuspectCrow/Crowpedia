@@ -14,6 +14,7 @@ import EventCardContent from "@/components/Card/CardContents/EventCardContent";
 import DefaultCardContent from "@/components/Card/CardContents/DefaultCardContent";
 import TaskListCardContent from "@/components/Card/CardContents/TaskListCardContent";
 import FolderCardContent from "@/components/Card/CardContents/FolderCardContent";
+import SimpleTaskCardContent from "@/components/Card/CardContents/SimpleTaskCardContent";
 
 export type IconName = keyof typeof MaterialIcons.glyphMap;
 
@@ -60,6 +61,8 @@ const CardContent = (card: ICard) => {
       return <TaskListCardContent card={card} />;
     case CardType.FOLDER:
       return <FolderCardContent card={card} />;
+    case CardType.SIMPLE_TASK:
+      return <SimpleTaskCardContent card={card} />;
     default:
       return <DefaultCardContent card={card} />;
   }

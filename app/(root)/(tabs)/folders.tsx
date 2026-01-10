@@ -20,6 +20,7 @@ export default function Folders() {
   const { folderPaths, handleCardPress, handleCardLongPress, handleBack, activeFolderName } = useFolderNavigation(
     dataCards!,
     "/folders",
+    refetch,
   );
 
   return (

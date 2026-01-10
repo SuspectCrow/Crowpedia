@@ -59,8 +59,8 @@ export const SCCommitItem: React.FC<SCCommitItemProps> = ({
 
   const handleTextChange = (text: string) => {
     setTempText(text);
-    // Yeni commit için gerçek zamanlı güncelleme
-    if (data.id === "new" && onUpdate) {
+    // Tüm commit'ler için gerçek zamanlı güncelleme
+    if (onUpdate) {
       onUpdate(data.id, text);
     }
   };
@@ -68,8 +68,6 @@ export const SCCommitItem: React.FC<SCCommitItemProps> = ({
   const handleSubmit = () => {
     if (tempText.trim() === "") {
       onDelete?.(data.id);
-    } else {
-      onUpdate?.(data.id, tempText);
     }
     Keyboard.dismiss();
   };
